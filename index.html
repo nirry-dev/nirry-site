@@ -269,6 +269,26 @@ h1 .hl{color:var(--cyan)}
 .skill h4{font-weight:700;font-size:1.1rem;margin:7px 0 8px}
 .skill p{font-size:.88rem;color:var(--muted)}
 
+/* open source repos */
+.os-intro{color:var(--muted);max-width:62ch;margin:0 0 30px;font-size:clamp(1rem,1.5vw,1.12rem)}
+.repos{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.repo{--pa:var(--cyan);--pa-dim:var(--cyan-dim);position:relative;display:flex;flex-direction:column;text-decoration:none;
+  background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:20px 20px 18px;
+  transition:border-color .25s,box-shadow .25s,transform .25s}
+.repo.sec{--pa:var(--amber);--pa-dim:var(--amber-dim)}
+.repo:hover{border-color:var(--pa-dim);box-shadow:0 0 0 1px var(--pa-dim),0 24px 60px -36px var(--pa);transform:translateY(-3px)}
+.repo-top{display:flex;align-items:center;gap:10px;margin:0 0 11px}
+.repo-dot{width:8px;height:8px;background:var(--pa);box-shadow:0 0 9px var(--pa);flex:none}
+.repo-name{font-family:var(--f-mono);font-size:1.02rem;font-weight:600;color:var(--fg);letter-spacing:.01em}
+.repo-ext{margin-left:auto;font-family:var(--f-mono);color:var(--pa);font-size:1rem;transition:transform .25s}
+.repo:hover .repo-ext{transform:translate(3px,-3px)}
+.repo-desc{color:var(--muted);font-size:.9rem;line-height:1.55;margin:0 0 15px;flex:1}
+.repo-meta{display:flex;flex-wrap:wrap;gap:7px}
+.repo-meta span{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);border:1px solid var(--line);border-radius:3px;padding:4px 8px}
+.os-more{margin:26px 0 0;font-family:var(--f-mono);font-size:.82rem;letter-spacing:.06em}
+.os-more a{color:var(--cyan);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
+.os-more a:hover{border-bottom-color:var(--cyan)}
+
 /* footer */
 footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
 .telemetry{overflow:hidden;border-bottom:1px solid var(--line);margin-bottom:40px}
@@ -356,6 +376,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     <nav aria-label="Primary">
       <a href="#preview">Preview</a>
       <a href="#systems">Systems</a>
+      <a href="#open-source">Source</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -604,9 +625,37 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     </article>
   </section>
 
-  <section class="sec" id="about">
+  <section class="sec" id="open-source">
     <div class="sec-h reveal">
       <span class="idx">02</span>
+      <h2>Open source</h2>
+      <span class="rule"></span>
+      <span class="count">03 / PUBLIC</span>
+    </div>
+    <p class="os-intro reveal">Small, self-contained tools that fall out of the work above — each dependency-free, documented, and public. A learning journal that happens to be useful software.</p>
+    <div class="repos reveal">
+      <a class="repo" href="https://github.com/nirry-dev/vramlease" target="_blank" rel="noopener">
+        <div class="repo-top"><span class="repo-dot" aria-hidden="true"></span><span class="repo-name">vramlease</span><span class="repo-ext" aria-hidden="true">↗</span></div>
+        <p class="repo-desc">Cooperative GPU memory leasing — let local jobs share one GPU by VRAM budget, with crash-safe leases and priority + preemption.</p>
+        <div class="repo-meta"><span>Python</span><span>stdlib-only</span><span>GPU</span></div>
+      </a>
+      <a class="repo" href="https://github.com/nirry-dev/llm-council" target="_blank" rel="noopener">
+        <div class="repo-top"><span class="repo-dot" aria-hidden="true"></span><span class="repo-name">llm-council</span><span class="repo-ext" aria-hidden="true">↗</span></div>
+        <p class="repo-desc">Multi-model consensus: propose → blind peer review → chair synthesis, over any OpenAI-compatible endpoint.</p>
+        <div class="repo-meta"><span>Python</span><span>stdlib-only</span><span>Local AI</span></div>
+      </a>
+      <a class="repo sec" href="https://github.com/nirry-dev/vulntriage" target="_blank" rel="noopener">
+        <div class="repo-top"><span class="repo-dot" aria-hidden="true"></span><span class="repo-name">vulntriage</span><span class="repo-ext" aria-hidden="true">↗</span></div>
+        <p class="repo-desc">Triage dependency CVEs by real-world exploitability — correlate OSV + CISA KEV + EPSS and rank what to fix first.</p>
+        <div class="repo-meta"><span>Python</span><span>stdlib-only</span><span>Security</span></div>
+      </a>
+    </div>
+    <p class="os-more reveal"><a href="https://github.com/nirry-dev" target="_blank" rel="noopener">All repositories on GitHub ↗</a></p>
+  </section>
+
+  <section class="sec" id="about">
+    <div class="sec-h reveal">
+      <span class="idx">03</span>
       <h2>What this work shows</h2>
       <span class="rule"></span>
       <span class="count">06 / DOMAINS</span>
@@ -626,7 +675,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     <div class="f-top">
       <div class="foot-id reveal">
         <span class="f-brand"><span class="bk">◢</span> NIRRY</span>
-        <p>A working portfolio of local-first AI and security tooling. Source code and downloads aren't published here — walkthroughs and deeper technical detail are available on request.</p>
+        <p>A working portfolio of local-first AI and security tooling. The flagship platforms are private; the smaller tools are open source on GitHub. Walkthroughs and deeper technical detail are available on request.</p>
       </div>
       <div class="contact reveal">
         <span class="lbl">Get in touch</span>
@@ -825,7 +874,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       if(links[e.target.id]) links[e.target.id].classList.add("active");
     }});
   },{threshold:.25,rootMargin:"-30% 0px -55% 0px"});
-  ["preview","systems","about","contact"].forEach(function(id){ var s=document.getElementById(id); if(s)navObs.observe(s); });
+  ["preview","systems","open-source","about","contact"].forEach(function(id){ var s=document.getElementById(id); if(s)navObs.observe(s); });
   var focObs=new IntersectionObserver(function(es){
     es.forEach(function(e){ if(e.isIntersecting) focus = e.target.id==='pentest'?'pentest':'labs'; });
   },{threshold:.3});
@@ -958,6 +1007,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     ["Systems","go","jump","#systems"],
     ["Nirry Labs","go","jump","#nirry-labs"],
     ["Pentest Suite","go","jump","#pentest"],
+    ["Open source","go","jump","#open-source"],
     ["About","go","jump","#about"],
     ["Contact","go","jump","#contact"],
     ["Copy email","info@nirry.net","copy",""]
