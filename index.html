@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nirry Portfolio</title>
+<meta name="description" content="A working portfolio of local-first AI and security tooling — Nirry Labs and the Pentest Suite. Systems and tools engineering by Nirry.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Nirry Portfolio">
+<meta property="og:description" content="Local-first platforms for AI and security work — Nirry Labs and the Pentest Suite.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nirry.net/">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: neutral instrument-panel shell; each project carries its own domain accent.
+   Color: cool slate/paper neutrals biased toward teal; teal = AI work, amber = security.
+   Type: Bricolage Grotesque display / IBM Plex Sans body / IBM Plex Mono technical labels. */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --surface-2:#eef1f4;
+  --fg:#111619; --muted:#5a646d; --faint:#8b949c; --line:#dce2e8;
+  --accent:#0e7c86; --accent-2:#b4531a;
+  --code:#eceff3;
+  --shadow:0 1px 2px rgba(16,22,25,.04),0 10px 30px -18px rgba(16,22,25,.25);
+  --maxw:1120px;
+  --f-disp:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c0f12; --surface:#13181c; --surface-2:#171d22;
+  --fg:#e7ecef; --muted:#9aa5ad; --faint:#6a757d; --line:#232b31;
+  --accent:#43b9c3; --accent-2:#e08a4a;
+  --code:#10151a;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 18px 40px -24px rgba(0,0,0,.7);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0c0f12; --surface:#13181c; --surface-2:#171d22;
+  --fg:#e7ecef; --muted:#9aa5ad; --faint:#6a757d; --line:#232b31;
+  --accent:#43b9c3; --accent-2:#e08a4a;
+  --code:#10151a;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 18px 40px -24px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);
+  line-height:1.62;-webkit-font-smoothing:antialiased;font-size:16px;margin:0}
+h1,h2,h3{font-family:var(--f-disp);text-wrap:balance;line-height:1.05;margin:0;letter-spacing:-.01em}
+p{margin:0}
+a{color:inherit}
+::selection{background:color-mix(in srgb,var(--accent) 30%,transparent)}
+
+.wrap{width:100%;max-width:var(--maxw);margin-inline:auto;
+  padding-left:max(22px,env(safe-area-inset-left,0px));
+  padding-right:max(22px,env(safe-area-inset-right,0px))}
+
+.mono{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.09em;text-transform:uppercase}
+.eyebrow{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* ---- header ---- */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;
+  backdrop-filter:saturate(1.2) blur(10px);
+  background:color-mix(in srgb,var(--bg) 82%,transparent);
+  border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;
+  background:var(--bg)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding-block:14px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;font-weight:700;letter-spacing:.02em}
+.brand .dot{width:22px;height:22px;border-radius:6px;
+  background:conic-gradient(from 220deg,var(--accent),var(--accent-2),var(--accent));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.brand b{font-family:var(--f-disp);font-size:1.12rem}
+.nav{display:flex;align-items:center;gap:22px}
+.nav a{font-size:.9rem;text-decoration:none;color:var(--muted);transition:color .18s;position:relative}
+.nav a:hover{color:var(--fg)}
+.toggle{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--muted);
+  width:36px;height:34px;border-radius:9px;cursor:pointer;display:grid;place-items:center;transition:.18s}
+.toggle:hover{color:var(--fg);border-color:var(--muted)}
+.toggle svg{width:17px;height:17px;display:block}
+@media(max-width:640px){.nav a{display:none}}
+
+/* ---- hero ---- */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(60% 90% at 85% -10%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 60%),
+    radial-gradient(50% 80% at 8% 120%,color-mix(in srgb,var(--accent-2) 12%,transparent),transparent 55%);
+  opacity:.9}
+.hero .grid-bg{position:absolute;inset:0;z-index:0;opacity:.5;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:46px 46px;
+  -webkit-mask-image:radial-gradient(120% 80% at 70% 0%,#000 25%,transparent 72%);
+  mask-image:radial-gradient(120% 80% at 70% 0%,#000 25%,transparent 72%)}
+.hero .wrap{position:relative;z-index:1;padding-block:clamp(56px,10vw,104px) clamp(48px,8vw,80px)}
+.hero h1{font-size:clamp(2.1rem,6.4vw,4.15rem);font-weight:800;max-width:17ch}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lede{margin-top:26px;max-width:58ch;font-size:clamp(1.02rem,1.6vw,1.19rem);color:var(--muted)}
+.hero .lede strong{color:var(--fg);font-weight:600}
+.metarail{margin-top:40px;display:flex;flex-wrap:wrap;gap:14px 40px;border-top:1px solid var(--line);padding-top:26px}
+.metarail div{display:flex;flex-direction:column;gap:5px}
+.metarail .k{color:var(--faint)}
+.metarail .v{font-size:.96rem}
+
+/* ---- section heads ---- */
+.section{padding-block:clamp(54px,8vw,96px)}
+.sechead{display:flex;align-items:baseline;justify-content:space-between;gap:18px;
+  border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:clamp(30px,5vw,56px)}
+.sechead h2{font-size:clamp(1.3rem,3vw,1.7rem);font-weight:700}
+.sechead .count{color:var(--faint)}
+
+/* ---- project ---- */
+.project{--pa:var(--accent);margin-bottom:clamp(56px,9vw,104px)}
+.project:last-child{margin-bottom:0}
+.project.sec{--pa:var(--accent-2)}
+.p-head{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.p-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:.72rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--pa)}
+.p-tag::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--pa);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--pa) 18%,transparent)}
+.project h3{font-size:clamp(1.9rem,4.6vw,3rem);font-weight:800;margin-top:14px}
+.p-sub{margin-top:12px;font-size:clamp(1.05rem,1.8vw,1.28rem);color:var(--fg);max-width:40ch;font-weight:500}
+
+.p-body{display:grid;grid-template-columns:1.55fr .9fr;gap:clamp(28px,5vw,64px);margin-top:36px;align-items:start}
+@media(max-width:820px){.p-body{grid-template-columns:1fr;gap:34px}}
+.p-overview p+p{margin-top:16px}
+.p-overview p{color:var(--muted);max-width:62ch}
+.p-overview p strong{color:var(--fg);font-weight:600}
+
+.highlights{margin-top:28px;list-style:none;padding:0;display:flex;flex-direction:column;gap:14px}
+.highlights li{position:relative;padding-left:26px;color:var(--muted);max-width:60ch}
+.highlights li::before{content:"";position:absolute;left:0;top:.6em;width:12px;height:1px;background:var(--pa)}
+.highlights li strong{color:var(--fg);font-weight:600}
+
+/* spec rail */
+.spec{border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:var(--shadow);
+  overflow:hidden}
+.spec .spec-top{padding:16px 18px;border-bottom:1px solid var(--line);
+  background:linear-gradient(0deg,transparent,color-mix(in srgb,var(--pa) 7%,transparent));
+  display:flex;align-items:center;justify-content:space-between}
+.spec .spec-top .mono{color:var(--pa)}
+.spec dl{margin:0;padding:6px 18px 14px}
+.spec dl>div{display:flex;justify-content:space-between;gap:16px;align-items:baseline;
+  padding:11px 0;border-bottom:1px dashed var(--line)}
+.spec dl>div:last-child{border-bottom:0}
+.spec dt{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.spec dd{margin:0;text-align:right;font-size:.9rem;font-weight:500;font-variant-numeric:tabular-nums}
+
+/* capabilities grid */
+.caps{margin-top:clamp(30px,4vw,44px)}
+.caps .caps-label{margin-bottom:18px}
+.capgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.cap{background:var(--surface);padding:20px 20px 22px;transition:background .18s}
+.cap:hover{background:var(--surface-2)}
+.cap h4{margin:0 0 7px;font-family:var(--f-disp);font-size:1.02rem;font-weight:700;
+  display:flex;align-items:center;gap:9px}
+.cap h4 .i{width:7px;height:7px;border-radius:2px;background:var(--pa);flex:none}
+.cap p{font-size:.88rem;color:var(--muted);line-height:1.52}
+
+/* ---- competencies ---- */
+.skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.skill{border-top:2px solid var(--fg);padding-top:16px}
+.skill .n{font-family:var(--f-mono);font-size:.7rem;color:var(--faint);letter-spacing:.1em}
+.skill h4{font-family:var(--f-disp);font-size:1.12rem;font-weight:700;margin:6px 0 8px}
+.skill p{font-size:.88rem;color:var(--muted)}
+
+/* ---- footer ---- */
+footer{border-top:1px solid var(--line);background:var(--surface)}
+footer .wrap{padding-block:46px 56px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:28px;align-items:flex-end}
+.foot-id{max-width:40ch}
+.foot-id .brand{margin-bottom:14px}
+.foot-id p{color:var(--muted);font-size:.9rem}
+.contact{display:flex;flex-direction:column;gap:10px}
+.contact .mono{color:var(--faint)}
+.mailrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mailrow code{font-family:var(--f-mono);font-size:.95rem;background:var(--code);padding:7px 11px;border-radius:8px;
+  border:1px solid var(--line);user-select:all}
+.copy{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--muted);
+  font-family:var(--f-mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:7px 11px;border-radius:8px;cursor:pointer;transition:.18s}
+.copy:hover{color:var(--fg);border-color:var(--muted)}
+.copy.ok{color:var(--accent);border-color:var(--accent)}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+/* ---------- motion & sparkle ---------- */
+html{scroll-behavior:smooth;scroll-padding-top:86px}
+#progress{position:fixed;inset:0 auto auto 0;height:2px;width:0;z-index:40;
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  box-shadow:0 0 14px color-mix(in srgb,var(--accent) 65%,transparent)}
+
+header.top{transition:box-shadow .25s ease,background .25s ease}
+header.top .wrap{transition:padding-block .22s ease}
+header.top.scrolled{box-shadow:0 14px 34px -26px rgba(0,0,0,.55)}
+header.top.scrolled .wrap{padding-block:9px}
+
+.nav a::after{content:"";position:absolute;left:0;right:100%;bottom:-5px;height:1.5px;
+  background:var(--accent);transition:right .28s cubic-bezier(.2,.75,.2,1)}
+.nav a:hover::after,.nav a.active::after{right:0}
+.nav a.active{color:var(--fg)}
+
+.hero h1 em{background:linear-gradient(100deg,var(--accent),color-mix(in srgb,var(--accent) 55%,var(--accent-2)),var(--accent));
+  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shimmer 8s linear infinite}
+@keyframes shimmer{to{background-position:220% 0}}
+.hero::after{animation:drift 20s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(-4%,3%,0) scale(1.1)}}
+.brand .dot{transition:transform .5s cubic-bezier(.2,.75,.2,1)}
+.brand:hover .dot{transform:rotate(90deg)}
+
+/* cursor-tracked border glow */
+.spotlight{position:relative}
+.spotlight::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.3px;pointer-events:none;
+  opacity:0;transition:opacity .3s ease;z-index:3;
+  background:radial-gradient(220px circle at var(--mx,50%) var(--my,50%),var(--pa,var(--accent)),transparent 62%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
+.spotlight:hover::before{opacity:1}
+.cap{transition:background .18s ease,transform .22s ease}
+.cap:hover{transform:translateY(-3px)}
+.spec{transition:transform .25s ease,box-shadow .25s ease}
+.spec:hover{transform:translateY(-4px)}
+
+/* scroll reveal */
+.js .reveal{opacity:0;transform:translateY(22px);
+  transition:opacity .75s cubic-bezier(.2,.75,.2,1),transform .75s cubic-bezier(.2,.75,.2,1)}
+.js .reveal.in{opacity:1;transform:none}
+.js .skills .skill.reveal:nth-child(2){transition-delay:.07s}
+.js .skills .skill.reveal:nth-child(3){transition-delay:.14s}
+.js .skills .skill.reveal:nth-child(4){transition-delay:.06s}
+.js .skills .skill.reveal:nth-child(5){transition-delay:.13s}
+.js .skills .skill.reveal:nth-child(6){transition-delay:.2s}
+
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important}
+  html{scroll-behavior:auto}
+  #progress{display:none}
+  .hero::after,.hero h1 em{animation:none}
+  .js .reveal{opacity:1;transform:none}
+  .cap:hover,.spec:hover{transform:none}
+  .spotlight::before{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="progress" aria-hidden="true"></div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Nirry — home">
+      <span class="dot" aria-hidden="true"></span><b>Nirry</b>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#nirry-labs">Nirry Labs</a>
+      <a href="#pentest">Pentest Suite</a>
+      <a href="#about">About</a>
+      <button class="toggle" id="themeBtn" type="button" aria-label="Switch colour theme" title="Switch theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="eyebrow">Portfolio · Local-first systems</p>
+      <h1>I build <em>local-first</em> platforms for AI and security work.</h1>
+      <p class="lede">A selection of tools I design and build end to end — from the inference engine
+        and data model up to the desktop shell. The through-line is <strong>systems that run entirely on
+        your own machine</strong>: dependency-light, auditable, and tuned to do real work on ordinary hardware.</p>
+      <div class="metarail">
+        <div><span class="k mono">Focus</span><span class="v">Systems &amp; tools engineering</span></div>
+        <div><span class="k mono">Domains</span><span class="v">Local AI · applied security</span></div>
+        <div><span class="k mono">Stack</span><span class="v">Python · Node · Rust / Tauri</span></div>
+        <div><span class="k mono">Runs on</span><span class="v">One desktop, one GPU</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section wrap" id="work">
+    <div class="sechead reveal">
+      <h2>Selected work</h2>
+      <span class="count mono">02 projects</span>
+    </div>
+
+    <!-- ============ NIRRY LABS ============ -->
+    <article class="project" id="nirry-labs">
+      <div class="p-head reveal" style="flex-direction:column">
+        <span class="p-tag">Local AI platform</span>
+        <h3>Nirry Labs</h3>
+        <p class="p-sub">An all-in-one local AI studio — language, image, video and interpretability — on a single consumer GPU.</p>
+      </div>
+
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>Nirry Labs is a self-hosted dashboard that turns one desktop into a complete AI workbench.
+            It serves open-weight language models through a router that <strong>hot-swaps models on demand</strong>,
+            and layers a full chat workspace, an image studio, short-form video and a multi-model
+            reasoning council on top of the same engine.</p>
+          <p>The hard constraint shaped the whole design: everything shares <strong>one 16&nbsp;GB GPU</strong>
+            alongside a working desktop. So the platform arbitrates the GPU between language, diffusion
+            and video workloads, enforcing clean handover and idle release so no two jobs ever contend for memory.</p>
+          <p>It ships as plain Node with a buildless web front end — <strong>no runtime dependencies and no build
+            step</strong> — and is hardened for local use with token-scoped access and keys kept out of the app sandbox.</p>
+
+          <ul class="highlights">
+            <li><strong>Zero-dependency engineering.</strong> The entire dashboard is vanilla Node and a hand-written web UI, with no framework or bundler to maintain.</li>
+            <li><strong>GPU scheduling.</strong> A single arbiter gives the 16&nbsp;GB card to inference, diffusion or video in turn, with enforced release and a five-minute idle timeout.</li>
+            <li><strong>Interpretability tooling.</strong> Layer- and neuron-level steering via control vectors, plus a persona library — built as a real research surface, not a demo.</li>
+            <li><strong>Agentic coding sandbox.</strong> Optional Docker/WSL2 environment with live dev-server preview for running coding agents safely against the local models.</li>
+          </ul>
+        </div>
+
+        <aside class="spec spotlight reveal" aria-label="Nirry Labs at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">01</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>Node.js</dd></div>
+            <div><dt>Inference</dt><dd>llama.cpp (CUDA)</dd></div>
+            <div><dt>Media</dt><dd>stable-diffusion.cpp</dd></div>
+            <div><dt>Interface</dt><dd>Buildless web UI</dd></div>
+            <div><dt>Dependencies</dt><dd>None at runtime</dd></div>
+            <div><dt>Footprint</dt><dd>Single 16 GB GPU</dd></div>
+          </dl>
+        </aside>
+      </div>
+
+      <div class="caps">
+        <p class="eyebrow caps-label">Capabilities</p>
+        <div class="capgrid reveal">
+          <div class="cap spotlight"><h4><span class="i"></span>Model serving</h4><p>A local router with per-model presets that hot-swaps GGUF models on demand and streams responses.</p></div>
+          <div class="cap spotlight"><h4><span class="i"></span>Chat workspace</h4><p>Saved conversations with branch, edit and regenerate, attachments, structured output and approved tool calls.</p></div>
+          <div class="cap spotlight"><h4><span class="i"></span>Image studio</h4><p>Text-to-image, instruction edits and restyle, each with a per-model pipeline tuned for its quirks.</p></div>
+          <div class="cap spotlight"><h4><span class="i"></span>Short video</h4><p>Image-seeded clips with synchronized audio, plus chained long-form rendering from a single frame.</p></div>
+          <div class="cap spotlight"><h4><span class="i"></span>Council</h4><p>A three-stage consensus protocol: independent proposals, anonymous peer review, then a chair synthesis.</p></div>
+          <div class="cap spotlight"><h4><span class="i"></span>Model steering</h4><p>Control-vector editing at the layer and neuron level, with an explorer for comparing steered outputs.</p></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ============ PENTEST SUITE ============ -->
+    <article class="project sec" id="pentest">
+      <div class="p-head reveal" style="flex-direction:column">
+        <span class="p-tag">Security tooling · authorized testing</span>
+        <h3>Pentest Suite</h3>
+        <p class="p-sub">A workflow platform for authorized penetration testing, built so that safety is structural rather than optional.</p>
+      </div>
+
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>The Pentest Suite gives a security tester one coherent engagement workflow: discover a scope,
+            enumerate it, correlate what's found against known vulnerabilities, and produce a defensible report.
+            At its core is a <strong>headless Python engine backed by SQLite</strong> that holds the engagement
+            graph — hosts, services and findings — as a single source of truth.</p>
+          <p>Every action passes a <strong>default-deny scope guard</strong> and lands in an audit log, so the
+            tool can only ever touch what the engagement authorizes. Discovery runs on stdlib-only probes
+            (service fingerprinting, DNS, TLS posture, SMB/LDAP/SNMP, web content discovery) and can also
+            orchestrate external scanners, normalizing their output back into the same graph.</p>
+          <p>Findings are correlated against <strong>NVD, CISA-KEV and EPSS</strong> and ranked by real-world
+            exploitability, then carried through a lifecycle with retest diffs and printable reports. The whole
+            engine is wrapped in a Tauri desktop shell and frozen to a single binary, so it installs without a Python runtime.</p>
+
+          <ul class="highlights">
+            <li><strong>Safety by construction.</strong> Scope checks, impact-tier opt-in, per-job approval and governance all converge on one execution choke point enforced before any command runs.</li>
+            <li><strong>Pluggable execution backend.</strong> The same validated command can run locally, in a container or over SSH, without the driver ever being able to widen the guardrails.</li>
+            <li><strong>Governance controls.</strong> A kill switch, testing windows and rate limiting are evaluated ahead of scope, so an engagement can be paused or bounded in time instantly.</li>
+            <li><strong>Evidence you can stand behind.</strong> Every run captures hashed output into per-engagement evidence, and reports carry an exec summary, finding status and a retest diff against a baseline.</li>
+          </ul>
+        </div>
+
+        <aside class="spec spotlight reveal" aria-label="Pentest Suite at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">02</span></div>
+          <dl>
+            <div><dt>Engine</dt><dd>Python (stdlib)</dd></div>
+            <div><dt>Store</dt><dd>SQLite graph</dd></div>
+            <div><dt>Desktop</dt><dd>Tauri v2 / Rust</dd></div>
+            <div><dt>Interface</dt><dd>Buildless web UI</dd></div>
+            <div><dt>Intel</dt><dd>NVD · KEV · EPSS</dd></div>
+            <div><dt>Delivery</dt><dd>Frozen binary</dd></div>
+          </dl>
+        </aside>
+      </div>
+
+      <div class="caps">
+        <p class="eyebrow caps-label">Capabilities</p>
+        <div class="capgrid reveal">
+          <div class="cap spotlight"><h4><span class="i"></span>Engagement graph</h4><p>A single SQLite model of hosts, services and findings that every adapter reads from and writes back to.</p></div>
+          <div class="cap spotlight"><h4><span class="i"></span>Scope guard</h4><p>Default-deny target checking on every action, with a complete audit trail of what was touched and when.</p></div>
+          <div class="cap spotlight"><h4><span class="i"></span>Native enumeration</h4><p>Stdlib-only probes for services, DNS, TLS posture, SMB/LDAP/SNMP and web discovery — no external install.</p></div>
+          <div class="cap spotlight"><h4><span class="i"></span>Tool orchestration</h4><p>Drives external scanners through validated templates and normalizes their output into the graph.</p></div>
+          <div class="cap spotlight"><h4><span class="i"></span>CVE correlation</h4><p>Matches discovered software against vulnerability feeds and ranks by exploitability, not just severity.</p></div>
+          <div class="cap spotlight"><h4><span class="i"></span>Lifecycle &amp; reporting</h4><p>Finding status, retest diffs against a baseline, and printable HTML or Markdown reports with evidence.</p></div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ ABOUT / COMPETENCIES ============ -->
+  <section class="section wrap" id="about">
+    <div class="sechead reveal">
+      <h2>What this work shows</h2>
+      <span class="count mono">Competencies</span>
+    </div>
+    <div class="skills">
+      <div class="skill reveal"><span class="n">01</span><h4>Systems architecture</h4><p>Designing a clean core — a single source of truth, thin interfaces around it — that stays coherent as features stack up.</p></div>
+      <div class="skill reveal"><span class="n">02</span><h4>Local inference &amp; GPU scheduling</h4><p>Serving open-weight models on consumer hardware, and arbitrating one GPU across competing workloads.</p></div>
+      <div class="skill reveal"><span class="n">03</span><h4>Security engineering</h4><p>Making safety structural: guardrails enforced at a single choke point, with audit and scope at the center.</p></div>
+      <div class="skill reveal"><span class="n">04</span><h4>Desktop delivery</h4><p>Shipping cross-platform desktop apps with Tauri and frozen binaries — no runtime for the user to install.</p></div>
+      <div class="skill reveal"><span class="n">05</span><h4>Dependency-minimal builds</h4><p>Preferring the standard library and buildless front ends, so tools stay small, legible and easy to audit.</p></div>
+      <div class="skill reveal"><span class="n">06</span><h4>Data modeling &amp; correlation</h4><p>Turning noisy tool output into a normalized graph, then ranking it against real-world signals.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-id reveal">
+      <a class="brand" href="#top"><span class="dot" aria-hidden="true"></span><b>Nirry</b></a>
+      <p>A working portfolio of local-first AI and security tooling. Source code and downloads
+        aren't published here — walkthroughs and deeper technical detail are available on request.</p>
+    </div>
+    <div class="contact reveal">
+      <span class="mono">Get in touch</span>
+      <div class="mailrow">
+        <code id="email">info@nirry.net</code>
+        <button class="copy" id="copyBtn" type="button">Copy</button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var root=document.documentElement; root.classList.add("js");
+  var KEY="nirry-theme";
+  function sysDark(){return window.matchMedia&&matchMedia("(prefers-color-scheme:dark)").matches}
+  function reduced(){return window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches}
+  try{var s=localStorage.getItem(KEY); if(s==="dark"||s==="light")root.setAttribute("data-theme",s);}catch(e){}
+
+  // theme toggle
+  var btn=document.getElementById("themeBtn");
+  btn&&btn.addEventListener("click",function(){
+    var cur=root.getAttribute("data-theme");
+    var isDark=cur?cur==="dark":sysDark();
+    var next=isDark?"light":"dark";
+    root.setAttribute("data-theme",next);
+    try{localStorage.setItem(KEY,next);}catch(e){}
+  });
+
+  // copy email
+  var copy=document.getElementById("copyBtn");
+  copy&&copy.addEventListener("click",function(){
+    var el=document.getElementById("email"), txt=el.textContent.trim();
+    function done(){copy.textContent="Copied";copy.classList.add("ok");setTimeout(function(){copy.textContent="Copy";copy.classList.remove("ok");},1600);}
+    function sel(){try{var r=document.createRange();r.selectNode(el);var s=getSelection();s.removeAllRanges();s.addRange(r);}catch(e){}}
+    try{navigator.clipboard.writeText(txt).then(done,sel);}catch(e){sel();}
+  });
+
+  // scroll progress + condensing header
+  var prog=document.getElementById("progress"), hdr=document.querySelector("header.top");
+  function onScroll(){
+    var h=root, max=h.scrollHeight-h.clientHeight, p=max>0?h.scrollTop/max:0;
+    if(prog)prog.style.width=(p*100)+"%";
+    if(hdr)hdr.classList.toggle("scrolled",h.scrollTop>8);
+  }
+  addEventListener("scroll",onScroll,{passive:true}); onScroll();
+
+  // scroll reveal
+  var items=[].slice.call(document.querySelectorAll(".reveal"));
+  if("IntersectionObserver" in window && !reduced()){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+    },{rootMargin:"0px 0px -8% 0px",threshold:.08});
+    items.forEach(function(el){ io.observe(el); });
+  } else { items.forEach(function(el){ el.classList.add("in"); }); }
+
+  // cursor-tracked glow
+  if(!reduced()){
+    document.querySelectorAll(".spotlight").forEach(function(el){
+      el.addEventListener("pointermove",function(ev){
+        var r=el.getBoundingClientRect();
+        el.style.setProperty("--mx",((ev.clientX-r.left)/r.width*100)+"%");
+        el.style.setProperty("--my",((ev.clientY-r.top)/r.height*100)+"%");
+      });
+    });
+  }
+
+  // active nav link
+  var map={};
+  document.querySelectorAll(".nav a[href^='#']").forEach(function(a){ var id=a.getAttribute("href").slice(1); if(id)map[id]=a; });
+  var secs=["work","nirry-labs","pentest","about"].map(function(id){return document.getElementById(id);}).filter(Boolean);
+  if("IntersectionObserver" in window){
+    var no=new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        var a=map[e.target.id]; if(!a)return;
+        if(e.isIntersecting){ Object.keys(map).forEach(function(k){map[k].classList.remove("active");}); a.classList.add("active"); }
+      });
+    },{rootMargin:"-42% 0px -54% 0px"});
+    secs.forEach(function(s){ no.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>
