@@ -253,7 +253,7 @@ h1 .hl{color:var(--cyan)}
 
 .caps{margin-top:clamp(28px,4vw,40px)}
 .caps-label{font-family:var(--f-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin:0 0 16px}
-.capgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1px;
+.capgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;
   background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
 .cap{background:var(--panel-2);padding:20px;transition:background .2s}
 .cap:hover{background:var(--panel)}
@@ -339,8 +339,9 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   .rail{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);background:rgba(0,0,0,.25)}
   .r-item.active{box-shadow:inset 0 -2px 0 var(--cyan)}
   .view,.view.one{grid-template-columns:1fr}
+  .capgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media (max-width:420px){ .metrics{grid-template-columns:1fr} .sysclock{display:none} }
+@media (max-width:420px){ .metrics{grid-template-columns:1fr} .sysclock{display:none} .capgrid{grid-template-columns:1fr} }
 @media (pointer:coarse){ #reticle{display:none} }
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important}
