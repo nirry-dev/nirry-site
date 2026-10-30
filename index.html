@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Nirry Labs</title>
-<meta name="description" content="A working portfolio of local-first AI and security tooling — Nirry Labs and the Pentest Suite. Systems and tools engineering by Nirry.">
+<meta name="description" content="A working portfolio of local-first AI and security tooling — the AI Suite and the Pentest Suite. Systems and tools engineering by Nirry.">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#06070a">
 <meta property="og:title" content="Nirry Portfolio">
-<meta property="og:description" content="Local-first platforms for AI and security work — Nirry Labs and the Pentest Suite.">
+<meta property="og:description" content="Local-first platforms for AI and security work — the AI Suite and the Pentest Suite.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nirry.net/">
 <meta property="og:image" content="https://nirry.net/og.jpg">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Nirry Portfolio">
-<meta name="twitter:description" content="Local-first platforms for AI and security work — Nirry Labs and the Pentest Suite.">
+<meta name="twitter:description" content="Local-first platforms for AI and security work — the AI Suite and the Pentest Suite.">
 <meta name="twitter:image" content="https://nirry.net/og.jpg">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2306070a'/%3E%3Cpath d='M9 8 L9 24 L25 24 Z' fill='%232fe6d0'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -131,7 +131,7 @@ h1 .hl{color:var(--cyan)}
 .js .sec-h.in .rule{transform:scaleX(1)}
 .sec-h .count{font-family:var(--f-mono);font-size:11px;color:var(--faint);letter-spacing:.14em}
 
-/* ---- Nirry Labs live preview ---- */
+/* ---- AI Suite live preview ---- */
 .showcase{padding-top:14px}
 .win{position:relative;background:linear-gradient(180deg,var(--panel),#07090e);
   border:1px solid var(--line-2);border-radius:8px;overflow:hidden;
@@ -395,14 +395,14 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   <section class="sec showcase" id="preview">
     <div class="sec-h reveal">
       <span class="idx">◢</span>
-      <h2>Nirry Labs — live preview</h2>
+      <h2>AI Suite — live preview</h2>
       <span class="rule"></span>
       <span class="count">PRIVATE BUILD</span>
     </div>
     <div class="win reveal" id="win">
       <div class="win-bar">
         <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span class="win-title"><b>nirry-labs</b>&nbsp;// local control</span>
+        <span class="win-title"><b>ai-suite</b>&nbsp;// local control</span>
         <span class="win-stat"><span class="dot" aria-hidden="true"></span> serving</span>
       </div>
       <div class="win-body">
@@ -520,7 +520,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
         </div>
       </div>
     </div>
-    <p class="cap-note">Representative interface — the Nirry Labs build is private.</p>
+    <p class="cap-note">Representative interface — the AI Suite build is private.</p>
   </section>
 
   <section class="sec" id="systems">
@@ -534,12 +534,12 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     <article class="project" id="nirry-labs">
       <div class="p-head reveal">
         <span class="p-tag">Local AI platform</span>
-        <h3>Nirry Labs</h3>
+        <h3>AI Suite</h3>
         <p class="p-sub">An all-in-one local AI studio — language, image, video and interpretability — on a single consumer GPU.</p>
       </div>
       <div class="p-body">
         <div class="p-overview reveal">
-          <p>Nirry Labs is a self-hosted dashboard that turns one desktop into a complete AI workbench. It serves open-weight language models through a router that <strong>hot-swaps models on demand</strong>, and layers a full chat workspace, an image studio, short-form video and a multi-model reasoning council on top of the same engine.</p>
+          <p>The AI Suite is a self-hosted dashboard that turns one desktop into a complete AI workbench. It serves open-weight language models through a router that <strong>hot-swaps models on demand</strong>, and layers a full chat workspace, an image studio, short-form video and a multi-model reasoning council on top of the same engine.</p>
           <p>The hard constraint shaped the whole design: everything shares <strong>one 16&nbsp;GB GPU</strong> alongside a working desktop. So the platform arbitrates the GPU between language, diffusion and video workloads, enforcing clean handover and idle release so no two jobs ever contend for memory.</p>
           <p>It ships as plain Node with a buildless web front end — <strong>no runtime dependencies and no build step</strong> — and is hardened for local use with token-scoped access and keys kept out of the app sandbox.</p>
           <ul class="highlights">
@@ -549,7 +549,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
             <li><strong>Agentic coding sandbox.</strong> Optional Docker/WSL2 environment with live dev-server preview for running coding agents safely against the local models.</li>
           </ul>
         </div>
-        <aside class="spec reveal" aria-label="Nirry Labs at a glance">
+        <aside class="spec reveal" aria-label="AI Suite at a glance">
           <div class="spec-top"><span class="mono">At a glance</span><span class="mono">SYS-01</span></div>
           <dl>
             <div><dt>Language</dt><dd>Node.js</dd></div>
@@ -785,7 +785,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   var W,H,DPR,nodes=[],mouse={x:-9999,y:-9999},raf;
   var mapOn=false, heroVisible=true, focus=null, labelAlpha=1, hoverAnchor=null;
   var named=[
-    {k:'labs',anchor:true,label:'NIRRY LABS',rx:.80,ry:.30,sec:'nirry-labs'},
+    {k:'labs',anchor:true,label:'AI SUITE',rx:.80,ry:.30,sec:'nirry-labs'},
     {k:'labs',rx:.71,ry:.22},{k:'labs',rx:.90,ry:.26},{k:'labs',rx:.86,ry:.42},
     {k:'pentest',anchor:true,label:'PENTEST SUITE',rx:.83,ry:.66,sec:'pentest'},
     {k:'pentest',rx:.74,ry:.74},{k:'pentest',rx:.93,ry:.70},{k:'pentest',rx:.90,ry:.55}
@@ -1081,7 +1081,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   var CMDS=[
     ["Preview","go","jump","#preview"],
     ["Systems","go","jump","#systems"],
-    ["Nirry Labs","go","jump","#nirry-labs"],
+    ["AI Suite","go","jump","#nirry-labs"],
     ["Pentest Suite","go","jump","#pentest"],
     ["About","go","jump","#about"],
     ["Tools","go","jump","#tools"],
