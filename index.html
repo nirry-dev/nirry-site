@@ -269,23 +269,16 @@ h1 .hl{color:var(--cyan)}
 .skill h4{font-weight:700;font-size:1.1rem;margin:7px 0 8px}
 .skill p{font-size:.88rem;color:var(--muted)}
 
-/* open source repos */
-.os-intro{color:var(--muted);max-width:62ch;margin:0 0 30px;font-size:clamp(1rem,1.5vw,1.12rem)}
-.repos{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.repo{--pa:var(--cyan);--pa-dim:var(--cyan-dim);position:relative;display:flex;flex-direction:column;text-decoration:none;
-  background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:20px 20px 18px;
-  transition:border-color .25s,box-shadow .25s,transform .25s}
-.repo.sec{--pa:var(--amber);--pa-dim:var(--amber-dim)}
-.repo:hover{border-color:var(--pa-dim);box-shadow:0 0 0 1px var(--pa-dim),0 24px 60px -36px var(--pa);transform:translateY(-3px)}
-.repo-top{display:flex;align-items:center;gap:10px;margin:0 0 11px}
-.repo-dot{width:8px;height:8px;background:var(--pa);box-shadow:0 0 9px var(--pa);flex:none}
-.repo-name{font-family:var(--f-mono);font-size:1.02rem;font-weight:600;color:var(--fg);letter-spacing:.01em}
-.repo-ext{margin-left:auto;font-family:var(--f-mono);color:var(--pa);font-size:1rem;transition:transform .25s}
-.repo:hover .repo-ext{transform:translate(3px,-3px)}
-.repo-desc{color:var(--muted);font-size:.9rem;line-height:1.55;margin:0 0 15px;flex:1}
-.repo-meta{display:flex;flex-wrap:wrap;gap:7px}
-.repo-meta span{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);border:1px solid var(--line);border-radius:3px;padding:4px 8px}
-.os-more{margin:26px 0 0;font-family:var(--f-mono);font-size:.82rem;letter-spacing:.06em}
+/* tools section */
+.os-intro{color:var(--muted);max-width:62ch;margin:0 0 clamp(34px,5vw,52px);font-size:clamp(1rem,1.5vw,1.12rem)}
+.p-repo{display:inline-flex;align-items:center;gap:8px;width:fit-content;margin-top:16px;
+  font-family:var(--f-mono);font-size:.82rem;letter-spacing:.04em;color:var(--pa);text-decoration:none;
+  border-bottom:1px solid transparent;transition:border-color .2s}
+.p-repo:hover{border-bottom-color:var(--pa)}
+.p-repo .x{transition:transform .2s}
+.p-repo:hover .x{transform:translate(3px,-3px)}
+.p-overview code{font-family:var(--f-mono);font-size:.85em;color:var(--fg);background:var(--panel-2);border:1px solid var(--line);border-radius:3px;padding:1px 5px}
+.os-more{margin:clamp(44px,6vw,68px) 0 0;font-family:var(--f-mono);font-size:.82rem;letter-spacing:.06em}
 .os-more a{color:var(--cyan);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
 .os-more a:hover{border-bottom-color:var(--cyan)}
 
@@ -376,8 +369,8 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     <nav aria-label="Primary">
       <a href="#preview">Preview</a>
       <a href="#systems">Systems</a>
-      <a href="#open-source">Source</a>
       <a href="#about">About</a>
+      <a href="#tools">Tools</a>
       <a href="#contact">Contact</a>
     </nav>
     <button class="cmd-hint" id="cmdHint" type="button" aria-label="Open command palette">⌘K</button>
@@ -625,37 +618,9 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     </article>
   </section>
 
-  <section class="sec" id="open-source">
-    <div class="sec-h reveal">
-      <span class="idx">02</span>
-      <h2>Open source</h2>
-      <span class="rule"></span>
-      <span class="count">03 / PUBLIC</span>
-    </div>
-    <p class="os-intro reveal">Small, self-contained tools that fall out of the work above — each dependency-free, documented, and public. A learning journal that happens to be useful software.</p>
-    <div class="repos reveal">
-      <a class="repo" href="https://github.com/nirry-dev/vramlease" target="_blank" rel="noopener">
-        <div class="repo-top"><span class="repo-dot" aria-hidden="true"></span><span class="repo-name">vramlease</span><span class="repo-ext" aria-hidden="true">↗</span></div>
-        <p class="repo-desc">Cooperative GPU memory leasing — let local jobs share one GPU by VRAM budget, with crash-safe leases and priority + preemption.</p>
-        <div class="repo-meta"><span>Python</span><span>stdlib-only</span><span>GPU</span></div>
-      </a>
-      <a class="repo" href="https://github.com/nirry-dev/llm-council" target="_blank" rel="noopener">
-        <div class="repo-top"><span class="repo-dot" aria-hidden="true"></span><span class="repo-name">llm-council</span><span class="repo-ext" aria-hidden="true">↗</span></div>
-        <p class="repo-desc">Multi-model consensus: propose → blind peer review → chair synthesis, over any OpenAI-compatible endpoint.</p>
-        <div class="repo-meta"><span>Python</span><span>stdlib-only</span><span>Local AI</span></div>
-      </a>
-      <a class="repo sec" href="https://github.com/nirry-dev/vulntriage" target="_blank" rel="noopener">
-        <div class="repo-top"><span class="repo-dot" aria-hidden="true"></span><span class="repo-name">vulntriage</span><span class="repo-ext" aria-hidden="true">↗</span></div>
-        <p class="repo-desc">Triage dependency CVEs by real-world exploitability — correlate OSV + CISA KEV + EPSS and rank what to fix first.</p>
-        <div class="repo-meta"><span>Python</span><span>stdlib-only</span><span>Security</span></div>
-      </a>
-    </div>
-    <p class="os-more reveal"><a href="https://github.com/nirry-dev" target="_blank" rel="noopener">All repositories on GitHub ↗</a></p>
-  </section>
-
   <section class="sec" id="about">
     <div class="sec-h reveal">
-      <span class="idx">03</span>
+      <span class="idx">02</span>
       <h2>What this work shows</h2>
       <span class="rule"></span>
       <span class="count">06 / DOMAINS</span>
@@ -668,6 +633,117 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <div class="skill reveal"><span class="n">05</span><h4>Dependency-minimal builds</h4><p>Preferring the standard library and buildless front ends, so tools stay small, legible and easy to audit.</p></div>
       <div class="skill reveal"><span class="n">06</span><h4>Data modeling &amp; correlation</h4><p>Turning noisy tool output into a normalized graph, then ranking it against real-world signals.</p></div>
     </div>
+  </section>
+
+  <section class="sec" id="tools">
+    <div class="sec-h reveal">
+      <span class="idx">03</span>
+      <h2>Tools</h2>
+      <span class="rule"></span>
+      <span class="count">03 / OPEN SOURCE</span>
+    </div>
+    <p class="os-intro reveal">Small, self-contained tools that fall out of the work above — each dependency-free, documented, and public on GitHub. A learning journal that happens to be useful software.</p>
+
+    <article class="project" id="vramlease">
+      <div class="p-head reveal">
+        <span class="p-tag">Local AI tooling · GPU scheduling</span>
+        <h3>vramlease</h3>
+        <p class="p-sub">Cooperative GPU memory leasing, so several local jobs can share one card by VRAM budget.</p>
+        <a class="p-repo" href="https://github.com/nirry-dev/vramlease" target="_blank" rel="noopener">github.com/nirry-dev/vramlease <span class="x" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>vramlease is a small broker that lets independent processes share one GPU by <strong>VRAM budget</strong> instead of fighting over it. A job asks for the memory it needs; the broker grants a lease only when it fits the remaining budget, and blocks or preempts when it doesn't.</p>
+          <p>The idea that shapes everything is that <strong>a lease lives exactly as long as its TCP connection</strong>. There's no daemon state to leak and no cleanup to forget — if a job crashes, its socket closes and the memory is returned at once. Priorities and cooperative preemption let an important job reclaim the card from lower-priority, preemptible holders.</p>
+          <p>It's pure standard library — a threaded broker, a newline-delimited JSON wire protocol, and a small context-manager client — so it drops into any Python project with nothing to install.</p>
+          <ul class="highlights">
+            <li><strong>Lease == connection.</strong> Crash-safe by construction; a dropped socket releases the VRAM with no reaper process to run.</li>
+            <li><strong>Budget, not a lock.</strong> Jobs coexist as long as they fit the card's memory, instead of serializing on one mutex.</li>
+            <li><strong>Priority + cooperative preemption.</strong> A higher-priority request asks preemptible holders to yield, with a clean revoke signal.</li>
+            <li><strong>Standard library only.</strong> Threaded broker, selector-based liveness, context-manager client — no dependencies, with tests.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="vramlease at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-01</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
+            <div><dt>Transport</dt><dd>TCP · line-JSON</dd></div>
+            <div><dt>Lease model</dt><dd>lease = connection</dd></div>
+            <div><dt>Scheduling</dt><dd>budget + priority</dd></div>
+            <div><dt>Tests</dt><dd>unittest</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
+
+    <article class="project" id="llm-council">
+      <div class="p-head reveal">
+        <span class="p-tag">Local AI tooling · multi-model</span>
+        <h3>llm-council</h3>
+        <p class="p-sub">Multi-model consensus for local models: propose, blind peer review, then a chair synthesis.</p>
+        <a class="p-repo" href="https://github.com/nirry-dev/llm-council" target="_blank" rel="noopener">github.com/nirry-dev/llm-council <span class="x" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>llm-council runs a question past several models and has them critique one another before anything is settled. Stage one: every member drafts an independent proposal. Stage two: each reviews the <strong>others' proposals blind</strong> — names stripped, order shuffled — so a model can't defer to a brand. Stage three: a chair model synthesizes the reviewed proposals into one answer.</p>
+          <p>Because review is anonymous, <strong>disagreement is surfaced rather than averaged away</strong>: the chair sees where members actually diverged. It talks to any OpenAI-compatible <code>/chat/completions</code> endpoint — llama.cpp, Ollama, LM Studio — and runs the per-member calls in parallel.</p>
+          <p>Like the rest of the toolkit it's pure standard library: <code>urllib</code> for transport, a thread pool for fan-out, and plain dataclasses for the proposal, review and result types.</p>
+          <ul class="highlights">
+            <li><strong>Blind peer review.</strong> Proposals are anonymized and shuffled before review, so models judge content, not reputation.</li>
+            <li><strong>Disagreement preserved.</strong> The chair synthesizes from critiques instead of averaging, so dissent reaches the final answer.</li>
+            <li><strong>Any local endpoint.</strong> Works against any OpenAI-compatible server; mix different models freely as council members.</li>
+            <li><strong>Stdlib + parallel.</strong> urllib transport, thread-pool fan-out, reproducible with a seed — and tested.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="llm-council at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-02</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
+            <div><dt>Transport</dt><dd>urllib → OpenAI API</dd></div>
+            <div><dt>Stages</dt><dd>propose · review · synth</dd></div>
+            <div><dt>Review</dt><dd>blind, shuffled</dd></div>
+            <div><dt>Concurrency</dt><dd>thread pool</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
+
+    <article class="project sec" id="vulntriage">
+      <div class="p-head reveal">
+        <span class="p-tag">Security tooling · vulnerability triage</span>
+        <h3>vulntriage</h3>
+        <p class="p-sub">Triage dependency CVEs by real-world exploitability, not by raw CVSS alone.</p>
+        <a class="p-repo" href="https://github.com/nirry-dev/vulntriage" target="_blank" rel="noopener">github.com/nirry-dev/vulntriage <span class="x" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>vulntriage scans pinned dependencies and ranks their known CVEs by how likely they are to actually be exploited. It pulls findings from <strong>OSV</strong>, then enriches each with the <strong>CISA KEV</strong> catalog (is it exploited in the wild?) and <strong>FIRST EPSS</strong> (predicted exploit probability).</p>
+          <p>Those signals drive a <strong>P1–P4 rubric</strong>: anything in KEV is P1 regardless of score; high EPSS or CVSS lifts the rest. It computes CVSS v3.1 base scores itself from the vector string, de-duplicates records that alias the same CVE, and exits non-zero when anything urgent is found — so it works as a CI gate.</p>
+          <p>Pure standard library: <code>urllib</code> for the feeds, a thread pool for the per-package scan, and a small CLI that reads a requirements file or stdin and prints a ranked table or JSON.</p>
+          <ul class="highlights">
+            <li><strong>Exploitability-ranked.</strong> OSV × CISA KEV × FIRST EPSS decide order — what to fix first, not just what scores highest.</li>
+            <li><strong>Its own CVSS v3.1 math.</strong> Base scores computed from the vector per spec, scope-change handling included.</li>
+            <li><strong>CI-ready.</strong> Non-zero exit on any P1/P2, table or JSON output, and an offline mode backed by a cached KEV.</li>
+            <li><strong>Standard library only.</strong> urllib feeds, parallel scan, CVE de-duplication — and tested.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="vulntriage at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-03</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
+            <div><dt>Feeds</dt><dd>OSV · KEV · EPSS</dd></div>
+            <div><dt>Scoring</dt><dd>CVSS v3.1 (own)</dd></div>
+            <div><dt>Rubric</dt><dd>P1–P4</dd></div>
+            <div><dt>Output</dt><dd>table / JSON · CI exit</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
+
+    <p class="os-more reveal"><a href="https://github.com/nirry-dev" target="_blank" rel="noopener">All repositories on GitHub ↗</a></p>
   </section>
 
   <footer id="contact">
@@ -874,7 +950,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       if(links[e.target.id]) links[e.target.id].classList.add("active");
     }});
   },{threshold:.25,rootMargin:"-30% 0px -55% 0px"});
-  ["preview","systems","open-source","about","contact"].forEach(function(id){ var s=document.getElementById(id); if(s)navObs.observe(s); });
+  ["preview","systems","about","tools","contact"].forEach(function(id){ var s=document.getElementById(id); if(s)navObs.observe(s); });
   var focObs=new IntersectionObserver(function(es){
     es.forEach(function(e){ if(e.isIntersecting) focus = e.target.id==='pentest'?'pentest':'labs'; });
   },{threshold:.3});
@@ -1007,8 +1083,8 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     ["Systems","go","jump","#systems"],
     ["Nirry Labs","go","jump","#nirry-labs"],
     ["Pentest Suite","go","jump","#pentest"],
-    ["Open source","go","jump","#open-source"],
     ["About","go","jump","#about"],
+    ["Tools","go","jump","#tools"],
     ["Contact","go","jump","#contact"],
     ["Copy email","info@nirry.net","copy",""]
   ];
