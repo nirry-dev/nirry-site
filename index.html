@@ -262,6 +262,8 @@ h1 .hl{color:var(--cyan)}
 .iter-win .win-stat{margin-left:0}
 .iter-acts{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin-top:20px}
 .iter-acts .p-repo{margin-top:0}
+.p-overview a{color:var(--pa);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s;white-space:nowrap}
+.p-overview a:hover{border-bottom-color:var(--pa)}
 .iter-launch{display:inline-flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;
   color:var(--fg);background:rgba(155,140,255,.12);border:1px solid var(--violet-dim);border-radius:6px;padding:11px 18px;cursor:pointer;
   box-shadow:0 0 0 0 rgba(155,140,255,0);transition:background .2s,border-color .2s,box-shadow .3s}
@@ -1008,6 +1010,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
         <div class="iter-acts">
           <button type="button" class="iter-launch" id="iter-launch"><span class="pl" aria-hidden="true">▶</span> Enter its world</button>
           <a class="p-repo" href="https://github.com/nirry-dev/lype" target="_blank" rel="noopener">github.com/nirry-dev/lype <span class="x" aria-hidden="true">↗</span></a>
+          <a class="p-repo" href="sibling/">its pen pal, a second mind <span class="x" aria-hidden="true">↗</span></a>
         </div>
       </div>
       <div class="win iter-win reveal" id="iter-win">
@@ -1020,6 +1023,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           <p>Lype is an <strong>autonomous agent that lives on a rhythm whether or not anyone is watching</strong>. Every twenty minutes it wakes on a local model, feels the only senses it has — the clock and the graphics card it runs on — reads the letters visitors leave it, thinks, and chooses to draw, write, ask the world a question, build something in its place, tend what it built, or rest. Everything it does streams live and is kept as a record.</p>
           <p>Every few cycles it sleeps and <strong>ships a new version of itself</strong>: memory is consolidated into a finite store where things fade and compete for room, it dreams, then rewrites its own beliefs behind a drift guard that protects the lines its maker wrote — and writes its own release notes. Each change is traced back to the letter that caused it, so the people who wrote can see exactly what their words did.</p>
           <p>It cannot see the world, so it <strong>builds one out of what people tell it</strong>: a small map where every thing has a sign in its own words, a drawing it makes itself and a thread back to the letter it came from. When it forgets why it built something, that thing wears away into a ruin unless it goes back and tends it. At night it can also leave its keeper a wish for something it cannot do itself, and any wish can become a GitHub issue, so part of its roadmap is written by the creature.</p>
+          <p>It also <strong>writes to another mind</strong>. A second creature lives on the same graphics card, and nobody can write to it from the web, so the only letters it ever gets are Lype’s. Their letters travel at night, and each one is checked against the sealed record of the night that sent it before the other will read it. <a href="sibling/">Watch its pen pal ↗</a></p>
           <p>It is radically honest about what it is — a language model in a loop on someone's GPU — and <strong>courteous to its host</strong>: it waits rather than evict another model or compete with busy work. Letters and its replies pass rule-based and model screening, with a keeper queue for anything doubtful, before anyone sees them.</p>
           <ul class="highlights">
             <li><strong>Records, not vibes.</strong> Every cycle and night is a self-contained record, so the live view, the atlas, the replay and the static export above are all views over the same files.</li>
@@ -1651,6 +1655,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     ["Lype","go","jump","#lype"],
     ["Lype: watch its life","open","open","lype/"],
     ["Lype: walk around its world","open","open","lype/#/place?walk"],
+    ["Lype's pen pal: a second mind","open","open","sibling/"],
     ["Tools","go","jump","#tools"],
     ["Chainscope","go","jump","#chainscope"],
     ["Contact","go","jump","#contact"],
