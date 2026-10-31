@@ -131,6 +131,31 @@ h1 .hl{color:var(--cyan)}
 .js .sec-h.in .rule{transform:scaleX(1)}
 .sec-h .count{font-family:var(--f-mono);font-size:11px;color:var(--faint);letter-spacing:.14em}
 
+/* full-bleed interlude — a chapter break so the sections don't all read the same */
+.interlude{position:relative;left:50%;right:50%;width:100vw;margin-left:-50vw;margin-right:-50vw;
+  margin-top:clamp(44px,8vh,104px);margin-bottom:clamp(24px,5vh,64px);padding:clamp(66px,11vh,132px) 0;
+  background:
+    radial-gradient(1200px 340px at 50% -12%,rgba(47,230,208,.07),transparent 72%),
+    radial-gradient(1000px 320px at 50% 112%,rgba(155,140,255,.05),transparent 72%),
+    linear-gradient(180deg,rgba(255,255,255,.014),rgba(255,255,255,0) 42%)}
+.interlude::before,.interlude::after{content:"";position:absolute;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(47,230,208,.6) 22%,rgba(255,154,60,.55) 50%,rgba(155,140,255,.6) 78%,transparent);opacity:.55}
+.interlude::before{top:0}
+.interlude::after{bottom:0}
+.il-in{max-width:var(--maxw);margin:0 auto;
+  padding-left:max(20px,env(safe-area-inset-left,0px));
+  padding-right:max(20px,env(safe-area-inset-right,0px))}
+.il-kicker{font-family:var(--f-mono);font-size:12px;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--cyan);display:flex;align-items:center;gap:12px;margin:0 0 20px}
+.il-kicker .n{color:var(--faint)}
+.il-head{font-weight:800;font-size:clamp(2.2rem,6.2vw,4.3rem);line-height:1;letter-spacing:-.025em;margin:0 0 22px}
+.il-head em{font-style:normal;color:var(--cyan)}
+.il-lede{color:var(--muted);font-size:clamp(1.05rem,1.7vw,1.3rem);line-height:1.6;max-width:56ch;margin:0 0 clamp(40px,6vw,66px)}
+.il-lede b{color:var(--fg);font-weight:500}
+.interlude .skills{grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3vw,40px) clamp(28px,4vw,56px)}
+@media (max-width:820px){ .interlude{padding:clamp(52px,9vh,96px) 0} .interlude .skills{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:480px){ .interlude .skills{grid-template-columns:1fr} }
+
 /* ---- AI Suite live preview ---- */
 .showcase{padding-top:14px}
 .win{position:relative;background:linear-gradient(180deg,var(--panel),#07090e);
@@ -678,20 +703,19 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     </article>
   </section>
 
-  <section class="sec" id="about">
-    <div class="sec-h reveal">
-      <span class="idx">02</span>
-      <h2>What this work shows</h2>
-      <span class="rule"></span>
-      <span class="count">06 / DOMAINS</span>
-    </div>
-    <div class="skills">
-      <div class="skill reveal"><span class="n">01</span><h4>Systems architecture</h4><p>Designing a clean core — a single source of truth, thin interfaces around it — that stays coherent as features stack up.</p></div>
-      <div class="skill reveal"><span class="n">02</span><h4>Local inference &amp; GPU scheduling</h4><p>Serving open-weight models on consumer hardware, and arbitrating one GPU across competing workloads.</p></div>
-      <div class="skill reveal"><span class="n">03</span><h4>Security engineering</h4><p>Making safety structural: guardrails enforced at a single choke point, with audit and scope at the center.</p></div>
-      <div class="skill reveal"><span class="n">04</span><h4>Desktop delivery</h4><p>Shipping cross-platform desktop apps with Tauri and frozen binaries — no runtime for the user to install.</p></div>
-      <div class="skill reveal"><span class="n">05</span><h4>Dependency-minimal builds</h4><p>Preferring the standard library and buildless front ends, so tools stay small, legible and easy to audit.</p></div>
-      <div class="skill reveal"><span class="n">06</span><h4>Data modeling &amp; correlation</h4><p>Turning noisy tool output into a normalized graph, then ranking it against real-world signals.</p></div>
+  <section class="interlude" id="about">
+    <div class="il-in">
+      <p class="il-kicker reveal"><span class="n">02</span> CAPABILITIES</p>
+      <h2 class="il-head reveal">What this work <em>shows</em></h2>
+      <p class="il-lede reveal">Three private flagships and a shelf of open tools, all built on the same handful of engineering commitments.</p>
+      <div class="skills">
+        <div class="skill reveal"><span class="n">01</span><h4>Systems architecture</h4><p>Designing a clean core — a single source of truth, thin interfaces around it — that stays coherent as features stack up.</p></div>
+        <div class="skill reveal"><span class="n">02</span><h4>Local inference &amp; GPU scheduling</h4><p>Serving open-weight models on consumer hardware, and arbitrating one GPU across competing workloads.</p></div>
+        <div class="skill reveal"><span class="n">03</span><h4>Security engineering</h4><p>Making safety structural: guardrails enforced at a single choke point, with audit and scope at the center.</p></div>
+        <div class="skill reveal"><span class="n">04</span><h4>Desktop delivery</h4><p>Shipping cross-platform desktop apps with Tauri and frozen binaries — no runtime for the user to install.</p></div>
+        <div class="skill reveal"><span class="n">05</span><h4>Dependency-minimal builds</h4><p>Preferring the standard library and buildless front ends, so tools stay small, legible and easy to audit.</p></div>
+        <div class="skill reveal"><span class="n">06</span><h4>Data modeling &amp; correlation</h4><p>Turning noisy tool output into a normalized graph, then ranking it against real-world signals.</p></div>
+      </div>
     </div>
   </section>
 
