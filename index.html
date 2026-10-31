@@ -787,7 +787,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <span class="idx">04</span>
       <h2>Tools</h2>
       <span class="rule"></span>
-      <span class="count">04 / OPEN SOURCE</span>
+      <span class="count">05 / OPEN SOURCE</span>
     </div>
     <p class="os-intro reveal">Small, self-contained tools that fall out of the work above — each dependency-free, documented, and public on GitHub. A learning journal that happens to be useful software.</p>
 
@@ -795,7 +795,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <span class="tc-dot" aria-hidden="true"></span>
       <span class="tc-name">Inference infrastructure</span>
       <span class="tc-line" aria-hidden="true"></span>
-      <span class="tc-meta">Local AI · 02</span>
+      <span class="tc-meta">Local AI · 03</span>
     </div>
 
     <article class="project" id="vramlease">
@@ -864,6 +864,39 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       </div>
     </article>
 
+    <article class="project" id="ggufpeek">
+      <div class="p-head reveal">
+        <span class="p-tag">Local AI tooling · model files</span>
+        <h3>ggufpeek</h3>
+        <p class="p-sub">Read a GGUF model file's architecture, quantization and shape straight from its header — without loading it.</p>
+        <a class="p-repo" href="https://github.com/nirry-dev/ggufpeek" target="_blank" rel="noopener">github.com/nirry-dev/ggufpeek <span class="x" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>A GGUF model file carries a <strong>self-describing header</strong> before its weights — a magic, a version, a flat key-value metadata block, and a tensor table. ggufpeek reads exactly that prefix and answers <em>what is this model?</em> in milliseconds, without mapping a byte of tensor data.</p>
+          <p>From it comes the architecture, the parameter count, the context length and other fields, and an <strong>effective quantization taken from the tensor types themselves</strong> — the ggml type holding the most parameters — rather than trusting a single <code>file_type</code> enum that drifts between llama.cpp versions.</p>
+          <p>It's pure standard library: a handful of <code>struct</code> reads against a little-endian format, with the large token-vocabulary arrays traversed but only sampled, so it stays light even on a multi-gigabyte model.</p>
+          <ul class="highlights">
+            <li><strong>Header, not weights.</strong> Parses the metadata and tensor table, then stops — an answer in milliseconds on a file that's gigabytes on disk.</li>
+            <li><strong>Quant from the tensors.</strong> Headlines the ggml type with the most parameters, not just the stated file_type, so the label can't mislead.</li>
+            <li><strong>Everything in one place.</strong> Architecture, context length, layer count, rope config and a per-type tensor breakdown — as text or JSON.</li>
+            <li><strong>Standard library only.</strong> A struct parser for GGUF v2/v3, tested by round-tripping a synthetic model byte-for-byte — no dependencies.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="ggufpeek at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-03</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
+            <div><dt>Format</dt><dd>GGUF v2 / v3</dd></div>
+            <div><dt>Reads</dt><dd>header + metadata</dd></div>
+            <div><dt>Output</dt><dd>summary / JSON</dd></div>
+            <div><dt>Tests</dt><dd>unittest</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
+
     <div class="tool-cat sec reveal">
       <span class="tc-dot" aria-hidden="true"></span>
       <span class="tc-name">Recon &amp; web</span>
@@ -891,7 +924,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="vulntriage at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-03</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-04</span></div>
           <dl>
             <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
             <div><dt>Feeds</dt><dd>OSV · KEV · EPSS</dd></div>
@@ -924,7 +957,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="netprobe at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-04</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-05</span></div>
           <dl>
             <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
             <div><dt>Scan</dt><dd>asyncio connect</dd></div>
