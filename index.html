@@ -316,6 +316,7 @@ h1 .hl{color:var(--cyan)}
 .project + .tool-cat{margin-top:clamp(16px,3vw,34px)}
 .tool-cat .tc-dot{width:9px;height:9px;flex:none;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
 .tool-cat.sec .tc-dot{background:var(--amber);box-shadow:0 0 10px var(--amber)}
+.tool-cat.art .tc-dot{background:var(--violet);box-shadow:0 0 10px var(--violet)}
 .tool-cat .tc-name{font-family:var(--f-disp);font-weight:700;font-size:clamp(1.05rem,2vw,1.35rem);letter-spacing:-.01em}
 .tool-cat .tc-line{flex:1;height:1px;background:var(--line)}
 .tool-cat .tc-meta{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);white-space:nowrap}
@@ -787,7 +788,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <span class="idx">04</span>
       <h2>Tools</h2>
       <span class="rule"></span>
-      <span class="count">05 / OPEN SOURCE</span>
+      <span class="count">06 / OPEN SOURCE</span>
     </div>
     <p class="os-intro reveal">Small, self-contained tools that fall out of the work above — each dependency-free, documented, and public on GitHub. A learning journal that happens to be useful software.</p>
 
@@ -964,6 +965,46 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
             <div><dt>Probes</dt><dd>banner · HTTP · TLS</dd></div>
             <div><dt>Output</dt><dd>graph → JSON/dot</dd></div>
             <div><dt>Tests</dt><dd>unittest</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
+
+    <div class="tool-cat art reveal">
+      <span class="tc-dot" aria-hidden="true"></span>
+      <span class="tc-name">Eval &amp; guardrails</span>
+      <span class="tc-line" aria-hidden="true"></span>
+      <span class="tc-meta">AI safety · 01</span>
+    </div>
+
+    <article class="project art" id="promptscreen">
+      <div class="p-head reveal">
+        <span class="p-tag">LLM safety · guardrails</span>
+        <h3>promptscreen</h3>
+        <p class="p-sub">A guardrail for local LLM I/O: screen prompts and responses, redact secrets and PII, keep an audit trail.</p>
+        <a class="p-repo" href="https://github.com/nirry-dev/promptscreen" target="_blank" rel="noopener">github.com/nirry-dev/promptscreen <span class="x" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>promptscreen runs one rule-and-detector pipeline over what goes <strong>into</strong> a model and what comes <strong>out</strong> of it. Prompt-injection and jailbreak heuristics guard the input; secret and PII detectors guard both directions. Every screen returns a decision — <strong>allow, flag or block</strong> — with the exact rule and span that caused it, never a silent change.</p>
+          <p>Flagged text is redacted to <code>[category]</code> placeholders and held in a <strong>keeper queue</strong> for review rather than dropped. Secrets are caught by named key formats and a Shannon-entropy fallback; card numbers are confirmed with a Luhn check. It's advisory by design — it routes doubt to a human, it doesn't pretend to be a classifier.</p>
+          <p>Its audit log is built so it can't become the leak: by default it records the decision, the hit locations, and a <strong>hash</strong> of the content — never the raw text or the matched secret. Pure standard library: regexes, a little entropy math, and <code>hashlib</code>.</p>
+          <ul class="highlights">
+            <li><strong>A decision with its reasons.</strong> allow / flag / block, each hit naming the rule and the span — auditable and tunable, not a black box.</li>
+            <li><strong>One pipeline, both directions.</strong> Injection on the way in, leaks and PII on the way out, from the same rules via a per-rule direction.</li>
+            <li><strong>Redact and keep, don't drop.</strong> Flagged text is redacted and queued for review; secrets block, PII flags.</li>
+            <li><strong>An audit log that can't leak.</strong> Hashes content and logs only hit locations by default — raw retention is an explicit opt-in.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="promptscreen at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-06</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
+            <div><dt>Screens</dt><dd>input + output</dd></div>
+            <div><dt>Detects</dt><dd>injection · secrets · PII</dd></div>
+            <div><dt>Verdict</dt><dd>allow / flag / block</dd></div>
+            <div><dt>Audit</dt><dd>hashed · keeper queue</dd></div>
             <div><dt>License</dt><dd>MIT</dd></div>
           </dl>
         </aside>
