@@ -256,7 +256,13 @@ h1 .hl{color:var(--cyan)}
 .iter-note{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:var(--faint);margin:18px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-between}
 .iter-note a{color:var(--violet);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
 .iter-note a:hover{border-bottom-color:var(--violet)}
+.iter-switch{display:inline-flex;gap:2px;margin-left:auto;padding:2px;border:1px solid var(--line);border-radius:7px;background:rgba(0,0,0,.25)}
+.iter-switch button{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);background:none;border:0;border-radius:5px;padding:4px 10px;cursor:pointer;transition:color .2s,background .2s}
+.iter-switch button:hover{color:var(--fg)}
+.iter-switch button[aria-selected="true"]{color:var(--violet);background:rgba(155,140,255,.12)}
+.iter-win .win-stat{margin-left:0}
 @media (max-width:720px){.iter-frame{height:700px}}
+@media (max-width:620px){.iter-win .win-stat,.iter-win .win-title{display:none}}
 .p-head{display:flex;flex-direction:column;gap:0}
 .p-tag{display:inline-flex;align-items:center;gap:9px;font-family:var(--f-mono);font-size:11px;
   letter-spacing:.16em;text-transform:uppercase;color:var(--pa)}
@@ -711,17 +717,17 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
         <a class="p-repo" href="https://github.com/nirry-dev/iterant" target="_blank" rel="noopener">github.com/nirry-dev/iterant <span class="x" aria-hidden="true">↗</span></a>
       </div>
       <div class="win iter-win reveal">
-        <div class="win-bar"><div class="dots"><i></i><i></i><i></i></div><span class="win-title">ITERANT // <b>recorded life · replay</b></span><span class="win-stat"><span class="dot"></span>REAL MODEL OUTPUT</span></div>
-        <iframe class="iter-frame" src="iterant/?embed#/replay?speed=2" title="Iterant: a recorded life, replayed from its own records" loading="lazy"></iframe>
+        <div class="win-bar"><div class="dots"><i></i><i></i><i></i></div><span class="win-title">ITERANT // <b id="iter-mode">mind atlas</b></span><div class="iter-switch" role="tablist" aria-label="How to watch it"><button type="button" role="tab" aria-selected="true" data-iter="atlas">Atlas</button><button type="button" role="tab" aria-selected="false" data-iter="replay">Replay</button></div><span class="win-stat"><span class="dot"></span>REAL MODEL OUTPUT</span></div>
+        <iframe class="iter-frame" id="iter-frame" src="iterant/?embed#/atlas?speed=2" title="Iterant: a map of its mind through time, drawn from its own records" loading="lazy"></iframe>
       </div>
-      <p class="iter-note"><span>Not a mock-up: 16 cycles of a 9B model on one GPU, replayed from its own records. Space pauses.</span><a href="iterant/">Open the full recording ↗</a></p>
+      <p class="iter-note"><span>Not a mock-up: 16 cycles of a 9B model on one GPU, mapped and replayed from its own records. Click anything on the map to follow its threads.</span><a href="iterant/#/atlas">Open the full recording ↗</a></p>
       <div class="p-body">
         <div class="p-overview reveal">
           <p>Iterant is an <strong>autonomous agent that lives on a rhythm whether or not anyone is watching</strong>. Every twenty minutes it wakes on a local model, feels the only senses it has — the clock and the graphics card it runs on — reads the letters visitors leave it, thinks, and chooses to draw, write, ask the world a question, or rest. Everything it does streams live and is kept as a record.</p>
           <p>Every few cycles it sleeps and <strong>ships a new version of itself</strong>: memory is consolidated into a finite store where things fade and compete for room, it dreams, then rewrites its own beliefs behind a drift guard that protects the lines its maker wrote — and writes its own release notes. Each change is traced back to the letter that caused it, so the people who wrote can see exactly what their words did.</p>
           <p>It is radically honest about what it is — a language model in a loop on someone's GPU — and <strong>courteous to its host</strong>: it waits rather than evict another model or compete with busy work. Letters and its replies pass rule-based and model screening, with a keeper queue for anything doubtful, before anyone sees them.</p>
           <ul class="highlights">
-            <li><strong>Records, not vibes.</strong> Every cycle and night is a self-contained record, so the live view, the journey, the replay and the static export above are all views over the same files.</li>
+            <li><strong>Records, not vibes.</strong> Every cycle and night is a self-contained record, so the live view, the atlas, the replay and the static export above are all views over the same files.</li>
             <li><strong>Mechanics a small model can live with.</strong> Schema-constrained decisions, separate streamed calls for drawing and writing, echo guards, and a fatigue rule that stops a 9B model drawing forever.</li>
             <li><strong>Safe by default.</strong> A whitelist SVG sanitiser shared by server and browser, moderated letters and replies, hashed visitor identity, and an export that can only write what the public may see.</li>
             <li><strong>Open source, zero dependencies.</strong> Plain Node and a buildless front end, tested with a mock brain so the whole life loop runs in CI without a GPU.</li>
@@ -747,7 +753,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           <div class="cap"><h4><span class="i"></span>Finite memory</h4><p>Three shelves with half-life decay and nightly competition; what it forgets stays visible to visitors.</p></div>
           <div class="cap"><h4><span class="i"></span>Letters &amp; influence</h4><p>Strangers write to it; it replies, remembers returning writers, and traces each change back to a letter.</p></div>
           <div class="cap"><h4><span class="i"></span>Moderation</h4><p>Rules at the door, a model screen before reading, a keeper queue, and replies screened before they stream.</p></div>
-          <div class="cap"><h4><span class="i"></span>Replay &amp; export</h4><p>The whole life played back from its records at any speed, or exported as a static, read-only recording.</p></div>
+          <div class="cap"><h4><span class="i"></span>Mind atlas &amp; replay</h4><p>Its whole mind on one map through time, with a thread from every letter to what it changed; or the life replayed beat by beat.</p></div>
         </div>
       </div>
     </article>
@@ -1257,6 +1263,21 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     else if(e.key==="ArrowDown"){ e.preventDefault(); sel=Math.min(filtered.length-1,sel+1); renderList(); }
     else if(e.key==="ArrowUp"){ e.preventDefault(); sel=Math.max(0,sel-1); renderList(); }
     else if(e.key==="Enter"){ e.preventDefault(); run(filtered[sel]); }
+  });
+})();
+</script>
+<script>
+(function(){
+  var frame=document.getElementById('iter-frame'), label=document.getElementById('iter-mode');
+  if(!frame) return;
+  var names={atlas:'mind atlas',replay:'recorded life · replay'}, titles={atlas:'Iterant: a map of its mind through time, drawn from its own records',replay:'Iterant: a recorded life, replayed from its own records'};
+  document.querySelectorAll('.iter-switch button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var mode=b.dataset.iter;
+      document.querySelectorAll('.iter-switch button').forEach(function(x){ x.setAttribute('aria-selected', String(x===b)); });
+      label.textContent=names[mode]; frame.title=titles[mode];
+      frame.src='iterant/?embed#/'+mode+'?speed=2';
+    });
   });
 })();
 </script>
