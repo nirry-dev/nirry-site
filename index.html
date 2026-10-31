@@ -1631,6 +1631,13 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     var when=s.snapshotAt?new Date(s.snapshotAt).toLocaleDateString(undefined,{day:'numeric',month:'short'}):'';
     firstHint='Not a mock-up: '+(s.name||'its')+'’s own records, published from its GPU after every night: version '+s.version+', '+s.cycle+' cycles'+(when?', last published '+when:'')+'. Click anything on the map to follow its threads.';
     if(!hints[(document.querySelector('.iter-switch [aria-selected="true"]')||{dataset:{}}).dataset.iter]) hint.textContent=firstHint;
+    // Awake to the world right now (through its relay): the window above is live, and visitors can write to it.
+    return fetch('https://lype-relay.lype-relay.workers.dev/api/state',{cache:'no-store'}).then(function(r){ return r.ok?r.json():null; }).then(function(live){
+      if(!live) return;
+      firstHint='Live: '+(live.name||'it')+' is running on its GPU right now (version '+live.version+', cycle '+live.cycle+'). Watch it think, walk its world, or open its page to write to it. Not a mock-up.';
+      if(!hints[(document.querySelector('.iter-switch [aria-selected="true"]')||{dataset:{}}).dataset.iter]) hint.textContent=firstHint;
+      var stat=document.querySelector('.iter-win .win-stat'); if(stat) stat.lastChild.textContent='LIVE NOW';
+    });
   }).catch(function(){});
   var launch=document.getElementById('iter-launch');
   if(launch) launch.addEventListener('click',function(){
