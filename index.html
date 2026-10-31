@@ -405,6 +405,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     <nav aria-label="Primary">
       <a href="#preview">Preview</a>
       <a href="#systems">Systems</a>
+      <a href="#research">Research</a>
       <a href="#about">About</a>
       <a href="#tools">Tools</a>
       <a href="#contact">Contact</a>
@@ -564,7 +565,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <span class="idx">01</span>
       <h2>Selected systems</h2>
       <span class="rule"></span>
-      <span class="count">03 / ACTIVE</span>
+      <span class="count">02 / ACTIVE</span>
     </div>
 
     <article class="project" id="nirry-labs">
@@ -652,6 +653,47 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
         </div>
       </div>
     </article>
+  </section>
+
+  <section class="sec" id="research">
+    <div class="sec-h reveal">
+      <span class="idx">02</span>
+      <h2>AI Research</h2>
+      <span class="rule"></span>
+      <span class="count">02 / EXPERIMENTAL</span>
+    </div>
+    <p class="os-intro reveal">The exploratory strand — the interpretability work that lives inside the AI Suite, and a self-rewriting agent that runs on one GPU. Less product, more open question.</p>
+
+    <article class="project" id="neuron-steering">
+      <div class="p-head reveal">
+        <span class="p-tag">Interpretability · inside the AI Suite</span>
+        <h3>Neuron steering</h3>
+        <p class="p-sub">Reading and nudging a model's internals directly — control vectors at the layer and neuron level, with an explorer for comparing steered runs.</p>
+      </div>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>Neuron steering is the interpretability layer of the AI Suite, built as a real research surface rather than a toggle. It derives <strong>control vectors</strong> from contrasting prompts and applies them at a chosen layer — layer 18 by default — to push a trait like curiosity, concision or formality up or down, with no retraining.</p>
+          <p>Edits can be <strong>layer- or neuron-level</strong>, saved as reusable personas — analyst, terse, teacher, red-team — and compared in an explorer that runs the same prompt steered against base. Because it rides the same local engine as the rest of the suite, every experiment stays on one GPU and off the network.</p>
+          <ul class="highlights">
+            <li><strong>Control vectors.</strong> Trait directions derived from contrast pairs, applied at a chosen layer with a signed strength per trait.</li>
+            <li><strong>Layer and neuron scope.</strong> Steer a whole layer or reach individual neurons, so a change can be broad or surgical.</li>
+            <li><strong>Persona library.</strong> Named bundles of vector edits that load as a single steering preset.</li>
+            <li><strong>Steered-vs-base explorer.</strong> The same prompt run with and without steering, diffed so the effect is legible.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="Neuron steering at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">RES-01</span></div>
+          <dl>
+            <div><dt>Method</dt><dd>Control vectors</dd></div>
+            <div><dt>Scope</dt><dd>Layer &amp; neuron</dd></div>
+            <div><dt>Default</dt><dd>Layer 18</dd></div>
+            <div><dt>Presets</dt><dd>4 personas</dd></div>
+            <div><dt>Runtime</dt><dd>Local · one GPU</dd></div>
+            <div><dt>Part of</dt><dd>AI Suite</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
 
     <article class="project art" id="iterant">
       <div class="p-head reveal">
@@ -678,7 +720,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="Iterant at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">SYS-03</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">RES-02</span></div>
           <dl>
             <div><dt>Language</dt><dd>Node.js</dd></div>
             <div><dt>Mind</dt><dd>Local LLM · Claude</dd></div>
@@ -705,9 +747,9 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
 
   <section class="interlude" id="about">
     <div class="il-in">
-      <p class="il-kicker reveal"><span class="n">02</span> CAPABILITIES</p>
+      <p class="il-kicker reveal"><span class="n">03</span> CAPABILITIES</p>
       <h2 class="il-head reveal">What this work <em>shows</em></h2>
-      <p class="il-lede reveal">Three private flagships and a shelf of open tools, all built on the same handful of engineering commitments.</p>
+      <p class="il-lede reveal">Two local-first platforms, a strand of AI research, and a shelf of open tools — all built on the same handful of engineering commitments.</p>
       <div class="skills">
         <div class="skill reveal"><span class="n">01</span><h4>Systems architecture</h4><p>Designing a clean core — a single source of truth, thin interfaces around it — that stays coherent as features stack up.</p></div>
         <div class="skill reveal"><span class="n">02</span><h4>Local inference &amp; GPU scheduling</h4><p>Serving open-weight models on consumer hardware, and arbitrating one GPU across competing workloads.</p></div>
@@ -721,7 +763,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
 
   <section class="sec" id="tools">
     <div class="sec-h reveal">
-      <span class="idx">03</span>
+      <span class="idx">04</span>
       <h2>Tools</h2>
       <span class="rule"></span>
       <span class="count">03 / OPEN SOURCE</span>
@@ -1037,11 +1079,11 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       if(links[e.target.id]) links[e.target.id].classList.add("active");
     }});
   },{threshold:.25,rootMargin:"-30% 0px -55% 0px"});
-  ["preview","systems","about","tools","contact"].forEach(function(id){ var s=document.getElementById(id); if(s)navObs.observe(s); });
+  ["preview","systems","research","about","tools","contact"].forEach(function(id){ var s=document.getElementById(id); if(s)navObs.observe(s); });
   var focObs=new IntersectionObserver(function(es){
-    es.forEach(function(e){ if(e.isIntersecting) focus = ({pentest:'pentest',iterant:'iterant'})[e.target.id]||'labs'; });
+    es.forEach(function(e){ if(e.isIntersecting) focus = ({pentest:'pentest',iterant:'iterant','neuron-steering':'labs'})[e.target.id]||'labs'; });
   },{threshold:.3});
-  ["nirry-labs","pentest","iterant"].forEach(function(id){ var s=document.getElementById(id); if(s)focObs.observe(s); });
+  ["nirry-labs","pentest","neuron-steering","iterant"].forEach(function(id){ var s=document.getElementById(id); if(s)focObs.observe(s); });
 
   /* ---------- copy email ---------- */
   var copy=document.getElementById("copyBtn"), mail=document.getElementById("email");
@@ -1170,6 +1212,8 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     ["Systems","go","jump","#systems"],
     ["AI Suite","go","jump","#nirry-labs"],
     ["Pentest Suite","go","jump","#pentest"],
+    ["AI Research","go","jump","#research"],
+    ["Neuron steering","go","jump","#neuron-steering"],
     ["Iterant","go","jump","#iterant"],
     ["Iterant: watch its recorded life","open","open","iterant/"],
     ["About","go","jump","#about"],
