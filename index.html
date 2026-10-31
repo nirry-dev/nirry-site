@@ -156,8 +156,7 @@ h1 .hl{color:var(--cyan)}
 @media (max-width:820px){ .interlude{padding:clamp(52px,9vh,96px) 0} .interlude .skills{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:480px){ .interlude .skills{grid-template-columns:1fr} }
 
-/* ---- AI Suite live preview ---- */
-.showcase{padding-top:14px}
+/* ---- app windows (static, representative) ---- */
 .win{position:relative;background:linear-gradient(180deg,var(--panel),#07090e);
   border:1px solid var(--line-2);border-radius:8px;overflow:hidden;
   box-shadow:0 40px 120px -40px rgba(47,230,208,.22),0 20px 60px -30px rgba(0,0,0,.8);
@@ -311,6 +310,55 @@ h1 .hl{color:var(--cyan)}
   .cg-main{min-height:300px}
 }
 @media (max-width:620px){.chain-win .win-stat{display:none}}
+
+/* AI Suite window: the preview's cards, still */
+.as-win{margin-top:28px}
+.as-win .r-item{cursor:default}
+.as-win .r-item:hover{color:var(--muted)}
+.as-win .r-item.active:hover{color:var(--fg)}
+.as-spark{stroke:var(--cyan);filter:drop-shadow(0 0 4px rgba(47,230,208,.5))}
+/* Pentest Suite window: engagement graph + findings */
+.ps-win{--pa:var(--amber);margin-top:28px;box-shadow:0 40px 120px -40px rgba(255,154,60,.26),0 20px 60px -30px rgba(0,0,0,.8)}
+.ps-win .dots i:first-child{background:var(--amber-dim)}
+.ps-win .win-stat{color:var(--amber)}
+.ps-win .win-stat .dot{background:var(--amber);box-shadow:0 0 10px var(--amber)}
+.ps-win .win-body{grid-template-columns:196px 1fr;min-height:0}
+.ps-meta{display:flex;flex-direction:column;gap:7px}
+.ps-main{padding:14px 16px 16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.ps-graph-wrap{border:1px solid var(--line);border-radius:6px;background:rgba(255,255,255,.012)}
+.ps-graph{display:block;width:100%;height:auto}
+.ps-scope{fill:rgba(255,154,60,.04);stroke:rgba(255,154,60,.45);stroke-width:1;stroke-dasharray:5 5}
+.ps-link{stroke:rgba(130,150,185,.28);stroke-width:1;stroke-dasharray:3 4}
+.ps-edge{stroke:#39424e;stroke-width:1.2}
+.ps-svc{fill:rgba(124,134,153,.18);stroke:#7c8699;stroke-width:1.2}
+.ps-host{fill:rgba(255,154,60,.16);stroke:var(--amber);stroke-width:1.6}
+.ps-host.flag{fill:rgba(255,90,106,.16);stroke:#ff5a6a}
+.ps-out{fill:rgba(124,134,153,.06);stroke:#5a6472;stroke-width:1.2;stroke-dasharray:3 3}
+.ps-x{stroke:#ff5a6a;stroke-width:1.6}
+.ps-denied{stroke:#ff5a6a;stroke-opacity:.55;stroke-width:1.2;stroke-dasharray:4 4}
+.ps-t{font-family:var(--f-mono);font-size:11px;fill:var(--muted)}
+.ps-t.dim{fill:var(--faint);font-size:10px}
+.ps-t.scope{fill:var(--amber);font-size:10px;letter-spacing:.14em}
+.ps-t.deny{fill:#ff5a6a;font-size:10px}
+.ps-table{border:1px solid var(--line);border-radius:6px;background:rgba(255,255,255,.012);padding:11px 12px;overflow-x:auto}
+.ps-table table{width:100%;border-collapse:collapse;font-size:.8rem}
+.ps-table th{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:400;text-align:left;padding:0 10px 7px 0}
+.ps-table td{padding:7px 10px 7px 0;border-top:1px solid var(--line);color:var(--fg);white-space:nowrap}
+.ps-table td.mono{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.ps-table .dim{color:var(--faint)}
+.ps-p{display:inline-block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;border-radius:3px;padding:2px 6px;border:1px solid var(--line-2);color:var(--muted)}
+.ps-p.p1{color:#ff5a6a;border-color:rgba(255,90,106,.55);background:rgba(255,90,106,.08)}
+.ps-p.p3{color:var(--amber);border-color:rgba(255,154,60,.4)}
+.ps-kev{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;color:#ff5a6a}
+@media (max-width:820px){
+  .ps-win .win-body{grid-template-columns:1fr}
+  .ps-meta{flex-direction:row;flex-wrap:wrap;gap:6px 18px;width:100%}
+}
+@media (max-width:620px){
+  .as-win .win-stat,.ps-win .win-stat{display:none}
+  .ps-table .host{display:none}
+  .ps-table td{white-space:normal}
+}
 /* neuron steering window (faux, representative) */
 .ns-win{margin-top:28px}
 .ns-win .win-body{grid-template-columns:200px 1fr;min-height:0}
@@ -479,13 +527,6 @@ h1 .hl{color:var(--cyan)}
 .tool-cat .tc-name{font-family:var(--f-disp);font-weight:700;font-size:clamp(1.05rem,2vw,1.35rem);letter-spacing:-.01em}
 .tool-cat .tc-line{flex:1;height:1px;background:var(--line)}
 .tool-cat .tc-meta{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);white-space:nowrap}
-.tool-lead{--pa:var(--amber);margin:clamp(4px,1.4vw,16px) 0 clamp(30px,4.5vw,50px)}
-.tool-lead .tl-kicker{display:flex;align-items:center;gap:11px;font-family:var(--f-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--pa);margin:0 0 16px}
-.tool-lead .tl-kicker .d{width:8px;height:8px;flex:none;background:var(--pa);box-shadow:0 0 10px var(--pa)}
-.tool-lead .tl-kicker .n{color:var(--faint);letter-spacing:.14em}
-.tool-lead .tl-name{font-family:var(--f-disp);font-weight:800;font-size:clamp(1.95rem,4.8vw,3.05rem);line-height:1.02;letter-spacing:-.028em;margin:0 0 16px;text-wrap:balance}
-.tool-lead .tl-lede{color:var(--muted);max-width:60ch;font-size:clamp(1.02rem,1.55vw,1.18rem);line-height:1.55;margin:0}
-.tool-lead .tl-lede b{color:var(--fg);font-weight:500}
 .p-repo{display:inline-flex;align-items:center;gap:8px;width:fit-content;margin-top:16px;
   font-family:var(--f-mono);font-size:.82rem;letter-spacing:.04em;color:var(--pa);text-decoration:none;
   border-bottom:1px solid transparent;transition:border-color .2s}
@@ -591,7 +632,6 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   <div class="shell bar">
     <a class="brand" href="#top" aria-label="Nirry — home"><span class="bk">◢</span>NIRRY</a>
     <nav aria-label="Primary">
-      <a href="#preview">Preview</a>
       <a href="#about">About</a>
       <a href="#systems">Systems</a>
       <a href="#research">Research</a>
@@ -615,137 +655,6 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <div class="metric"><p class="k">Stack</p><p class="v">Python · Node · Rust / Tauri</p></div>
       <div class="metric"><p class="k">Runs on</p><p class="v">one desktop, one GPU</p></div>
     </div>
-  </section>
-
-  <section class="sec showcase" id="preview">
-    <div class="sec-h reveal">
-      <span class="idx">◢</span>
-      <h2>AI Suite — live preview</h2>
-      <span class="rule"></span>
-      <span class="count">PRIVATE BUILD</span>
-    </div>
-    <div class="win reveal" id="win">
-      <div class="win-bar">
-        <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span class="win-title"><b>ai-suite</b>&nbsp;// local control</span>
-        <span class="win-stat"><span class="dot" aria-hidden="true"></span> serving</span>
-      </div>
-      <div class="win-body">
-        <div class="rail" role="tablist" aria-label="Preview views">
-          <button class="r-item active" role="tab" aria-selected="true" data-view="v-overview">Overview</button>
-          <button class="r-item" role="tab" aria-selected="false" data-view="v-gpu">GPU arbiter</button>
-          <button class="r-item" role="tab" aria-selected="false" data-view="v-council">Council</button>
-          <button class="r-item" role="tab" aria-selected="false" data-view="v-steer">Steering</button>
-          <button class="r-item" role="tab" aria-selected="false" data-view="v-logs">Logs</button>
-        </div>
-        <div class="win-main">
-
-          <div class="view" id="v-overview" role="tabpanel">
-            <div class="card">
-              <div class="c-head"><span class="t">GPU arbiter</span><span class="r js-holder">16 GB · holder: language</span></div>
-              <div class="budget js-budget"><span class="seg s1" style="--w:46%"></span><span class="seg s3" style="--w:9%"></span></div>
-              <ul class="legend js-legend">
-                <li><span class="b" style="background:var(--cyan)"></span>llama-3.1-8b (active)<span class="g">7.4 GB</span></li>
-                <li><span class="b" style="background:var(--amber)"></span>desktop reserve<span class="g">1.4 GB</span></li>
-                <li class="free"><span class="b"></span>free / handover<span class="g">7.2 GB</span></li>
-              </ul>
-            </div>
-            <div class="card">
-              <div class="c-head"><span class="t">Models</span><span class="r">1 active · 3 idle</span></div>
-              <ul class="mlist js-models">
-                <li><span class="nm">llama-3.1-8b-instruct</span><span class="q">Q4_K_M</span><span class="st"><i></i>live</span><span class="tk">47 t/s</span></li>
-                <li><span class="nm">sdxl-turbo</span><span class="q">fp16</span><span class="st idle"><i></i>idle</span><span class="tk">—</span></li>
-                <li><span class="nm">ltx-video</span><span class="q">Q8</span><span class="st idle"><i></i>idle</span><span class="tk">—</span></li>
-                <li><span class="nm">qwen2.5-7b</span><span class="q">Q5_K_M</span><span class="st idle"><i></i>queued</span><span class="tk">—</span></li>
-              </ul>
-            </div>
-            <div class="card">
-              <div class="c-head"><span class="t">Throughput</span><span class="r">tokens/s · 60s</span></div>
-              <div class="spark-wrap">
-                <svg class="spark" id="spark" viewBox="0 0 300 58" preserveAspectRatio="none" aria-hidden="true"><polyline id="sparkline" fill="none" stroke-width="1.6" stroke-linejoin="round" points=""></polyline></svg>
-                <span class="spark-val" id="sparkval">47 t/s</span>
-              </div>
-            </div>
-            <div class="card">
-              <div class="c-head"><span class="t">Event log</span><span class="r">tail -f</span></div>
-              <div class="log js-log"></div>
-            </div>
-          </div>
-
-          <div class="view one" id="v-gpu" role="tabpanel" hidden>
-            <div class="card">
-              <div class="c-head"><span class="t">GPU arbiter</span><span class="r js-holder">16 GB · holder: language</span></div>
-              <div class="budget tall js-budget"><span class="seg s1" style="--w:46%"></span><span class="seg s3" style="--w:9%"></span></div>
-              <ul class="legend js-legend">
-                <li><span class="b" style="background:var(--cyan)"></span>llama-3.1-8b (active)<span class="g">7.4 GB</span></li>
-                <li><span class="b" style="background:var(--amber)"></span>desktop reserve<span class="g">1.4 GB</span></li>
-                <li class="free"><span class="b"></span>free / handover<span class="g">7.2 GB</span></li>
-              </ul>
-            </div>
-            <div class="card">
-              <div class="c-head"><span class="t">Arbiter policy</span><span class="r">single device</span></div>
-              <dl class="kv">
-                <div><dt>VRAM</dt><dd>16 GB · 1 device</dd></div>
-                <div><dt>Policy</dt><dd>priority + preemption</dd></div>
-                <div><dt>Idle release</dt><dd>5 min timeout</dd></div>
-                <div><dt>Handover</dt><dd>enforced, clean</dd></div>
-                <div><dt>Order</dt><dd>language › diffusion › video</dd></div>
-              </dl>
-            </div>
-          </div>
-
-          <div class="view one" id="v-council" role="tabpanel" hidden>
-            <div class="card">
-              <div class="c-head"><span class="t">Council</span><span class="r">blind consensus</span></div>
-              <div class="flow" aria-hidden="true">
-                <span class="node cy">3 propose</span><span class="arw">→</span>
-                <span class="node">blind review</span><span class="arw">→</span>
-                <span class="node cy">chair synth</span>
-              </div>
-              <p class="council-note">members vote without seeing names · disagreement surfaced, not averaged</p>
-            </div>
-            <div class="card">
-              <div class="c-head"><span class="t">Last round</span><span class="r">consensus 0.82</span></div>
-              <ul class="rows">
-                <li><span class="lab">member · 01</span><span class="bar"><span style="width:88%"></span></span><span class="g">0.88</span></li>
-                <li><span class="lab">member · 02</span><span class="bar"><span style="width:74%"></span></span><span class="g">0.74</span></li>
-                <li><span class="lab">member · 03</span><span class="bar"><span style="width:83%"></span></span><span class="g">0.83</span></li>
-              </ul>
-              <p class="council-note">1 dissent surfaced to the chair, not dropped</p>
-            </div>
-          </div>
-
-          <div class="view" id="v-steer" role="tabpanel" hidden>
-            <div class="card">
-              <div class="c-head"><span class="t">Control vectors</span><span class="r">layer 18</span></div>
-              <ul class="rows">
-                <li><span class="lab">curiosity</span><span class="bar"><span style="width:62%"></span></span><span class="g">+0.6</span></li>
-                <li><span class="lab">concision</span><span class="bar"><span style="width:44%"></span></span><span class="g">+0.4</span></li>
-                <li><span class="lab">formality</span><span class="bar amber"><span style="width:22%"></span></span><span class="g">−0.2</span></li>
-              </ul>
-            </div>
-            <div class="card">
-              <div class="c-head"><span class="t">Personas</span><span class="r">4 saved</span></div>
-              <div class="personas">
-                <span class="persona">analyst</span><span class="persona">terse</span>
-                <span class="persona">teacher</span><span class="persona">red-team</span>
-              </div>
-              <p class="council-note">control-vector edits, layer- and neuron-level</p>
-            </div>
-          </div>
-
-          <div class="view one" id="v-logs" role="tabpanel" hidden>
-            <div class="card">
-              <div class="c-head"><span class="t">Event log</span><span class="r">tail -f</span></div>
-              <div class="chips" aria-hidden="true"><span class="chip on">all</span><span class="chip">arbiter</span><span class="chip">council</span><span class="chip">steer</span></div>
-              <div class="log tall js-log"></div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-    <p class="cap-note">Representative interface — the AI Suite build is private.</p>
   </section>
 
   <section class="interlude" id="about">
@@ -778,6 +687,75 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
         <h3>AI Suite</h3>
         <p class="p-sub">An all-in-one local AI studio — language, image, video and interpretability — on a single consumer GPU.</p>
       </div>
+      <div class="win as-win reveal" role="img" aria-label="AI Suite, a representative screen: the GPU arbiter's memory budget, the loaded models, token throughput, the last council round and the event log">
+        <div class="win-bar">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="win-title"><b>ai suite</b>&nbsp;// local control</span>
+          <span class="win-stat"><span class="dot" aria-hidden="true"></span> SERVING</span>
+        </div>
+        <div class="win-body" aria-hidden="true">
+          <div class="rail">
+            <span class="r-item active">Overview</span>
+            <span class="r-item">Models</span>
+            <span class="r-item">GPU arbiter</span>
+            <span class="r-item">Council</span>
+            <span class="r-item">Steering</span>
+            <span class="r-item">Agents</span>
+            <span class="r-item">Logs</span>
+          </div>
+          <div class="win-main">
+            <div class="view">
+              <div class="card">
+                <div class="c-head"><span class="t">GPU arbiter</span><span class="r">16 GB · holder: language</span></div>
+                <div class="budget"><span class="seg s1" style="--w:46%"></span><span class="seg s2" style="--w:6%"></span><span class="seg s3" style="--w:9%"></span></div>
+                <ul class="legend">
+                  <li><span class="b" style="background:var(--cyan)"></span>llama-3.1-8b (active)<span class="g">7.4 GB</span></li>
+                  <li><span class="b" style="background:var(--cyan-dim)"></span>bge-m3 embeddings<span class="g">0.9 GB</span></li>
+                  <li><span class="b" style="background:var(--amber)"></span>desktop reserve<span class="g">1.4 GB</span></li>
+                  <li class="free"><span class="b"></span>free / handover<span class="g">6.3 GB</span></li>
+                </ul>
+              </div>
+              <div class="card">
+                <div class="c-head"><span class="t">Models</span><span class="r">2 live · 3 idle</span></div>
+                <ul class="mlist">
+                  <li><span class="nm">llama-3.1-8b-instruct</span><span class="q">Q4_K_M</span><span class="st"><i></i>live</span><span class="tk">47 t/s</span></li>
+                  <li><span class="nm">bge-m3</span><span class="q">fp16</span><span class="st"><i></i>live</span><span class="tk">embed</span></li>
+                  <li><span class="nm">sdxl-turbo</span><span class="q">fp16</span><span class="st idle"><i></i>idle</span><span class="tk">—</span></li>
+                  <li><span class="nm">ltx-video</span><span class="q">Q8</span><span class="st idle"><i></i>idle</span><span class="tk">—</span></li>
+                  <li><span class="nm">qwen2.5-7b</span><span class="q">Q5_K_M</span><span class="st idle"><i></i>queued</span><span class="tk">—</span></li>
+                </ul>
+              </div>
+              <div class="card">
+                <div class="c-head"><span class="t">Throughput</span><span class="r">tokens/s · 60s</span></div>
+                <div class="spark-wrap">
+                  <svg class="spark" viewBox="0 0 300 58" preserveAspectRatio="none"><polyline class="as-spark" fill="none" stroke-width="1.6" stroke-linejoin="round" points="0.0,31.2 7.3,32.4 14.6,27.6 22.0,21.6 29.3,24.0 36.6,25.2 43.9,22.8 51.2,22.8 58.5,33.6 65.9,26.4 73.2,36.0 80.5,38.4 87.8,33.6 95.1,43.2 102.4,40.8 109.8,44.4 117.1,42.0 124.4,34.8 131.7,30.0 139.0,28.8 146.3,27.6 153.7,32.4 161.0,25.2 168.3,25.2 175.6,27.6 182.9,22.8 190.2,31.2 197.6,26.4 204.9,34.8 212.2,38.4 219.5,34.8 226.8,36.0 234.1,36.0 241.5,36.0 248.8,36.0 256.1,36.0 263.4,40.8 270.7,36.0 278.0,34.8 285.4,27.6 292.7,28.8 300.0,33.6"></polyline></svg>
+                  <span class="spark-val">47 t/s</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="c-head"><span class="t">Council · last round</span><span class="r">consensus 0.82</span></div>
+                <ul class="rows">
+                  <li><span class="lab">member · 01</span><span class="bar"><span style="width:88%"></span></span><span class="g">0.88</span></li>
+                  <li><span class="lab">member · 02</span><span class="bar"><span style="width:74%"></span></span><span class="g">0.74</span></li>
+                  <li><span class="lab">member · 03</span><span class="bar"><span style="width:83%"></span></span><span class="g">0.83</span></li>
+                </ul>
+                <p class="council-note">blind review · 1 dissent surfaced to the chair</p>
+              </div>
+              <div class="card wide">
+                <div class="c-head"><span class="t">Event log</span><span class="r">tail -f</span></div>
+                <div class="log">
+                  <div class="ln"><span class="ts">14:02:51</span><span class="tag council">council</span><span class="msg">chair synth  disagreement flagged  1</span></div>
+                  <div class="ln"><span class="ts">14:02:44</span><span class="tag steer">steer</span><span class="msg">control-vector applied  layer=18  scale=0.6</span></div>
+                  <div class="ln"><span class="ts">14:02:31</span><span class="tag council">council</span><span class="msg">proposals=3  blind-review  consensus=0.82</span></div>
+                  <div class="ln"><span class="ts">14:02:18</span><span class="tag model">model</span><span class="msg">llama-3.1-8b loaded  ctx=8192  kv=ok</span></div>
+                  <div class="ln"><span class="ts">14:02:16</span><span class="tag arbiter">arbiter</span><span class="msg">grant GPU -&gt; language  7.4GB  prio=2</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="cg-note reveal">Representative view on sample data — the GPU arbiter's budget, the loaded models, throughput, the last council round and the event log. The AI Suite build is private.</p>
       <div class="p-body">
         <div class="p-overview reveal">
           <p>The AI Suite is a self-hosted dashboard that turns one desktop into a complete AI workbench. It serves open-weight language models through a router that <strong>hot-swaps models on demand</strong>, and layers a full chat workspace, an image studio, short-form video and a multi-model reasoning council on top of the same engine.</p>
@@ -822,6 +800,83 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
         <h3>Pentest Suite</h3>
         <p class="p-sub">A workflow platform for authorized penetration testing, built so that safety is structural rather than optional.</p>
       </div>
+      <div class="win ps-win reveal" role="img" aria-label="Pentest Suite, a representative screen: an authorized engagement's graph of hosts and services inside its scope, a host outside the scope blocked by the scope guard, and findings ranked by exploitability">
+        <div class="win-bar">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="win-title"><b>pentest suite</b>&nbsp;// engagement graph</span>
+          <span class="win-stat"><span class="dot" aria-hidden="true"></span> SCOPE GUARD ON</span>
+        </div>
+        <div class="win-body ps-body" aria-hidden="true">
+          <div class="cg-side">
+            <p class="cg-ttl">Engagement · ENG-0042</p>
+            <div class="ps-meta">
+              <div class="ns-kv"><span>scope</span><b>10.20.0.0/24</b></div>
+              <div class="ns-kv"><span>window</span><b>Mon–Fri 09–17</b></div>
+              <div class="ns-kv"><span>impact tier</span><b>2 · approved</b></div>
+              <div class="ns-kv"><span>backend</span><b>container</b></div>
+            </div>
+            <ul class="cg-legend">
+              <li><span class="b" style="background:var(--amber)"></span>Host</li>
+              <li><span class="b" style="background:#7c8699"></span>Service</li>
+              <li><span class="b" style="background:#ff5a6a"></span>Has a P1 finding</li>
+            </ul>
+            <div class="cg-stats">
+              <div class="cg-stat"><span class="v">12</span><span class="k">Hosts</span></div>
+              <div class="cg-stat"><span class="v">31</span><span class="k">Services</span></div>
+              <div class="cg-stat"><span class="v flag">2</span><span class="k">P1 findings</span></div>
+            </div>
+          </div>
+          <div class="ps-main">
+            <div class="ps-graph-wrap">
+              <svg class="ps-graph" viewBox="0 0 640 250" preserveAspectRatio="xMidYMid meet">
+                <rect class="ps-scope" x="18" y="16" width="482" height="218" rx="10"/>
+                <text class="ps-t scope" x="32" y="34">IN SCOPE · 10.20.0.0/24</text>
+                <line class="ps-link" x1="120" y1="125" x2="255" y2="70"/>
+                <line class="ps-link" x1="255" y1="70" x2="255" y2="185"/>
+                <line class="ps-link" x1="255" y1="70" x2="395" y2="125"/>
+                <line class="ps-link" x1="255" y1="185" x2="395" y2="125"/>
+                <line class="ps-edge" x1="120" y1="125" x2="62" y2="78"/>
+                <line class="ps-edge" x1="120" y1="125" x2="62" y2="172"/>
+                <line class="ps-edge" x1="255" y1="70" x2="318" y2="48"/>
+                <line class="ps-edge" x1="255" y1="70" x2="196" y2="40"/>
+                <line class="ps-edge" x1="255" y1="185" x2="318" y2="208"/>
+                <line class="ps-edge" x1="395" y1="125" x2="452" y2="82"/>
+                <line class="ps-edge" x1="395" y1="125" x2="452" y2="168"/>
+                <circle class="ps-svc" cx="62" cy="78" r="5"/><text class="ps-t dim" x="62" y="69" text-anchor="middle">443</text>
+                <circle class="ps-svc" cx="62" cy="172" r="5"/><text class="ps-t dim" x="62" y="163" text-anchor="middle">80</text>
+                <circle class="ps-svc" cx="318" cy="48" r="5"/><text class="ps-t dim" x="318" y="39" text-anchor="middle">8080</text>
+                <circle class="ps-svc" cx="196" cy="40" r="5"/><text class="ps-t dim" x="196" y="31" text-anchor="middle">22</text>
+                <circle class="ps-svc" cx="318" cy="208" r="5"/><text class="ps-t dim" x="318" y="199" text-anchor="middle">5432</text>
+                <circle class="ps-svc" cx="452" cy="82" r="5"/><text class="ps-t dim" x="452" y="73" text-anchor="middle">445</text>
+                <circle class="ps-svc" cx="452" cy="168" r="5"/><text class="ps-t dim" x="452" y="159" text-anchor="middle">389</text>
+                <circle class="ps-host flag" cx="120" cy="125" r="13"/><text class="ps-t" x="120" y="153" text-anchor="middle">.14 web</text>
+                <circle class="ps-host flag" cx="255" cy="70" r="13"/><text class="ps-t" x="255" y="98" text-anchor="middle">.21 app</text>
+                <circle class="ps-host" cx="255" cy="185" r="13"/><text class="ps-t" x="255" y="213" text-anchor="middle">.30 db</text>
+                <circle class="ps-host" cx="395" cy="125" r="13"/><text class="ps-t" x="395" y="153" text-anchor="middle">.5 dc</text>
+                <line class="ps-denied" x1="409" y1="125" x2="546" y2="125"/>
+                <circle class="ps-out" cx="578" cy="125" r="13"/>
+                <path class="ps-x" d="M570 117 L586 133 M586 117 L570 133"/>
+                <text class="ps-t dim" x="578" y="153" text-anchor="middle">203.0.113.9</text>
+                <text class="ps-t deny" x="578" y="168" text-anchor="middle">blocked</text>
+                <text class="ps-t deny" x="578" y="181" text-anchor="middle">out of scope</text>
+              </svg>
+            </div>
+            <div class="ps-table">
+              <div class="ns-h"><span>Findings · ranked by exploitability</span><span>NVD · KEV · EPSS</span></div>
+              <table>
+                <thead><tr><th>Pri</th><th>CVE</th><th>Finding</th><th class="host">Where</th><th>CVSS</th><th>KEV</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="ps-p p1">P1</span></td><td class="mono">CVE-2021-44228</td><td>Log4Shell · log4j 2.14</td><td class="mono host">.21:8080</td><td class="mono">10.0</td><td><span class="ps-kev">KEV</span></td></tr>
+                  <tr><td><span class="ps-p p1">P1</span></td><td class="mono">CVE-2021-41773</td><td>Apache 2.4.49 path traversal</td><td class="mono host">.14:443</td><td class="mono">7.5</td><td><span class="ps-kev">KEV</span></td></tr>
+                  <tr><td><span class="ps-p p3">P3</span></td><td class="mono">—</td><td>SMB signing not required</td><td class="mono host">.5:445</td><td class="mono">5.3</td><td><span class="dim">—</span></td></tr>
+                  <tr><td><span class="ps-p p4">P4</span></td><td class="mono">—</td><td>TLS 1.0 still offered</td><td class="mono host">.14:443</td><td class="mono">3.7</td><td><span class="dim">—</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="cg-note reveal">Representative view on sample data — an authorized lab engagement: hosts and services inside the scope, a host outside it refused by the default-deny scope guard, and findings ranked by real-world exploitability (known-exploited first). The Pentest Suite build is private.</p>
       <div class="p-body">
         <div class="p-overview reveal">
           <p>The Pentest Suite gives a security tester one coherent engagement workflow: discover a scope, enumerate it, correlate what's found against known vulnerabilities, and produce a defensible report. At its core is a <strong>headless Python engine backed by SQLite</strong> that holds the engagement graph — hosts, services and findings — as a single source of truth.</p>
@@ -1009,17 +1064,11 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
         <p class="sc-lede">Tools that fall out of the work above — from a full on-chain investigation tool down to single-file utilities, each <b>dependency-free, documented, and public on GitHub</b>. A working journal that happens to be useful software.</p>
       </div>
 
-    <div class="tool-lead reveal">
-      <p class="tl-kicker"><span class="d" aria-hidden="true"></span>On-chain · OSINT <span class="n">01</span></p>
-      <div class="tl-name">On-chain intelligence</div>
-      <p class="tl-lede">Following value across the chain. <b>Chainscope</b> reads public transaction history and turns it into a readable entity graph — attribution, fund-flow tracing, clustering and taint — for authorized investigation and incident response.</p>
-    </div>
-
     <article class="project sec" id="chainscope">
       <div class="p-head reveal">
-        <span class="p-tag">On-chain OSINT · fund tracing</span>
+        <span class="p-tag">On-chain intelligence · OSINT · fund tracing</span>
         <h3>Chainscope</h3>
-        <p class="p-sub">A read-only blockchain transaction &amp; wallet analyzer that turns public on-chain history into a legible entity graph.</p>
+        <p class="p-sub">A read-only blockchain transaction &amp; wallet analyzer that follows value across the chain, turning public on-chain history into a legible entity graph — attribution, fund-flow tracing, clustering and taint — for authorized investigation and incident response.</p>
         <a class="p-repo" href="https://github.com/nirry-dev/chainscope" target="_blank" rel="noopener">github.com/nirry-dev/chainscope <span class="x" aria-hidden="true">↗</span></a>
       </div>
       <div class="win chain-win reveal">
@@ -1553,7 +1602,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       if(links[e.target.id]) links[e.target.id].classList.add("active");
     }});
   },{threshold:.25,rootMargin:"-30% 0px -55% 0px"});
-  ["preview","systems","research","about","tools","contact"].forEach(function(id){ var s=document.getElementById(id); if(s)navObs.observe(s); });
+  ["about","systems","research","tools","contact"].forEach(function(id){ var s=document.getElementById(id); if(s)navObs.observe(s); });
   var focObs=new IntersectionObserver(function(es){
     es.forEach(function(e){ if(e.isIntersecting) focus = ({pentest:'pentest',lype:'iterant','neuron-steering':'labs'})[e.target.id]||'labs'; });
   },{threshold:.3});
@@ -1568,95 +1617,6 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done).catch(sel); } else sel();
   }
   copy.addEventListener("click",copyEmail);
-
-  /* ---------- preview: rail view switching ---------- */
-  var tabs=[].slice.call(document.querySelectorAll(".r-item"));
-  tabs.forEach(function(tab){
-    tab.addEventListener("click",function(){
-      tabs.forEach(function(t){ t.classList.remove("active"); t.setAttribute("aria-selected","false"); });
-      tab.classList.add("active"); tab.setAttribute("aria-selected","true");
-      document.querySelectorAll(".view").forEach(function(v){ v.hidden = (v.id!==tab.dataset.view); });
-    });
-  });
-
-  /* ---------- preview: sparkline + log + arbitration loop ---------- */
-  var spark=document.getElementById("sparkline"), sparkval=document.getElementById("sparkval");
-  var vals=[]; for(var i=0;i<42;i++) vals.push(44+Math.round(Math.sin(i/3)*6+Math.random()*8));
-  var langActive=true;
-  function renderSpark(){
-    var n=vals.length,pts=[];
-    for(var i=0;i<n;i++){ var x=i/(n-1)*300, y=54-((vals[i]-30)/40)*48; if(y<4)y=4; if(y>56)y=56; pts.push(x.toFixed(1)+","+y.toFixed(1)); }
-    spark.setAttribute("points",pts.join(" "));
-    if(langActive) sparkval.textContent=vals[vals.length-1]+" t/s";
-  }
-  renderSpark();
-  if(!reduce) setInterval(function(){
-    if(!langActive)return;
-    vals.push(Math.max(36,Math.min(62,vals[vals.length-1]+Math.round((Math.random()-.5)*10))));
-    if(vals.length>42) vals.shift(); renderSpark();
-  },1300);
-
-  function stamp(){var d=new Date();return p2(d.getUTCHours())+":"+p2(d.getUTCMinutes())+":"+p2(d.getUTCSeconds());}
-  function addLine(tag,msg){
-    document.querySelectorAll(".js-log").forEach(function(log){
-      var row=document.createElement("div"); row.className="ln";
-      row.innerHTML='<span class="ts">'+stamp()+'</span><span class="tag '+tag+'">'+tag+'</span><span class="msg">'+msg+'</span>';
-      log.insertBefore(row,log.firstChild);
-      var cap = log.classList.contains("tall")?9:5;
-      while(log.children.length>cap) log.removeChild(log.lastChild);
-    });
-  }
-  var genEvents=[
-    ["model","llama-3.1-8b loaded  ctx=8192  kv=ok"],
-    ["council","proposals=3  blind-review  consensus=0.82"],
-    ["steer","control-vector applied  layer=18  scale=0.6"],
-    ["model","hot-swap qwen2.5-7b  queued"],
-    ["council","chair synth  disagreement flagged  1"]
-  ];
-  var gi=0; addLine("arbiter","grant GPU -> language  7.4GB  prio=2"); addLine(genEvents[0][0],genEvents[0][1]); addLine(genEvents[1][0],genEvents[1][1]); addLine(genEvents[2][0],genEvents[2][1]);
-  if(!reduce) setInterval(function(){ var e=genEvents[gi++%genEvents.length]; addLine(e[0],e[1]); },2600);
-
-  var STATES={
-    language:{
-      head:"16 GB · holder: language",
-      segs:[["s1",46],["s3",9]],
-      legend:[["var(--cyan)","llama-3.1-8b (active)","7.4 GB"],["var(--amber)","desktop reserve","1.4 GB"],["free","free / handover","7.2 GB"]],
-      models:[["llama-3.1-8b-instruct","Q4_K_M","live","47 t/s"],["sdxl-turbo","fp16","idle","—"],["ltx-video","Q8","idle","—"],["qwen2.5-7b","Q5_K_M","queued","—"]],
-      log:["arbiter","grant GPU -> language  7.4GB  prio=2"], lang:true
-    },
-    diffusion:{
-      head:"16 GB · holder: diffusion",
-      segs:[["s2",30],["s3",9]],
-      legend:[["var(--cyan-dim)","sdxl-turbo (active)","4.8 GB"],["var(--amber)","desktop reserve","1.4 GB"],["free","free / handover","9.8 GB"]],
-      models:[["sdxl-turbo","fp16","live","1.4 img/s"],["llama-3.1-8b-instruct","Q4_K_M","idle","—"],["ltx-video","Q8","queued","—"],["qwen2.5-7b","Q5_K_M","idle","—"]],
-      log:["arbiter","handover language -> diffusion  clean"], lang:false
-    }
-  };
-  function applyState(st){
-    document.querySelectorAll(".js-holder").forEach(function(el){ el.textContent=st.head; });
-    document.querySelectorAll(".js-budget").forEach(function(el){
-      el.innerHTML=st.segs.map(function(s){return '<span class="seg '+s[0]+'" style="--w:'+s[1]+'%"></span>';}).join("");
-    });
-    document.querySelectorAll(".js-legend").forEach(function(el){
-      el.innerHTML=st.legend.map(function(L){
-        if(L[0]==="free") return '<li class="free"><span class="b"></span>'+L[1]+'<span class="g">'+L[2]+'</span></li>';
-        return '<li><span class="b" style="background:'+L[0]+'"></span>'+L[1]+'<span class="g">'+L[2]+'</span></li>';
-      }).join("");
-    });
-    document.querySelectorAll(".js-models").forEach(function(el){
-      el.innerHTML=st.models.map(function(m){
-        var cls=m[2]==="live"?"st":"st idle";
-        return '<li><span class="nm">'+m[0]+'</span><span class="q">'+m[1]+'</span><span class="'+cls+'"><i></i>'+m[2]+'</span><span class="tk">'+m[3]+'</span></li>';
-      }).join("");
-    });
-    langActive=st.lang;
-    if(!langActive) sparkval.textContent="rendering…"; else renderSpark();
-    addLine(st.log[0],st.log[1]);
-  }
-  if(!reduce){
-    var seq=[STATES.diffusion,STATES.language], si=0;
-    setInterval(function(){ applyState(seq[si++%seq.length]); },8000);
-  }
 
   /* ---------- telemetry ticker ---------- */
   var tele=document.getElementById("tele");
@@ -1682,7 +1642,6 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   /* ---------- command palette ---------- */
   var back=document.getElementById("cmdk"), input=document.getElementById("cmdkInput"), list=document.getElementById("cmdkList"), hint=document.getElementById("cmdHint");
   var CMDS=[
-    ["Preview","go","jump","#preview"],
     ["About","go","jump","#about"],
     ["Systems","go","jump","#systems"],
     ["AI Suite","go","jump","#nirry-labs"],
