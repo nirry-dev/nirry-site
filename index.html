@@ -320,6 +320,13 @@ h1 .hl{color:var(--cyan)}
 .tool-cat .tc-name{font-family:var(--f-disp);font-weight:700;font-size:clamp(1.05rem,2vw,1.35rem);letter-spacing:-.01em}
 .tool-cat .tc-line{flex:1;height:1px;background:var(--line)}
 .tool-cat .tc-meta{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);white-space:nowrap}
+.tool-lead{--pa:var(--amber);margin:clamp(4px,1.4vw,16px) 0 clamp(30px,4.5vw,50px)}
+.tool-lead .tl-kicker{display:flex;align-items:center;gap:11px;font-family:var(--f-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--pa);margin:0 0 16px}
+.tool-lead .tl-kicker .d{width:8px;height:8px;flex:none;background:var(--pa);box-shadow:0 0 10px var(--pa)}
+.tool-lead .tl-kicker .n{color:var(--faint);letter-spacing:.14em}
+.tool-lead .tl-name{font-family:var(--f-disp);font-weight:800;font-size:clamp(1.95rem,4.8vw,3.05rem);line-height:1.02;letter-spacing:-.028em;margin:0 0 16px;text-wrap:balance}
+.tool-lead .tl-lede{color:var(--muted);max-width:60ch;font-size:clamp(1.02rem,1.55vw,1.18rem);line-height:1.55;margin:0}
+.tool-lead .tl-lede b{color:var(--fg);font-weight:500}
 .p-repo{display:inline-flex;align-items:center;gap:8px;width:fit-content;margin-top:16px;
   font-family:var(--f-mono);font-size:.82rem;letter-spacing:.04em;color:var(--pa);text-decoration:none;
   border-bottom:1px solid transparent;transition:border-color .2s}
@@ -788,9 +795,48 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <span class="idx">04</span>
       <h2>Tools</h2>
       <span class="rule"></span>
-      <span class="count">06 / OPEN SOURCE</span>
+      <span class="count">07 / OPEN SOURCE</span>
     </div>
-    <p class="os-intro reveal">Small, self-contained tools that fall out of the work above — each dependency-free, documented, and public on GitHub. A learning journal that happens to be useful software.</p>
+    <p class="os-intro reveal">Tools that fall out of the work above — from a full on-chain investigation tool down to single-file utilities, each dependency-free, documented, and public on GitHub. A working journal that happens to be useful software.</p>
+
+    <div class="tool-lead reveal">
+      <p class="tl-kicker"><span class="d" aria-hidden="true"></span>On-chain · OSINT <span class="n">01</span></p>
+      <div class="tl-name">On-chain intelligence</div>
+      <p class="tl-lede">Following value across the chain. <b>Chainscope</b> reads public transaction history and turns it into a readable entity graph — attribution, fund-flow tracing, clustering and taint — for authorized investigation and incident response.</p>
+    </div>
+
+    <article class="project sec" id="chainscope">
+      <div class="p-head reveal">
+        <span class="p-tag">On-chain OSINT · fund tracing</span>
+        <h3>Chainscope</h3>
+        <p class="p-sub">A read-only blockchain transaction &amp; wallet analyzer that turns public on-chain history into a legible entity graph.</p>
+        <a class="p-repo" href="https://github.com/nirry-dev/chainscope" target="_blank" rel="noopener">github.com/nirry-dev/chainscope <span class="x" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>Chainscope inspects <em>public</em> transaction history and makes it legible: wallets and contracts become nodes, value movements become directed edges. You can attribute known addresses, follow the money across hops, cluster co-owned wallets into entities, value holdings in USD, and flag risky exposure — mixers, sanctioned addresses, tainted inflows. It is <strong>read-only</strong>: nothing signs, broadcasts or moves funds, so it stays on the tracing, attribution and visualization layer, for <strong>authorized</strong> investigation.</p>
+          <p>The investigative core is graph reasoning. A breadth-first <strong>follow-the-money</strong> trace runs outward, inward or both from a seed address to a chosen hop depth; a <strong>path finder</strong> returns the shortest connecting route between two addresses; and <strong>taint propagation</strong> pushes a decaying 0–1 exposure downstream from every flagged source, so wallets tainted only indirectly surface too. Address <strong>clustering</strong> groups co-owned wallets into entities by common-input co-spend, drawn as hulls on the graph with a rollup dashboard of combined holdings and net flows.</p>
+          <p>It's a pure Python <strong>standard-library</strong> engine behind a <strong>buildless</strong> vanilla-JS front end — no third-party packages, no build step, and it runs offline out of the box on bundled sample datasets, with optional live import from public explorers. A packaged <strong>Tauri desktop build</strong> is available alongside the local server.</p>
+          <ul class="highlights">
+            <li><strong>The money, as a graph.</strong> A force-directed flow graph — nodes colored by entity and sized by volume, edges weighted and pointed by value, flows into flagged destinations drawn red.</li>
+            <li><strong>Follow the money.</strong> Breadth-first flow tracing, a shortest-path finder, and decaying taint propagation that surfaces wallets exposed only indirectly.</li>
+            <li><strong>Attribution &amp; risk.</strong> A built-in label KB — exchanges, mixers, sanctioned addresses, token contracts — plus manual annotation and a risk engine whose flags can be confirmed or dismissed.</li>
+            <li><strong>Buildless &amp; offline.</strong> Pure-stdlib engine, vanilla-JS UI, zero dependencies; a Markdown/JSON evidence export and a Tauri desktop build.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="Chainscope at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-01</span></div>
+          <dl>
+            <div><dt>Engine</dt><dd>Python (stdlib)</dd></div>
+            <div><dt>Front end</dt><dd>buildless JS</dd></div>
+            <div><dt>Analysis</dt><dd>flow · path · taint</dd></div>
+            <div><dt>Attribution</dt><dd>label KB + manual</dd></div>
+            <div><dt>Export</dt><dd>report · MD/JSON</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
 
     <div class="tool-cat reveal">
       <span class="tc-dot" aria-hidden="true"></span>
@@ -819,7 +865,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="vramlease at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-01</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-02</span></div>
           <dl>
             <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
             <div><dt>Transport</dt><dd>TCP · line-JSON</dd></div>
@@ -852,7 +898,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="llm-council at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-02</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-03</span></div>
           <dl>
             <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
             <div><dt>Transport</dt><dd>urllib → OpenAI API</dd></div>
@@ -885,7 +931,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="ggufpeek at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-03</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-04</span></div>
           <dl>
             <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
             <div><dt>Format</dt><dd>GGUF v2 / v3</dd></div>
@@ -925,7 +971,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="vulntriage at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-04</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-05</span></div>
           <dl>
             <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
             <div><dt>Feeds</dt><dd>OSV · KEV · EPSS</dd></div>
@@ -958,7 +1004,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="netprobe at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-05</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-06</span></div>
           <dl>
             <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
             <div><dt>Scan</dt><dd>asyncio connect</dd></div>
@@ -998,7 +1044,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="promptscreen at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-06</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-07</span></div>
           <dl>
             <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
             <div><dt>Screens</dt><dd>input + output</dd></div>
@@ -1360,6 +1406,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     ["Iterant: watch its recorded life","open","open","iterant/"],
     ["About","go","jump","#about"],
     ["Tools","go","jump","#tools"],
+    ["Chainscope","go","jump","#chainscope"],
     ["Contact","go","jump","#contact"],
     ["Copy email","info@nirry.net","copy",""]
   ];
