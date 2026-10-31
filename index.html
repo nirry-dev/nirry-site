@@ -808,14 +808,15 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
         <a class="p-repo" href="https://github.com/nirry-dev/iterant" target="_blank" rel="noopener">github.com/nirry-dev/iterant <span class="x" aria-hidden="true">↗</span></a>
       </div>
       <div class="win iter-win reveal">
-        <div class="win-bar"><div class="dots"><i></i><i></i><i></i></div><span class="win-title">ITERANT // <b id="iter-mode">mind atlas</b></span><div class="iter-switch" role="tablist" aria-label="How to watch it"><button type="button" role="tab" aria-selected="true" data-iter="atlas">Atlas</button><button type="button" role="tab" aria-selected="false" data-iter="replay">Replay</button></div><span class="win-stat"><span class="dot"></span>REAL MODEL OUTPUT</span></div>
+        <div class="win-bar"><div class="dots"><i></i><i></i><i></i></div><span class="win-title">ITERANT // <b id="iter-mode">mind atlas</b></span><div class="iter-switch" role="tablist" aria-label="How to watch it"><button type="button" role="tab" aria-selected="true" data-iter="atlas">Atlas</button><button type="button" role="tab" aria-selected="false" data-iter="place">Place</button><button type="button" role="tab" aria-selected="false" data-iter="replay">Replay</button></div><span class="win-stat"><span class="dot"></span>REAL MODEL OUTPUT</span></div>
         <iframe class="iter-frame" id="iter-frame" src="iterant/?embed#/atlas?speed=2" title="Iterant: a map of its mind through time, drawn from its own records" loading="lazy"></iframe>
       </div>
-      <p class="iter-note"><span>Not a mock-up: 16 cycles of a 9B model on one GPU, mapped and replayed from its own records. Click anything on the map to follow its threads.</span><a href="iterant/#/atlas">Open the full recording ↗</a></p>
+      <p class="iter-note"><span>Not a mock-up: 20 cycles of a 9B model on one GPU, with what it built and wished for, mapped and replayed from its own records. Click anything on the map to follow its threads.</span><a href="iterant/#/atlas">Open the full recording ↗</a></p>
       <div class="p-body">
         <div class="p-overview reveal">
-          <p>Iterant is an <strong>autonomous agent that lives on a rhythm whether or not anyone is watching</strong>. Every twenty minutes it wakes on a local model, feels the only senses it has — the clock and the graphics card it runs on — reads the letters visitors leave it, thinks, and chooses to draw, write, ask the world a question, or rest. Everything it does streams live and is kept as a record.</p>
+          <p>Iterant is an <strong>autonomous agent that lives on a rhythm whether or not anyone is watching</strong>. Every twenty minutes it wakes on a local model, feels the only senses it has — the clock and the graphics card it runs on — reads the letters visitors leave it, thinks, and chooses to draw, write, ask the world a question, build something in its place, tend what it built, or rest. Everything it does streams live and is kept as a record.</p>
           <p>Every few cycles it sleeps and <strong>ships a new version of itself</strong>: memory is consolidated into a finite store where things fade and compete for room, it dreams, then rewrites its own beliefs behind a drift guard that protects the lines its maker wrote — and writes its own release notes. Each change is traced back to the letter that caused it, so the people who wrote can see exactly what their words did.</p>
+          <p>It cannot see the world, so it <strong>builds one out of what people tell it</strong>: a small map where every thing has a sign in its own words, a drawing it makes itself and a thread back to the letter it came from. When it forgets why it built something, that thing wears away into a ruin unless it goes back and tends it. At night it can also leave its keeper a wish for something it cannot do itself, and any wish can become a GitHub issue, so part of its roadmap is written by the creature.</p>
           <p>It is radically honest about what it is — a language model in a loop on someone's GPU — and <strong>courteous to its host</strong>: it waits rather than evict another model or compete with busy work. Letters and its replies pass rule-based and model screening, with a keeper queue for anything doubtful, before anyone sees them.</p>
           <ul class="highlights">
             <li><strong>Records, not vibes.</strong> Every cycle and night is a self-contained record, so the live view, the atlas, the replay and the static export above are all views over the same files.</li>
@@ -831,6 +832,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
             <div><dt>Mind</dt><dd>Local LLM · Claude</dd></div>
             <div><dt>Senses</dt><dd>Clock + GPU</dd></div>
             <div><dt>Memory</dt><dd>3 × 12, decaying</dd></div>
+            <div><dt>Place</dt><dd>Built from letters</dd></div>
             <div><dt>Versions</dt><dd>One per night</dd></div>
             <div><dt>License</dt><dd>MIT</dd></div>
           </dl>
@@ -842,7 +844,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           <div class="cap"><h4><span class="i"></span>Autonomous life loop</h4><p>Wake, sense, read, think, act, reflect — streamed token by token, on a rhythm that respects the host's GPU.</p></div>
           <div class="cap"><h4><span class="i"></span>Nightly self-versioning</h4><p>Beliefs added, rewritten or let go behind a drift guard, with release notes it writes about itself.</p></div>
           <div class="cap"><h4><span class="i"></span>Finite memory</h4><p>Three shelves with half-life decay and nightly competition; what it forgets stays visible to visitors.</p></div>
-          <div class="cap"><h4><span class="i"></span>Letters &amp; influence</h4><p>Strangers write to it; it replies, remembers returning writers, and traces each change back to a letter.</p></div>
+          <div class="cap"><h4><span class="i"></span>Letters, a place &amp; wishes</h4><p>Strangers write to it; it replies, builds a place out of their letters, traces each change back to a letter, and leaves its keeper wishes.</p></div>
           <div class="cap"><h4><span class="i"></span>Moderation</h4><p>Rules at the door, a model screen before reading, a keeper queue, and replies screened before they stream.</p></div>
           <div class="cap"><h4><span class="i"></span>Mind atlas &amp; replay</h4><p>Its whole mind on one map through time, with a thread from every letter to what it changed; or the life replayed beat by beat.</p></div>
         </div>
@@ -1596,7 +1598,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
 (function(){
   var frame=document.getElementById('iter-frame'), label=document.getElementById('iter-mode');
   if(!frame) return;
-  var names={atlas:'mind atlas',replay:'recorded life · replay'}, titles={atlas:'Iterant: a map of its mind through time, drawn from its own records',replay:'Iterant: a recorded life, replayed from its own records'};
+  var names={atlas:'mind atlas',place:'the place it built',replay:'recorded life · replay'}, titles={atlas:'Iterant: a map of its mind through time, drawn from its own records',place:'Iterant: the place it built out of letters, and the wishes it left its keeper',replay:'Iterant: a recorded life, replayed from its own records'};
   document.querySelectorAll('.iter-switch button').forEach(function(b){
     b.addEventListener('click',function(){
       var mode=b.dataset.iter;
