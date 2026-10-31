@@ -312,6 +312,13 @@ h1 .hl{color:var(--cyan)}
 .p-repo:hover{border-bottom-color:var(--pa)}
 .p-repo .x{transition:transform .2s}
 .p-repo:hover .x{transform:translate(3px,-3px)}
+.p-forward{display:flex;flex-wrap:wrap;align-items:center;gap:8px 11px;width:fit-content;max-width:100%;margin-top:clamp(24px,3.5vw,34px);
+  font-family:var(--f-mono);font-size:.82rem;letter-spacing:.03em;color:var(--muted);text-decoration:none;transition:color .2s}
+.p-forward:hover{color:var(--fg)}
+.p-forward .lbl{color:var(--pa);border:1px solid var(--line-2);border-radius:3px;padding:3px 8px;
+  font-size:.68rem;letter-spacing:.16em;text-transform:uppercase}
+.p-forward .ar{color:var(--pa);transition:transform .2s}
+.p-forward:hover .ar{transform:translateX(4px)}
 .p-overview code{font-family:var(--f-mono);font-size:.85em;color:var(--fg);background:var(--panel-2);border:1px solid var(--line);border-radius:3px;padding:1px 5px}
 .os-more{margin:clamp(44px,6vw,68px) 0 0;font-family:var(--f-mono);font-size:.82rem;letter-spacing:.06em}
 .os-more a{color:var(--cyan);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
@@ -609,6 +616,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           <div class="cap"><h4><span class="i"></span>Model steering</h4><p>Control-vector editing at the layer and neuron level, with an explorer for comparing steered outputs.</p></div>
         </div>
       </div>
+      <a class="p-forward reveal" href="#research"><span class="lbl">Frontier</span><span class="t">The interpretability work continues as research</span><span class="ar" aria-hidden="true">→</span></a>
     </article>
 
     <article class="project sec" id="pentest">
