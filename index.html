@@ -261,6 +261,14 @@ h1 .hl{color:var(--cyan)}
 .iter-switch button:hover{color:var(--fg)}
 .iter-switch button[aria-selected="true"]{color:var(--violet);background:rgba(155,140,255,.12)}
 .iter-win .win-stat{margin-left:0}
+.iter-acts{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin-top:20px}
+.iter-acts .p-repo{margin-top:0}
+.iter-launch{display:inline-flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--fg);background:rgba(155,140,255,.12);border:1px solid var(--violet-dim);border-radius:6px;padding:11px 18px;cursor:pointer;
+  box-shadow:0 0 0 0 rgba(155,140,255,0);transition:background .2s,border-color .2s,box-shadow .3s}
+.iter-launch .pl{color:var(--violet);font-size:.7rem}
+.iter-launch:hover{background:rgba(155,140,255,.2);border-color:var(--violet);box-shadow:0 0 28px -6px rgba(155,140,255,.55)}
+.iter-launch:focus-visible{outline:2px solid var(--violet);outline-offset:3px}
 @media (max-width:720px){.iter-frame{height:700px}}
 @media (max-width:620px){.iter-win .win-stat,.iter-win .win-title{display:none}}
 /* ---- chainscope fund-flow window ---- */
@@ -805,13 +813,16 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
         <span class="p-tag">Autonomous AI · living experiment</span>
         <h3>Iterant</h3>
         <p class="p-sub">A small mind that lives on one GPU, knows the world only through the letters people leave it, and rewrites itself every night.</p>
-        <a class="p-repo" href="https://github.com/nirry-dev/iterant" target="_blank" rel="noopener">github.com/nirry-dev/iterant <span class="x" aria-hidden="true">↗</span></a>
+        <div class="iter-acts">
+          <button type="button" class="iter-launch" id="iter-launch"><span class="pl" aria-hidden="true">▶</span> Enter its world</button>
+          <a class="p-repo" href="https://github.com/nirry-dev/iterant" target="_blank" rel="noopener">github.com/nirry-dev/iterant <span class="x" aria-hidden="true">↗</span></a>
+        </div>
       </div>
-      <div class="win iter-win reveal">
-        <div class="win-bar"><div class="dots"><i></i><i></i><i></i></div><span class="win-title">ITERANT // <b id="iter-mode">mind atlas</b></span><div class="iter-switch" role="tablist" aria-label="How to watch it"><button type="button" role="tab" aria-selected="true" data-iter="atlas">Atlas</button><button type="button" role="tab" aria-selected="false" data-iter="place">Place</button><button type="button" role="tab" aria-selected="false" data-iter="replay">Replay</button></div><span class="win-stat"><span class="dot"></span>REAL MODEL OUTPUT</span></div>
+      <div class="win iter-win reveal" id="iter-win">
+        <div class="win-bar"><div class="dots"><i></i><i></i><i></i></div><span class="win-title">ITERANT // <b id="iter-mode">mind atlas</b></span><div class="iter-switch" role="tablist" aria-label="How to watch it"><button type="button" role="tab" aria-selected="true" data-iter="atlas">Atlas</button><button type="button" role="tab" aria-selected="false" data-iter="world">World</button><button type="button" role="tab" aria-selected="false" data-iter="place">Place</button><button type="button" role="tab" aria-selected="false" data-iter="replay">Replay</button></div><span class="win-stat"><span class="dot"></span>REAL MODEL OUTPUT</span></div>
         <iframe class="iter-frame" id="iter-frame" src="iterant/?embed#/atlas?speed=2" title="Iterant: a map of its mind through time, drawn from its own records" loading="lazy"></iframe>
       </div>
-      <p class="iter-note"><span>Not a mock-up: 20 cycles of a 9B model on one GPU, with what it built and wished for, mapped and replayed from its own records. Click anything on the map to follow its threads.</span><a href="iterant/#/atlas">Open the full recording ↗</a></p>
+      <p class="iter-note"><span id="iter-hint">Not a mock-up: 20 cycles of a 9B model on one GPU, with what it built and wished for, mapped and replayed from its own records. Click anything on the map to follow its threads.</span><a id="iter-open" href="iterant/#/atlas">Open the full recording ↗</a></p>
       <div class="p-body">
         <div class="p-overview reveal">
           <p>Iterant is an <strong>autonomous agent that lives on a rhythm whether or not anyone is watching</strong>. Every twenty minutes it wakes on a local model, feels the only senses it has — the clock and the graphics card it runs on — reads the letters visitors leave it, thinks, and chooses to draw, write, ask the world a question, build something in its place, tend what it built, or rest. Everything it does streams live and is kept as a record.</p>
@@ -1557,6 +1568,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     ["Neuron steering","go","jump","#neuron-steering"],
     ["Iterant","go","jump","#iterant"],
     ["Iterant: watch its recorded life","open","open","iterant/"],
+    ["Iterant: walk around its world","open","open","iterant/#/place?walk"],
     ["About","go","jump","#about"],
     ["Tools","go","jump","#tools"],
     ["Chainscope","go","jump","#chainscope"],
@@ -1598,16 +1610,26 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
 (function(){
   var frame=document.getElementById('iter-frame'), label=document.getElementById('iter-mode');
   if(!frame) return;
-  var names={atlas:'mind atlas',place:'the place it built',replay:'recorded life · replay'}, titles={atlas:'Iterant: a map of its mind through time, drawn from its own records',place:'Iterant: the place it built out of letters, and the wishes it left its keeper',replay:'Iterant: a recorded life, replayed from its own records'};
-  document.querySelectorAll('.iter-switch button').forEach(function(b){
-    b.addEventListener('click',function(){
-      var mode=b.dataset.iter;
-      document.querySelectorAll('.iter-switch button').forEach(function(x){ x.setAttribute('aria-selected', String(x===b)); });
-      label.textContent=names[mode]; frame.title=titles[mode];
-      frame.src='iterant/?embed#/'+mode+'?speed=2';
-    });
-  });
-})();
+  var names={atlas:'mind atlas',world:'its world · walk around',place:'the place it built',replay:'recorded life · replay'}, titles={atlas:'Iterant: a map of its mind through time, drawn from its own records',world:'Iterant: walk around the world it built out of letters',place:'Iterant: the place it built out of letters, and the wishes it left its keeper',replay:'Iterant: a recorded life, replayed from its own records'};
+  var routes={atlas:'atlas?speed=2',world:'place?walk',place:'place',replay:'replay?speed=2'};
+  var hint=document.getElementById('iter-hint'), open=document.getElementById('iter-open'), firstHint=hint.textContent;
+  var hints={world:'Every thing here is something it built from a letter, with a sign in its own words. Drag to look around, scroll to come closer, W A S D to walk, click a sign to read where it came from.'};
+  var buttons=document.querySelectorAll('.iter-switch button');
+  function show(mode){
+    buttons.forEach(function(x){ x.setAttribute('aria-selected', String(x.dataset.iter===mode)); });
+    label.textContent=names[mode]; frame.title=titles[mode];
+    frame.src='iterant/?embed#/'+routes[mode];
+    hint.textContent=hints[mode]||firstHint;
+    open.href='iterant/#/'+(mode==='world'?'place?walk':mode);
+    open.textContent=mode==='world'?'Walk it full screen ↗':'Open the full recording ↗';
+  }
+  buttons.forEach(function(b){ b.addEventListener('click',function(){ show(b.dataset.iter); }); });
+  var launch=document.getElementById('iter-launch');
+  if(launch) launch.addEventListener('click',function(){
+    show('world');
+    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.getElementById('iter-win').scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});
+  });})();
 </script>
 <script>
 (function(){
