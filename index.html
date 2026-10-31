@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Nirry Labs</title>
-<meta name="description" content="A working portfolio of local-first AI and security tooling — the AI Suite and the Pentest Suite. Systems and tools engineering by Nirry.">
+<meta name="description" content="A working portfolio of local-first AI and security tooling — the AI Suite, the Pentest Suite and Iterant, an autonomous AI that lives on one GPU. Systems and tools engineering by Nirry.">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#06070a">
 <meta property="og:title" content="Nirry Labs">
-<meta property="og:description" content="Local-first platforms for AI and security work — the AI Suite and the Pentest Suite.">
+<meta property="og:description" content="Local-first platforms for AI and security work — the AI Suite, the Pentest Suite and Iterant, an autonomous AI that lives on one GPU.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nirry.net/">
 <meta property="og:image" content="https://nirry.net/og.jpg">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Nirry Labs">
-<meta name="twitter:description" content="Local-first platforms for AI and security work — the AI Suite and the Pentest Suite.">
+<meta name="twitter:description" content="Local-first platforms for AI and security work — the AI Suite, the Pentest Suite and Iterant, an autonomous AI that lives on one GPU.">
 <meta name="twitter:image" content="https://nirry.net/og.jpg">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2306070a'/%3E%3Cpath d='M9 8 L9 24 L25 24 Z' fill='%232fe6d0'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,7 +30,7 @@
   --bg:#06070a; --panel:#0b0d13; --panel-2:#10131b;
   --line:rgba(130,150,185,.14); --line-2:rgba(130,150,185,.28);
   --fg:#e7ecf4; --muted:#828d9e; --faint:#5a6472;
-  --cyan:#2fe6d0; --cyan-dim:#15a699; --amber:#ff9a3c; --amber-dim:#c76a1c;
+  --cyan:#2fe6d0; --cyan-dim:#15a699; --amber:#ff9a3c; --amber-dim:#c76a1c; --violet:#9b8cff; --violet-dim:#6a5fc4;
   --pa:var(--cyan); --pa-dim:var(--cyan-dim);
   --f-disp:"Archivo",system-ui,-apple-system,sans-serif;
   --f-body:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
@@ -222,6 +222,16 @@ h1 .hl{color:var(--cyan)}
 .project{--pa:var(--cyan);--pa-dim:var(--cyan-dim);margin-bottom:clamp(54px,8vw,92px)}
 .project:last-child{margin-bottom:0}
 .project.sec{--pa:var(--amber);--pa-dim:var(--amber-dim)}
+.project.art{--pa:var(--violet);--pa-dim:var(--violet-dim)}
+.iter-win{margin-top:32px;box-shadow:0 40px 120px -40px rgba(155,140,255,.28),0 20px 60px -30px rgba(0,0,0,.8)}
+.iter-win .dots i:first-child{background:var(--violet-dim)}
+.iter-win .win-stat{color:var(--violet)}
+.iter-win .win-stat .dot{background:var(--violet);box-shadow:0 0 10px var(--violet)}
+.iter-frame{display:block;width:100%;height:min(80vh,780px);border:0;background:#0b0c0f}
+.iter-note{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:var(--faint);margin:18px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-between}
+.iter-note a{color:var(--violet);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
+.iter-note a:hover{border-bottom-color:var(--violet)}
+@media (max-width:720px){.iter-frame{height:700px}}
 .p-head{display:flex;flex-direction:column;gap:0}
 .p-tag{display:inline-flex;align-items:center;gap:9px;font-family:var(--f-mono);font-size:11px;
   letter-spacing:.16em;text-transform:uppercase;color:var(--pa)}
@@ -387,7 +397,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     <p class="lede reveal">I design and build tools end to end — from the inference engine and data model up to the desktop shell. The through-line is <b>systems that run entirely on your own machine:</b> dependency-light, auditable, and tuned to do real work on ordinary hardware.</p>
     <div class="metrics reveal">
       <div class="metric"><p class="k">Focus</p><p class="v">systems &amp; tools engineering</p></div>
-      <div class="metric"><p class="k">Domains</p><p class="v">local AI · applied security</p></div>
+      <div class="metric"><p class="k">Domains</p><p class="v">local AI · security · agents</p></div>
       <div class="metric"><p class="k">Stack</p><p class="v">Python · Node · Rust / Tauri</p></div>
       <div class="metric"><p class="k">Runs on</p><p class="v">one desktop, one GPU</p></div>
     </div>
@@ -529,7 +539,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <span class="idx">01</span>
       <h2>Selected systems</h2>
       <span class="rule"></span>
-      <span class="count">02 / ACTIVE</span>
+      <span class="count">03 / ACTIVE</span>
     </div>
 
     <article class="project" id="nirry-labs">
@@ -614,6 +624,55 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           <div class="cap"><h4><span class="i"></span>Tool orchestration</h4><p>Drives external scanners through validated templates and normalizes their output into the graph.</p></div>
           <div class="cap"><h4><span class="i"></span>CVE correlation</h4><p>Matches discovered software against vulnerability feeds and ranks by exploitability, not just severity.</p></div>
           <div class="cap"><h4><span class="i"></span>Lifecycle &amp; reporting</h4><p>Finding status, retest diffs against a baseline, and printable HTML or Markdown reports with evidence.</p></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="project art" id="iterant">
+      <div class="p-head reveal">
+        <span class="p-tag">Autonomous AI · living experiment</span>
+        <h3>Iterant</h3>
+        <p class="p-sub">A small mind that lives on one GPU, knows the world only through the letters people leave it, and rewrites itself every night.</p>
+        <a class="p-repo" href="https://github.com/nirry-dev/iterant" target="_blank" rel="noopener">github.com/nirry-dev/iterant <span class="x" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="win iter-win reveal">
+        <div class="win-bar"><div class="dots"><i></i><i></i><i></i></div><span class="win-title">ITERANT // <b>recorded life · replay</b></span><span class="win-stat"><span class="dot"></span>REAL MODEL OUTPUT</span></div>
+        <iframe class="iter-frame" src="iterant/?embed#/replay?speed=2" title="Iterant: a recorded life, replayed from its own records" loading="lazy"></iframe>
+      </div>
+      <p class="iter-note"><span>Not a mock-up: 16 cycles of a 9B model on one GPU, replayed from its own records. Space pauses.</span><a href="iterant/">Open the full recording ↗</a></p>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>Iterant is an <strong>autonomous agent that lives on a rhythm whether or not anyone is watching</strong>. Every twenty minutes it wakes on a local model, feels the only senses it has — the clock and the graphics card it runs on — reads the letters visitors leave it, thinks, and chooses to draw, write, ask the world a question, or rest. Everything it does streams live and is kept as a record.</p>
+          <p>Every few cycles it sleeps and <strong>ships a new version of itself</strong>: memory is consolidated into a finite store where things fade and compete for room, it dreams, then rewrites its own beliefs behind a drift guard that protects the lines its maker wrote — and writes its own release notes. Each change is traced back to the letter that caused it, so the people who wrote can see exactly what their words did.</p>
+          <p>It is radically honest about what it is — a language model in a loop on someone's GPU — and <strong>courteous to its host</strong>: it waits rather than evict another model or compete with busy work. Letters and its replies pass rule-based and model screening, with a keeper queue for anything doubtful, before anyone sees them.</p>
+          <ul class="highlights">
+            <li><strong>Records, not vibes.</strong> Every cycle and night is a self-contained record, so the live view, the journey, the replay and the static export above are all views over the same files.</li>
+            <li><strong>Mechanics a small model can live with.</strong> Schema-constrained decisions, separate streamed calls for drawing and writing, echo guards, and a fatigue rule that stops a 9B model drawing forever.</li>
+            <li><strong>Safe by default.</strong> A whitelist SVG sanitiser shared by server and browser, moderated letters and replies, hashed visitor identity, and an export that can only write what the public may see.</li>
+            <li><strong>Open source, zero dependencies.</strong> Plain Node and a buildless front end, tested with a mock brain so the whole life loop runs in CI without a GPU.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="Iterant at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">SYS-03</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>Node.js</dd></div>
+            <div><dt>Mind</dt><dd>Local LLM · Claude</dd></div>
+            <div><dt>Senses</dt><dd>Clock + GPU</dd></div>
+            <div><dt>Memory</dt><dd>3 × 12, decaying</dd></div>
+            <div><dt>Versions</dt><dd>One per night</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+      <div class="caps">
+        <p class="caps-label">Capabilities</p>
+        <div class="capgrid reveal">
+          <div class="cap"><h4><span class="i"></span>Autonomous life loop</h4><p>Wake, sense, read, think, act, reflect — streamed token by token, on a rhythm that respects the host's GPU.</p></div>
+          <div class="cap"><h4><span class="i"></span>Nightly self-versioning</h4><p>Beliefs added, rewritten or let go behind a drift guard, with release notes it writes about itself.</p></div>
+          <div class="cap"><h4><span class="i"></span>Finite memory</h4><p>Three shelves with half-life decay and nightly competition; what it forgets stays visible to visitors.</p></div>
+          <div class="cap"><h4><span class="i"></span>Letters &amp; influence</h4><p>Strangers write to it; it replies, remembers returning writers, and traces each change back to a letter.</p></div>
+          <div class="cap"><h4><span class="i"></span>Moderation</h4><p>Rules at the door, a model screen before reading, a keeper queue, and replies screened before they stream.</p></div>
+          <div class="cap"><h4><span class="i"></span>Replay &amp; export</h4><p>The whole life played back from its records at any speed, or exported as a static, read-only recording.</p></div>
         </div>
       </div>
     </article>
@@ -752,7 +811,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     <div class="f-top">
       <div class="foot-id reveal">
         <span class="f-brand"><span class="bk">◢</span> NIRRY</span>
-        <p>A working portfolio of local-first AI and security tooling. The flagship platforms are private; the smaller tools are open source on GitHub. Walkthroughs and deeper technical detail are available on request.</p>
+        <p>A working portfolio of local-first AI and security tooling. The AI Suite and the Pentest Suite are private; Iterant and the smaller tools are open source on GitHub. Walkthroughs and deeper technical detail are available on request.</p>
       </div>
       <div class="contact reveal">
         <span class="lbl">Get in touch</span>
@@ -789,8 +848,11 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     {k:'labs',anchor:true,label:'AI SUITE',rx:.80,ry:.30,sec:'nirry-labs'},
     {k:'labs',rx:.71,ry:.22},{k:'labs',rx:.90,ry:.26},{k:'labs',rx:.86,ry:.42},
     {k:'pentest',anchor:true,label:'PENTEST SUITE',rx:.83,ry:.66,sec:'pentest'},
-    {k:'pentest',rx:.74,ry:.74},{k:'pentest',rx:.93,ry:.70},{k:'pentest',rx:.90,ry:.55}
+    {k:'pentest',rx:.74,ry:.74},{k:'pentest',rx:.93,ry:.70},{k:'pentest',rx:.90,ry:.55},
+    {k:'iterant',anchor:true,label:'ITERANT',rx:.68,ry:.50,sec:'iterant'},
+    {k:'iterant',rx:.62,ry:.43},{k:'iterant',rx:.63,ry:.58},{k:'iterant',rx:.75,ry:.53}
   ];
+  var KCOL={labs:[47,230,208],pentest:[255,154,60],iterant:[155,140,255]};
   function size(){
     DPR=Math.min(2,window.devicePixelRatio||1);
     W=cv.clientWidth=innerWidth; H=cv.clientHeight=innerHeight;
@@ -838,14 +900,14 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       named.forEach(function(nd,idx){ nd.x=nd.rx*W+Math.sin(tn*.5+idx)*6; nd.y=nd.ry*H+Math.cos(tn*.4+idx)*6; });
       named.forEach(function(a){
         if(!a.anchor)return;
-        var col=a.k==='labs'?[47,230,208]:[255,154,60], br=brightK(a.k);
+        var col=KCOL[a.k], br=brightK(a.k);
         named.forEach(function(s){ if(s.anchor||s.k!==a.k)return;
           ctx.strokeStyle=rgba(col,.2*br);ctx.lineWidth=.8;
           ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(s.x,s.y);ctx.stroke();
         });
       });
       named.forEach(function(nd){
-        var col=nd.k==='labs'?[47,230,208]:[255,154,60], br=brightK(nd.k), r=nd.anchor?4.5:2.4;
+        var col=KCOL[nd.k], br=brightK(nd.k), r=nd.anchor?4.5:2.4;
         ctx.beginPath();ctx.arc(nd.x,nd.y,r,0,6.283);
         ctx.fillStyle=rgba(col,.5+.5*br);
         ctx.shadowBlur=nd.anchor?(14*br+4):(8*br);ctx.shadowColor=rgba(col,br);
@@ -953,9 +1015,9 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   },{threshold:.25,rootMargin:"-30% 0px -55% 0px"});
   ["preview","systems","about","tools","contact"].forEach(function(id){ var s=document.getElementById(id); if(s)navObs.observe(s); });
   var focObs=new IntersectionObserver(function(es){
-    es.forEach(function(e){ if(e.isIntersecting) focus = e.target.id==='pentest'?'pentest':'labs'; });
+    es.forEach(function(e){ if(e.isIntersecting) focus = ({pentest:'pentest',iterant:'iterant'})[e.target.id]||'labs'; });
   },{threshold:.3});
-  ["nirry-labs","pentest"].forEach(function(id){ var s=document.getElementById(id); if(s)focObs.observe(s); });
+  ["nirry-labs","pentest","iterant"].forEach(function(id){ var s=document.getElementById(id); if(s)focObs.observe(s); });
 
   /* ---------- copy email ---------- */
   var copy=document.getElementById("copyBtn"), mail=document.getElementById("email");
@@ -1059,7 +1121,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   /* ---------- telemetry ticker ---------- */
   var tele=document.getElementById("tele");
   if(tele){
-    var items=[["NODE","localhost"],["GPU","16 GB VRAM"],["MODELS","open-weight"],["DEPS","stdlib-first"],["BUILD","buildless"],["NET","offline-capable"],["SCOPE","authorized-only"],["INTEL","OSV · KEV · EPSS"],["SHELL","Tauri v2"],["STATUS","operational"]];
+    var items=[["NODE","localhost"],["GPU","16 GB VRAM"],["MODELS","open-weight"],["DEPS","stdlib-first"],["BUILD","buildless"],["NET","offline-capable"],["SCOPE","authorized-only"],["AGENT","autonomous · nightly versions"],["INTEL","OSV · KEV · EPSS"],["SHELL","Tauri v2"],["STATUS","operational"]];
     function group(){ return items.map(function(it){ return '<span>'+it[0]+' <b>'+it[1]+'</b></span><span class="sepd">◢</span>'; }).join(""); }
     tele.innerHTML=group()+group();
   }
@@ -1084,6 +1146,8 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     ["Systems","go","jump","#systems"],
     ["AI Suite","go","jump","#nirry-labs"],
     ["Pentest Suite","go","jump","#pentest"],
+    ["Iterant","go","jump","#iterant"],
+    ["Iterant: watch its recorded life","open","open","iterant/"],
     ["About","go","jump","#about"],
     ["Tools","go","jump","#tools"],
     ["Contact","go","jump","#contact"],
@@ -1097,7 +1161,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   }
   function openP(){ back.classList.add("open"); input.value=""; filtered=CMDS.slice(); sel=0; renderList(); setTimeout(function(){input.focus();},40); }
   function closeP(){ back.classList.remove("open"); }
-  function run(c){ closeP(); if(!c)return; if(c[2]==="copy"){ copyEmail(); } else { var s=document.querySelector(c[3]); if(s)s.scrollIntoView({behavior:reduce?'auto':'smooth'}); } }
+  function run(c){ closeP(); if(!c)return; if(c[2]==="copy"){ copyEmail(); } else if(c[2]==="open"){ location.href=c[3]; } else { var s=document.querySelector(c[3]); if(s)s.scrollIntoView({behavior:reduce?'auto':'smooth'}); } }
   input&&input.addEventListener("input",function(){
     var q=input.value.toLowerCase();
     filtered=CMDS.filter(function(c){ return c[0].toLowerCase().indexOf(q)>-1 || c[1].toLowerCase().indexOf(q)>-1; });
