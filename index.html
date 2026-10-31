@@ -312,6 +312,13 @@ h1 .hl{color:var(--cyan)}
 
 /* tools section */
 .os-intro{color:var(--muted);max-width:62ch;margin:0 0 clamp(34px,5vw,52px);font-size:clamp(1rem,1.5vw,1.12rem)}
+.tool-cat{display:flex;align-items:center;gap:14px;margin:0 0 clamp(28px,4vw,40px)}
+.project + .tool-cat{margin-top:clamp(16px,3vw,34px)}
+.tool-cat .tc-dot{width:9px;height:9px;flex:none;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.tool-cat.sec .tc-dot{background:var(--amber);box-shadow:0 0 10px var(--amber)}
+.tool-cat .tc-name{font-family:var(--f-disp);font-weight:700;font-size:clamp(1.05rem,2vw,1.35rem);letter-spacing:-.01em}
+.tool-cat .tc-line{flex:1;height:1px;background:var(--line)}
+.tool-cat .tc-meta{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);white-space:nowrap}
 .p-repo{display:inline-flex;align-items:center;gap:8px;width:fit-content;margin-top:16px;
   font-family:var(--f-mono);font-size:.82rem;letter-spacing:.04em;color:var(--pa);text-decoration:none;
   border-bottom:1px solid transparent;transition:border-color .2s}
@@ -780,9 +787,16 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <span class="idx">04</span>
       <h2>Tools</h2>
       <span class="rule"></span>
-      <span class="count">03 / OPEN SOURCE</span>
+      <span class="count">04 / OPEN SOURCE</span>
     </div>
     <p class="os-intro reveal">Small, self-contained tools that fall out of the work above — each dependency-free, documented, and public on GitHub. A learning journal that happens to be useful software.</p>
+
+    <div class="tool-cat reveal">
+      <span class="tc-dot" aria-hidden="true"></span>
+      <span class="tc-name">Inference infrastructure</span>
+      <span class="tc-line" aria-hidden="true"></span>
+      <span class="tc-meta">Local AI · 02</span>
+    </div>
 
     <article class="project" id="vramlease">
       <div class="p-head reveal">
@@ -850,6 +864,13 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       </div>
     </article>
 
+    <div class="tool-cat sec reveal">
+      <span class="tc-dot" aria-hidden="true"></span>
+      <span class="tc-name">Recon &amp; web</span>
+      <span class="tc-line" aria-hidden="true"></span>
+      <span class="tc-meta">Security · 02</span>
+    </div>
+
     <article class="project sec" id="vulntriage">
       <div class="p-head reveal">
         <span class="p-tag">Security tooling · vulnerability triage</span>
@@ -877,6 +898,39 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
             <div><dt>Scoring</dt><dd>CVSS v3.1 (own)</dd></div>
             <div><dt>Rubric</dt><dd>P1–P4</dd></div>
             <div><dt>Output</dt><dd>table / JSON · CI exit</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
+
+    <article class="project sec" id="netprobe">
+      <div class="p-head reveal">
+        <span class="p-tag">Security tooling · network recon</span>
+        <h3>netprobe</h3>
+        <p class="p-sub">Dependency-free TCP recon that maps a network into a graph of hosts and the services they expose.</p>
+        <a class="p-repo" href="https://github.com/nirry-dev/netprobe" target="_blank" rel="noopener">github.com/nirry-dev/netprobe <span class="x" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>netprobe sweeps hosts and ports with an <strong>async connect scan</strong> — a full TCP handshake, so it needs no raw sockets and no root — then fingerprints each open port: a banner grab, a single HTTP request, or a TLS handshake to read the certificate.</p>
+          <p>The idea that shapes it is that <strong>recon output is a graph, not a wall of text</strong>. Every finding becomes a host node, a service node carrying its attributes — banner, HTTP title and server, TLS certificate — and an edge between them, so a re-scan merges into the picture instead of replacing it. The graph exports to JSON or Graphviz, ready for the next tool.</p>
+          <p>Like the rest of the toolkit it's pure standard library: <code>asyncio</code> for the scan, bounded by a single semaphore; <code>ssl</code> for certificate inspection; and a small CLI that prints a table or emits the graph.</p>
+          <ul class="highlights">
+            <li><strong>Recon as a graph.</strong> Hosts, services and their facts in one normalized model that merges across scans and feeds downstream tools.</li>
+            <li><strong>Connect scan, no root.</strong> A portable full-handshake sweep over asyncio, bounded by one semaphore — thousands of ports without raw sockets.</li>
+            <li><strong>Honest fingerprints.</strong> Banner, HTTP and TLS-certificate probes identify services; it records what it saw, with certs shown only when they validate.</li>
+            <li><strong>Standard library only.</strong> asyncio scan, ssl cert reads, JSON / Graphviz export — no dependencies, with an offline end-to-end test suite.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="netprobe at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-04</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
+            <div><dt>Scan</dt><dd>asyncio connect</dd></div>
+            <div><dt>Probes</dt><dd>banner · HTTP · TLS</dd></div>
+            <div><dt>Output</dt><dd>graph → JSON/dot</dd></div>
+            <div><dt>Tests</dt><dd>unittest</dd></div>
             <div><dt>License</dt><dd>MIT</dd></div>
           </dl>
         </aside>
