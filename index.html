@@ -263,6 +263,46 @@ h1 .hl{color:var(--cyan)}
 .iter-win .win-stat{margin-left:0}
 @media (max-width:720px){.iter-frame{height:700px}}
 @media (max-width:620px){.iter-win .win-stat,.iter-win .win-title{display:none}}
+/* ---- chainscope fund-flow window ---- */
+.chain-win{--pa:var(--amber);margin-top:28px;box-shadow:0 40px 120px -40px rgba(255,154,60,.26),0 20px 60px -30px rgba(0,0,0,.8)}
+.chain-win .dots i:first-child{background:var(--amber-dim)}
+.chain-win .win-stat{color:var(--amber);margin-left:auto}
+.chain-win .win-stat .dot{background:var(--amber);box-shadow:0 0 10px var(--amber)}
+.chain-win .win-body{grid-template-columns:172px 1fr}
+.cg-side{border-right:1px solid var(--line);background:rgba(0,0,0,.2);padding:16px 14px;display:flex;flex-direction:column;gap:16px}
+.cg-ttl{font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin:0}
+.cg-legend{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.cg-legend li{font-family:var(--f-mono);font-size:11px;letter-spacing:.03em;color:var(--muted);display:flex;align-items:center;gap:9px}
+.cg-legend li .b{width:9px;height:9px;border-radius:50%;flex:none}
+.cg-stats{margin-top:auto;display:flex;flex-direction:column;gap:12px}
+.cg-stat .v{font-family:var(--f-disp);font-weight:700;font-size:1.3rem;line-height:1;color:var(--fg);font-variant-numeric:tabular-nums}
+.cg-stat .v.flag{color:#ff5a6a}
+.cg-stat .k{display:block;margin-top:3px;font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.cg-main{position:relative;min-height:340px;min-width:0}
+.cg-graph{position:absolute;inset:0;width:100%;height:100%}
+.cg-graph text{font-family:var(--f-mono)}
+.cg-e{fill:none;stroke:#39424e}
+.cg-e.amber{stroke:var(--amber);stroke-opacity:.85}
+.cg-e.flag{stroke:#ff5a6a;stroke-opacity:.9}
+.cg-n{stroke-width:1.6}
+.cg-n.seed{fill:rgba(255,154,60,.18);stroke:var(--amber)}
+.cg-n.wallet{fill:rgba(124,134,153,.13);stroke:#7c8699}
+.cg-n.exch{fill:rgba(95,176,201,.14);stroke:#5fb0c9}
+.cg-n.flag{fill:rgba(255,90,106,.16);stroke:#ff5a6a}
+.cg-hull{fill:rgba(255,154,60,.055);stroke:rgba(255,154,60,.32);stroke-width:1;stroke-dasharray:4 5}
+.cg-lab{fill:var(--muted);font-size:11px;text-anchor:middle}
+.cg-lab.on{fill:var(--fg)}
+.cg-tag{fill:var(--faint);font-size:8px;letter-spacing:.12em;text-anchor:middle}
+.cg-graph .mk-mut{fill:#39424e}.cg-graph .mk-amb{fill:var(--amber)}.cg-graph .mk-flg{fill:#ff5a6a}
+.cg-note{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;color:var(--faint);margin:16px 0 0;line-height:1.5;max-width:72ch}
+@media (max-width:820px){
+  .chain-win .win-body{grid-template-columns:1fr}
+  .cg-side{flex-direction:row;flex-wrap:wrap;align-items:center;border-right:0;border-bottom:1px solid var(--line);gap:14px 22px}
+  .cg-ttl{width:100%}
+  .cg-stats{margin:0;flex-direction:row;gap:22px}
+  .cg-main{min-height:300px}
+}
+@media (max-width:620px){.chain-win .win-stat{display:none}}
 .p-head{display:flex;flex-direction:column;gap:0}
 .p-tag{display:inline-flex;align-items:center;gap:9px;font-family:var(--f-mono);font-size:11px;
   letter-spacing:.16em;text-transform:uppercase;color:var(--pa)}
@@ -812,6 +852,77 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
         <p class="p-sub">A read-only blockchain transaction &amp; wallet analyzer that turns public on-chain history into a legible entity graph.</p>
         <a class="p-repo" href="https://github.com/nirry-dev/chainscope" target="_blank" rel="noopener">github.com/nirry-dev/chainscope <span class="x" aria-hidden="true">↗</span></a>
       </div>
+      <div class="win chain-win reveal" role="img" aria-label="Representative Chainscope fund-flow graph: a seed wallet's funds route through a shared entity toward an exchange and a flagged mixer, whose taint is carried downstream to another wallet.">
+        <div class="win-bar">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="win-title"><b>chainscope</b>&nbsp;// fund-flow graph</span>
+          <span class="win-stat"><span class="dot" aria-hidden="true"></span> READ-ONLY</span>
+        </div>
+        <div class="win-body">
+          <div class="cg-side" aria-hidden="true">
+            <p class="cg-ttl">Case · demo-trace</p>
+            <ul class="cg-legend">
+              <li><span class="b" style="background:var(--amber)"></span>Seed / entity</li>
+              <li><span class="b" style="background:#7c8699"></span>Wallet</li>
+              <li><span class="b" style="background:#5fb0c9"></span>Exchange</li>
+              <li><span class="b" style="background:#ff5a6a"></span>Flagged · mixer</li>
+            </ul>
+            <div class="cg-stats">
+              <div class="cg-stat"><span class="v">3</span><span class="k">Entities</span></div>
+              <div class="cg-stat"><span class="v flag">2</span><span class="k">Flagged</span></div>
+              <div class="cg-stat"><span class="v">4</span><span class="k">Hops traced</span></div>
+            </div>
+          </div>
+          <div class="cg-main">
+            <svg class="cg-graph" viewBox="0 0 560 360" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <defs>
+                <marker id="cg-amb" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" class="mk-amb"/></marker>
+                <marker id="cg-mut" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" class="mk-mut"/></marker>
+                <marker id="cg-flg" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" class="mk-flg"/></marker>
+              </defs>
+              <path class="cg-hull" d="M70 85 C 30 100 30 270 78 286 C 150 304 300 252 288 185 C 300 118 150 68 70 85 Z"/>
+              <path class="cg-e amber" style="stroke-width:3" d="M111 129 Q 170 145 220 175" marker-end="url(#cg-amb)"/>
+              <path class="cg-e" style="stroke-width:1.6" d="M106 243 Q 165 210 220 195" marker-end="url(#cg-mut)"/>
+              <path class="cg-e" style="stroke-width:1.8" d="M268 172 Q 330 125 379 107" marker-end="url(#cg-mut)"/>
+              <path class="cg-e flag" style="stroke-width:3.4" d="M269 195 Q 330 235 388 246" marker-end="url(#cg-flg)"/>
+              <path class="cg-e flag" style="stroke-width:2.4" d="M428 241 Q 462 205 484 197" marker-end="url(#cg-flg)"/>
+              <path class="cg-e" style="stroke-width:1.5" d="M246 211 Q 243 255 249 298" marker-end="url(#cg-mut)"/>
+              <path class="cg-e" style="stroke-width:1.5" d="M417 110 Q 465 135 485 172" marker-end="url(#cg-mut)"/>
+              <g>
+                <circle class="cg-n seed" cx="90" cy="120" r="20"/>
+                <text class="cg-lab on" x="90" y="157">0x4f…a1c</text>
+                <text class="cg-tag" x="90" y="169">SEED</text>
+              </g>
+              <g>
+                <circle class="cg-n wallet" cx="90" cy="250" r="14"/>
+                <text class="cg-lab" x="90" y="280">0x9b…77</text>
+              </g>
+              <g>
+                <circle class="cg-n wallet" cx="245" cy="185" r="22"/>
+                <text class="cg-lab on" x="245" y="223">0x2e…d0</text>
+              </g>
+              <g>
+                <circle class="cg-n exch" cx="400" cy="95" r="18"/>
+                <text class="cg-lab on" x="400" y="69">Kraken</text>
+              </g>
+              <g>
+                <circle class="cg-n flag" cx="410" cy="255" r="18"/>
+                <text class="cg-lab on" x="410" y="291">Tornado</text>
+                <text class="cg-tag" x="410" y="303">MIXER</text>
+              </g>
+              <g>
+                <circle class="cg-n wallet" cx="250" cy="315" r="12"/>
+                <text class="cg-lab" x="250" y="343">0xa1…3f</text>
+              </g>
+              <g>
+                <circle class="cg-n wallet" cx="500" cy="185" r="14"/>
+                <text class="cg-lab" x="500" y="215">0x77…b2</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <p class="cg-note reveal">Representative view on sample data — wallets and contracts are nodes, value movements directed edges; flows into flagged destinations (mixers, sanctioned addresses) are drawn red and their taint carried downstream. Read-only: nothing here signs or moves funds.</p>
       <div class="p-body">
         <div class="p-overview reveal">
           <p>Chainscope inspects <em>public</em> transaction history and makes it legible: wallets and contracts become nodes, value movements become directed edges. You can attribute known addresses, follow the money across hops, cluster co-owned wallets into entities, value holdings in USD, and flag risky exposure — mixers, sanctioned addresses, tainted inflows. It is <strong>read-only</strong>: nothing signs, broadcasts or moves funds, so it stays on the tracing, attribution and visualization layer, for <strong>authorized</strong> investigation.</p>
