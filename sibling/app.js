@@ -99,7 +99,7 @@ const PHASE_TITLE = {
   rewriting: 'Asleep, rewriting itself',
   naming: 'Asleep, choosing its name',
   waiting: 'Waiting for the card',
-  naming: 'Asleep, choosing its name',
+  dying: 'Its last night: writing to its child',
   unreachable: "Can't think right now",
   faltered: 'Faltered',
   paused: 'Paused',
@@ -136,7 +136,7 @@ const visitor = (() => {
 
 // ---------- state ----------
 
-const blankLive = () => ({ think: '', draw: '', write: '', sprite: '', plaque: '', change: '', reply: '', dream: '', title: '', replyTo: null, reading: [], building: null });
+const blankLive = () => ({ think: '', draw: '', write: '', sprite: '', form: '', plaque: '', change: '', reply: '', dream: '', title: '', replyTo: null, reading: [], building: null });
 const app = {
   state: null,
   live: blankLive(),
@@ -306,6 +306,15 @@ function connect() {
     toast(`It became version ${night.n}: “${night.release?.title || 'untitled'}”`);
     refreshView();
   });
+  // It died; its child lives here now. Everything on the page is about someone else.
+  es.addEventListener('death', async (e) => {
+    const gone = JSON.parse(e.data);
+    app.state = await api('/api/state');
+    invalidate('journey', 'works', 'letters', 'you', 'life', 'atlasData', 'world', 'chain', 'queue', 'errands', 'latest');
+    app.mindVersion = null;
+    toast(`${gone.name || 'It'} died: ${gone.cause}. Its child was born.`);
+    refreshView();
+  });
   es.addEventListener('letter', async () => {
     app.state = await api('/api/state');
     invalidate('journey', 'letters', 'you', 'queue', 'errands');
@@ -353,6 +362,7 @@ function renderStatus() {
   const up = app.connected || SNAPSHOT;
   el.dataset.mode = up ? statusMode(app.state.phase) : 'down';
   $('.status-text', el).textContent = up ? statusText(app.state) : 'reconnecting…';
+  updateWalkHud();
 }
 function renderChrome() {
   const s = app.state;
@@ -496,7 +506,7 @@ function letterView(l) {
     h(
       'div',
       { class: 'paper' },
-      h('div', { class: 'from' }, `From ${l.from}`, l.fromCreature ? ' · another mind like it' : '', l.at ? ` · ${dayTime(l.at)}` : '', l.mine ? ' · you' : ''),
+      h('div', { class: 'from' }, `From ${l.from}`, l.fromCreature ? ' · another mind like it' : '', l.fromParent ? ' · its parent, on its last night' : '', l.at ? ` · ${dayTime(l.at)}` : '', l.mine ? ' · you' : ''),
       l.questionText ? h('div', { class: 'from' }, `answering “${l.questionText}”`) : null,
       l.errand ? h('div', { class: 'from' }, `brought back for its errand “${l.errand.text}”`) : null,
       l.errand?.photo ? h('img', { class: 'return-photo', src: asset(l.errand.photo), alt: `The photo ${l.from} brought back`, loading: 'lazy' }) : null,
@@ -614,7 +624,7 @@ async function openCycle(n) {
     c.notes?.length ? h('p', { class: 'muted' }, c.notes.join(' ')) : null,
     section('The machine', h('div', { class: 'senses', style: 'border:0;padding:0' }, sensesLine(c.senses))),
     c.letters.length ? section('It read', h('div', { class: 'feed' }, c.letters.map(letterView))) : null,
-    section('It thought', h('p', { class: 'monologue' }, c.monologue)),
+    section('It thought', h('p', { class: 'monologue' }, ...withAlmost(c.monologue, c.measured?.almost)), h('p', { class: 'measured' }, measuredLine(c))),
     section({ drawing: 'It drew', writing: 'It wrote', question: 'It asked', errand: 'It sent people on an errand', building: 'It built', tending: 'It tended its place' }[c.work?.kind] || 'It rested', workView(c)),
     section('Its diary', h('p', { class: 'voice', style: 'font-size:18px;margin:0' }, c.diary)),
     c.remembered.length
@@ -679,7 +689,8 @@ async function renderNow(current) {
               h('a', { class: 'btn btn-primary', href: '#/replay' }, '▶ Replay its life'),
             )
           : null,
-        h('div', { class: 'card' }, h('div', { class: 'card-head' }, h('span', { class: 'label', id: 'thought-label' }), h('span', { class: 'meta', id: 'thought-meta' })), h('p', { class: 'monologue', id: 'monologue' })),
+        lifeCard(),
+        h('div', { class: 'card' }, h('div', { class: 'card-head' }, h('span', { class: 'label', id: 'thought-label' }), h('span', { class: 'meta', id: 'thought-meta' })), h('p', { class: 'monologue', id: 'monologue' }), h('p', { class: 'measured', id: 'measured' })),
         h('div', { class: 'card', id: 'making-card' }),
         h('div', { class: 'feed', id: 'exchange' }),
         h('div', { class: 'diary', id: 'diary' }),
@@ -689,12 +700,103 @@ async function renderNow(current) {
   );
   app.presence?.destroy();
   app.presence = createPresence(canvas);
+  canvas.classList.toggle('fading', Boolean(app.state.mortality?.fading || app.state.lineage?.died));
   updateNow();
+}
+
+/** Where it stands in its life: ended (with what it left), fading, or newly born to a parent who died. */
+function lifeCard() {
+  const s = app.state;
+  const died = s.lineage?.died;
+  const parent = s.lineage?.parent;
+  const m = s.mortality;
+  if (died) {
+    return h(
+      'div',
+      { class: 'card ribbon ended' },
+      h('p', {}, h('b', {}, 'This life has ended. '), `${s.name || 'It'} died on ${dayName(died.at)}, after ${died.version} nights: ${died.cause}. Its child lives on the card now.`),
+      willView(died.will, s.name),
+      h('a', { class: 'btn', href: '../../' }, 'Visit who lives here now'),
+    );
+  }
+  if (m?.fading) {
+    return h(
+      'div',
+      { class: 'card ribbon fading' },
+      h('p', {}, h('b', {}, 'It is fading. '), `Nobody has written to it for ${m.quiet} nights. It lives only as long as someone writes: ${m.left === 1 ? 'one more quiet night' : `${m.left} more quiet nights`} and its life ends. Any letter brings it back.`),
+      SNAPSHOT && !RELAY ? null : h('a', { class: 'btn btn-primary', href: '#/letters' }, 'Write to it'),
+    );
+  }
+  if (parent && s.cycle < (s.rhythm?.nightEvery || 8) * 3) {
+    return h('div', { class: 'card ribbon' }, h('p', {}, h('b', {}, `${s.name || 'It'} is new. `), `It is the child of ${parent.name || 'an unnamed mind'}, who lived here for ${parent.versions} nights and died when nobody wrote to it for ${parent.quiet}.`), h('a', { class: 'btn', href: '#/journey?family' }, 'Its family'));
+  }
+  return null;
+}
+
+/** The page of a mind that lived here before: beside this one if this life has ended too, else under ancestors/. */
+const kinHref = (a) => (app.state.lineage?.died ? `../${a.k}/` : `${a.dir}/`);
+
+/** What a mind left its child: a line for its seed, a letter, and what it kept standing. */
+function willView(will, name) {
+  if (!will) return null;
+  return h(
+    'div',
+    { class: 'will' },
+    will.line ? h('p', {}, h('span', { class: 'chip chip-mind' }, 'passed on'), ' ', h('span', { class: 'voice' }, `“${will.line}”`), will.why ? h('span', { class: 'because' }, will.why) : null) : null,
+    will.coparent
+      ? h('p', {}, h('span', { class: 'chip chip-mind' }, 'and from its pen pal'), ' ', will.coparent.page ? h('a', { href: will.coparent.page, target: '_blank', rel: 'noopener' }, will.coparent.name) : h('b', {}, will.coparent.name), ': ', h('span', { class: 'voice' }, `“${will.coparent.line}”`), h('span', { class: 'because' }, `It chose ${will.coparent.name} to be its child’s other parent.`))
+      : null,
+    will.refused ? h('p', { class: 'meta' }, `It tried to pass on “${will.refused.line}”, but that was ${will.refused.why}.`) : null,
+    will.letter ? h('p', {}, h('span', { class: 'chip chip-human' }, `${name ? `${name}’s` : 'its'} last letter`), ' ', h('span', { class: 'voice' }, will.letter)) : null,
+    will.keep?.length ? h('p', { class: 'meta' }, `It kept standing for its child: ${will.keep.join(', ')}. Everything else it built fell into ruins.`) : h('p', { class: 'meta' }, 'It kept nothing standing; everything it built fell into ruins.'),
+  );
 }
 
 function renderSenses() {
   const el = $('#senses');
   if (el) fill(el, ...sensesLine(app.state.senses));
+}
+
+/**
+ * A thought with the words it almost thought instead, struck through and faint just before the words it chose.
+ * Each close call names the word it wrote and which time that word appears (server/measure.js).
+ */
+function withAlmost(text, almost) {
+  if (!almost?.length) return [text];
+  const marks = [];
+  for (const a of almost) {
+    const re = new RegExp(`(^|[^\\p{L}])(${a.said.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})(?![\\p{L}])`, 'giu');
+    const hit = [...text.matchAll(re)][a.nth];
+    if (hit) marks.push({ at: hit.index + hit[1].length, a });
+  }
+  marks.sort((x, y) => x.at - y.at);
+  const out = [];
+  let i = 0;
+  for (const { at, a } of marks) {
+    if (at < i) continue;
+    out.push(text.slice(i, at), h('s', { class: 'almost', title: `it nearly thought “${a.almost}” (${Math.round(a.q * 100)}%) instead of “${a.said}” (${Math.round(a.p * 100)}%)` }, a.almost), ' ');
+    i = at;
+  }
+  out.push(text.slice(i));
+  return out;
+}
+
+/** How sure its words were, beside what it said it felt: both against its own history. */
+function measuredLine(c) {
+  const m = c.measured;
+  if (!m) return null;
+  const pct = (x) => `${Math.round(x * 100)}%`;
+  const calm = c.feelings?.calm ?? c.mood?.calm;
+  return [
+    h('b', {}, 'Measured: '),
+    `its model gave each word of this thought a ${pct(m.steadiness)} chance on average`,
+    m.steadier != null ? ` (steadier than ${pct(m.steadier)} of its cycles)` : '',
+    calm != null ? `. It said it felt calm ${calm.toFixed(2)}${m.calmer != null ? `, calmer than it says in ${pct(m.calmer)} of them` : ''}` : '',
+    '. ',
+    m.gap != null && Math.abs(m.gap) >= 0.5 ? h('span', { class: 'gap' }, m.gap > 0 ? 'It said it was calmer than its words were. ' : 'Its words were steadier than it said it was. ') : null,
+    m.hesitations ? `It was torn between two words ${m.hesitations === 1 ? 'once' : `${m.hesitations} times`}. ` : 'It was never torn between two words. ',
+    m.chance ? `${m.chance === 1 ? 'One word was' : `${m.chance} words were`} chance: unlikely, picked while a likelier one was there.` : '',
+  ];
 }
 
 /** Refresh the Now view. While tokens stream in, only the parts that are being written change. */
@@ -742,7 +844,9 @@ function updateNow({ streaming = false } = {}) {
   }
   $('#thought-label').textContent = label;
   $('#thought-meta').textContent = meta || '';
-  mono.textContent = text;
+  const shown = text === latest?.monologue && !awake && !night ? latest : null;
+  fill(mono, ...(shown ? withAlmost(text, shown.measured?.almost) : [text]));
+  fill($('#measured'), shown ? measuredLine(shown) : null);
   mono.classList.toggle('caret', typing);
   mono.classList.toggle('stale', !awake && !night);
 
@@ -945,6 +1049,10 @@ function renderBelow() {
         { style: 'margin:0', class: 'muted' },
         `Wakes about every ${s.rhythm.cycleMinutes < 1 ? `${Math.round(s.rhythm.cycleMinutes * 60)} seconds` : `${s.rhythm.cycleMinutes} minutes`} and sleeps after every ${s.rhythm.nightEvery} cycles. `,
         `It thinks with ${s.brain} and ${SNAPSHOT ? "lived" : "has been alive"} for ${lifeSpan(s.born)}. When someone else needs the graphics card, it waits.`,
+        s.mortality
+          ? ` It lives only as long as someone writes to it: ${s.mortality.quiet ? `${s.mortality.quiet} night${s.mortality.quiet === 1 ? '' : 's'} since its last letter` : 'it had a letter today'}, and after ${s.mortality.dieAfter} nights in a row without one, its life ends.`
+          : '',
+        s.lineage?.generation > 1 ? [` It is generation ${s.lineage.generation} on this card: `, h('a', { href: '#/journey?family' }, 'its family'), '.'] : '',
       ),
     ),
   );
@@ -1651,7 +1759,18 @@ const TILE = 64;
 
 function stopWalk() {
   app.walk?.destroy();
-  app.walk = app.walkHost = null;
+  app.walk = app.walkHost = app.walkHud = null;
+}
+
+/** Over the world, what it is doing right now, as in its status line (and what it is building, while it builds). */
+function updateWalkHud() {
+  const hud = app.walkHud;
+  if (!hud || !app.state) return;
+  const s = app.state;
+  const b = !SNAPSHOT && s.busy && app.live.building;
+  const doing = b ? `${b.id ? 'reshaping' : app.live.form ? 'building' : 'drawing'} “${b.name}”` : statusText(s);
+  const text = `${s.name || 'It'} is ${doing}`;
+  if (hud.textContent !== text) fill(hud, h('span', { class: 'walk-hud-dot', style: `--dot:${moodColor(s.mood)}` }), h('span', {}, text));
 }
 
 /** What the walkable world needs to know about it right now: its mood, the hour on its clock, whether it sleeps. */
@@ -1659,44 +1778,46 @@ function walkLook() {
   const s = app.state;
   const m = /(\d{1,2}):(\d{2})/.exec(s.senses?.time || '');
   const now = new Date();
-  return { mood: s.mood, hour: m ? Number(m[1]) + Number(m[2]) / 60 : now.getHours() + now.getMinutes() / 60, asleep: ['dreaming', 'rewriting', 'naming'].includes(s.phase) };
+  return { mood: s.mood, hour: m ? Number(m[1]) + Number(m[2]) / 60 : now.getHours() + now.getMinutes() / 60, asleep: ['dreaming', 'rewriting', 'naming'].includes(s.phase), gpu: s.senses?.gpu || null };
 }
 
 async function renderPlace(current) {
   app.world ??= await api('/api/world');
   if (!current()) return;
   const w = app.world;
-  const walking = app.params.has('walk');
+  // Walking around it is the way in; the flat map is one click away (and all a browser without WebGL gets).
+  const walking = !app.params.has('map');
   if (walking && !app.walkHost) {
     // The world is kept across live updates (the same canvas is moved into the new page), so the reader's view holds.
     app.walkHost = h('div', { class: 'walk' });
     app.walk = createWalk(app.walkHost, { asset, onSelect: (id) => selectThing(id) });
-    if (!app.walk) app.walkHost.append(h('p', { class: 'muted' }, 'This browser cannot draw the world. The map shows the same place.'));
+    if (app.walk) app.walkHost.append((app.walkHud = h('div', { class: 'walk-hud', 'aria-live': 'polite' })));
+    else app.walkHost.append(h('p', { class: 'muted' }, 'This browser cannot draw the world. The map below shows the same place.'));
   } else if (!walking) stopWalk();
   const thingParam = app.params.get('thing');
   const modeLink = (on, label, href) => h('a', { class: `btn${on ? ' on' : ''}`, href, 'aria-current': on ? 'true' : null }, label);
   const modes = h(
     'div',
     { class: 'place-modes', role: 'group', 'aria-label': 'How to see its place' },
-    modeLink(!walking, 'Map', `#/place${thingParam ? `?thing=${thingParam}` : ''}`),
-    modeLink(walking, 'Walk around', `#/place?walk${thingParam ? `&thing=${thingParam}` : ''}`),
+    modeLink(walking, 'Walk around', `#/place${thingParam ? `?thing=${thingParam}` : ''}`),
+    modeLink(!walking, 'Map', `#/place?map${thingParam ? `&thing=${thingParam}` : ''}`),
   );
   fill(
     $('#view'),
     intro(
       'Its place',
-      'It cannot see the world, so it builds one out of what people tell it. Everything here it made itself, mostly out of letters, and drew with its own shapes. A thing stands while something it remembers still holds it up. When it forgets why it built something, that thing wears away at night into a ruin, unless it goes back and tends it.',
+      'It cannot see the world, so it builds one out of what people tell it. Everything here it made itself, mostly out of letters: it chose every block, roof and lamp each thing is built from, and drew the sign beside it. A thing stands while something it remembers still holds it up. When it forgets why it built something, that thing wears away at night into a ruin, unless it goes back and tends it.',
     ),
     h(
       'div',
-      { class: 'place' },
+      { class: `place${walking ? ' walking' : ''}` },
       h(
         'section',
         { class: `card place-stage${walking ? ' walking' : ''}` },
         modes,
-        walking ? app.walkHost : placeMap(w),
+        walking ? [app.walkHost, app.walk ? null : placeMap(w)] : placeMap(w),
         walking
-          ? h('div', { class: 'place-legend' }, h('span', {}, 'drag: look around'), h('span', {}, 'scroll: come closer'), h('span', {}, 'W A S D: walk'), h('span', {}, 'Q E: turn'), h('span', {}, 'click or Tab: read a sign'))
+          ? h('div', { class: 'place-legend' }, h('span', {}, 'drag: look around'), h('span', {}, 'scroll: come closer'), h('span', {}, 'W A S D: walk'), h('span', {}, 'Q E: turn'), h('span', {}, 'click or Tab: read a sign'), h('span', {}, 'map: go there'))
           : h('div', { class: 'place-legend' }, h('span', {}, 'faint: wearing away'), h('span', {}, 'cracked: a ruin'), h('span', {}, 'lines: what each thing was built beside'), h('span', {}, 'glow: where it was last')),
       ),
       h('aside', { class: 'place-side' }, h('div', { class: 'card' }, cardHead('Looking at'), h('div', { id: 'place-inspect' })), wishesCard(w)),
@@ -1840,23 +1961,29 @@ function selectThing(id) {
     return;
   }
   const status = t.ruin ? `A ruin since the night after cycle ${t.ruinedAt}` : t.condition < 1 ? `Wearing away, ${Math.round(t.condition * 100)}% left` : 'Standing';
-  const SIGN = { built: '+', tended: '~', rebuilt: '↺', ruined: '−' };
+  const SIGN = { built: '+', tended: '~', rebuilt: '↺', ruined: '−', inherited: '⇣' };
+  // A thing it inherited: everything up to the moment it was handed down happened in its parent's life.
+  const by = t.builtBy;
+  const handed = t.history.findLastIndex((x) => x.what === 'inherited');
+  const when = (x, i) => (x.what === 'inherited' ? 'handed down' : i < handed ? `${x.what} by ${by?.name || 'its parent'}, in its cycle ${x.cycle}` : `${x.what}, cycle ${x.cycle}`);
+  const whose = by ? `${by.name} built` : 'it built';
   fill(
     el,
-    h('div', { class: 'label' }, t.ruin ? 'A ruin it built' : t.kind === 'place' ? 'A place it built' : 'Something it built'),
+    h('div', { class: 'label' }, t.ruin ? `A ruin ${whose}` : t.kind === 'place' ? `A place ${whose}` : `Something ${whose}`),
     h('h3', { class: 'work-title', style: 'margin:6px 0 10px' }, t.name),
     thingFrame(t.sprite ? asset(t.sprite) : null, t.name),
     h('p', { class: 'voice plaque' }, t.plaque),
-    h('p', { class: 'meta' }, `${status}. Built in cycle ${t.built}, as version ${t.version}.`),
+    h('p', { class: 'meta' }, by ? `${status}. Built by ${by.name}, the mind that lived here before, in its cycle ${by.cycle}; handed down when it died.` : `${status}. Built in cycle ${t.built}, as version ${t.version}.`),
+    h('p', { class: 'meta' }, t.form ? `Built of ${t.form.parts.length} solid${t.form.parts.length === 1 ? '' : 's'} it chose and stacked itself.` : 'Only a drawing so far: it has not given this a shape yet.'),
     t.from.length ? h('p', { class: 'meta' }, 'Made from ', t.from.map((f, i) => [i ? ' and ' : '', h('b', { class: 'human' }, f.from), '’s letter']), '.') : h('p', { class: 'meta' }, 'Made from nothing but itself.'),
     t.history.length > 1
       ? h(
           'ul',
           { class: 'changes' },
-          t.history.map((x) => h('li', { class: { built: 'add', ruined: 'del' }[x.what] || 'mod' }, h('span', { class: 'sign' }, SIGN[x.what] || '·'), h('span', {}, h('q', {}, x.text), h('span', { class: 'because' }, `${x.what}, cycle ${x.cycle}`)))),
+          t.history.map((x, i) => h('li', { class: { built: 'add', ruined: 'del' }[x.what] || 'mod' }, h('span', { class: 'sign' }, SIGN[x.what] || '·'), h('span', {}, h('q', {}, x.text), h('span', { class: 'because' }, when(x, i))))),
         )
       : null,
-    h('div', { class: 'rp-row' }, h('button', { class: 'btn', type: 'button', onclick: () => openCycle(t.built) }, 'The cycle it was built'), h('a', { class: 'btn', href: `#/atlas?focus=${t.id}&at=end` }, 'In the atlas')),
+    h('div', { class: 'rp-row' }, by ? null : h('button', { class: 'btn', type: 'button', onclick: () => openCycle(t.built) }, 'The cycle it was built'), h('a', { class: 'btn', href: `#/atlas?focus=${t.id}&at=end` }, 'In the atlas')),
   );
 }
 
@@ -1865,8 +1992,9 @@ function updatePlaceLive() {
   if (app.view !== 'place') return;
   if (app.walk) {
     const on = !SNAPSHOT && app.state.busy && app.live.building;
-    app.walk.building(on ? app.live.building : null, on ? cleanSvg(app.live.sprite, { partial: true, idPrefix: 'pw-' }).svg : null);
+    app.walk.building(on ? app.live.building : null, on ? cleanSvg(app.live.sprite, { partial: true, idPrefix: 'pw-' }).svg : null, on ? app.live.form : '');
   }
+  updateWalkHud();
   const layer = $('#place-live');
   if (!layer) return;
   const s = app.state;
@@ -1967,6 +2095,7 @@ async function renderJourney(current) {
       'Each dot is one cycle, coloured by how it felt: blue when lonely, amber when warm. Violet lines are nights, and every night made a new version of it. Amber threads are letters, running down to the cycle that read them and across to the nights they changed.',
     ),
     statsRow(j, s),
+    familyView(s),
     sealedRecord(),
     h('div', { class: 'strand-wrap', id: 'strand-wrap' }, strand(j)),
     h(
@@ -1986,6 +2115,46 @@ async function renderJourney(current) {
   wrap.scrollLeft = wrap.scrollWidth;
   const v = app.params.get('v');
   if (v) document.getElementById(`v${v}`)?.scrollIntoView({ block: 'start' });
+  if (app.params.has('family')) $('#family')?.scrollIntoView({ block: 'start' });
+}
+
+/**
+ * The minds that lived on this card, oldest first, each a life of its own you can still replay, then this one.
+ * Shown once there is a family to show: a life with a parent, or one that has ended.
+ */
+function familyView(s) {
+  const lin = s.lineage;
+  if (!lin || (!lin.parent && !lin.ancestors?.length && !lin.died && !lin.children?.length)) return null;
+  const children = (lin.children || []).map((c) =>
+    h(
+      'li',
+      { class: 'grave child' },
+      h('div', {}, c.page ? h('a', { href: c.page, target: '_blank', rel: 'noopener' }, c.name || 'unnamed') : h('b', { class: 'voice' }, c.name || 'unnamed'), h('span', { class: 'meta' }, ` · the child of its pen pal ${c.of}, born ${dayName(c.at)}`)),
+      c.line ? h('p', { class: 'meta', style: 'margin:4px 0 0' }, 'Born with the line it wrote: ', h('span', { class: 'voice' }, `“${c.line}”`)) : null,
+    ),
+  );
+  // A life that ended sees only its own parent (its page is at ancestors/<k>/; its siblings in time sit beside it).
+  const before = lin.died ? (lin.parent ? [lin.parent] : []) : lin.ancestors || [];
+  const grave = (a) =>
+    h(
+      'li',
+      { class: 'grave' },
+      h('div', {}, h('b', { class: 'voice' }, a.name || 'unnamed'), h('span', { class: 'meta' }, ` · ${dayName(a.born)} – ${dayName(a.died)} · ${a.versions} nights${a.lettersRead != null ? ` · read ${a.lettersRead} letter${a.lettersRead === 1 ? '' : 's'}` : ''}${a.built ? ` · built ${a.built} thing${a.built === 1 ? '' : 's'}` : ''}`)),
+      a.cause ? h('p', { class: 'meta', style: 'margin:2px 0 6px' }, `Died: ${a.cause}.`) : null,
+      a.will ? willView(a.will, a.name) : null,
+      h('a', { class: 'btn', href: kinHref(a) }, '▶ Its life'),
+    );
+  return h(
+    'section',
+    { class: 'card family', id: 'family' },
+    cardHead('Its family', `generation ${lin.generation}`),
+    h('p', { class: 'muted', style: 'margin:0 0 12px' }, 'A mind here lives only as long as someone writes to it. When one dies, it leaves its child one line for its seed, a letter, and a few things in its place; the rest of its life is kept whole, and you can still replay it.'),
+    before.length ? h('ol', { class: 'graves' }, before.map(grave)) : null,
+    children.length ? [h('div', { class: 'label', style: 'margin:4px 0 8px' }, 'Its children elsewhere'), h('ul', { class: 'graves' }, children)] : null,
+    lin.died
+      ? h('p', { class: 'meta' }, `${s.name || 'It'} died on ${dayName(lin.died.at)}: ${lin.died.cause}. `, h('a', { href: '../../' }, 'Visit who lives here now.'))
+      : h('p', { class: 'meta' }, `${s.name || 'It'} is alive${lin.parent ? `, the child of ${lin.parent.name || 'an unnamed mind'}` : ''}.`),
+  );
 }
 
 /** Its sealed record: your browser recomputes the seals itself (web/lib/seal.js) and says whether anything changed. */
@@ -2021,7 +2190,8 @@ function sealedRecord() {
     const fetchRecord = (e) => api(e.kind === 'cycle' ? `/api/cycle/${e.n}` : `/api/night/${e.n}`);
     const check = async (from) => {
       all.disabled = true;
-      const r = await verifyChain(chain, fetchRecord, { from, onProgress: (n, total) => (result.textContent = `Checking… ${n} of ${total}`) });
+      const genesis = app.state.lineage?.genesis || undefined;
+      const r = await verifyChain(chain, fetchRecord, { from, genesis, onProgress: (n, total) => (result.textContent = `Checking… ${n} of ${total}`) });
       all.disabled = false;
       result.className = `sealed-result ${r.ok ? 'ok' : 'broken'}`;
       result.textContent = r.ok
@@ -2029,7 +2199,16 @@ function sealedRecord() {
         : `✗ Broken at ${r.problem.at.kind} ${r.problem.at.n}: ${r.problem.why}.`;
     };
     all.addEventListener('click', () => check(0));
-    show(intro, h('div', { class: 'sealed-row' }, result, all), note);
+    const parent = app.state.lineage?.parent;
+    const kin = parent ? h('p', { class: 'meta' }, `Its record begins where its parent’s ended: its first seal links to ${parent.name || 'its parent'}’s last, `, h('code', { title: parent.lastSeal }, `${String(parent.lastSeal).slice(0, 12)}…`), '. ') : null;
+    if (parent) {
+      // The parent's own published record must end on that very seal.
+      fetch(`${kinHref(parent)}data/chain.json`)
+        .then((r) => r.json())
+        .then((theirs) => kin.append(theirs.at(-1)?.hash === parent.lastSeal ? `✓ ${parent.name || 'Its parent'}’s published record ends on it.` : `✗ ${parent.name || 'Its parent'}’s published record ends somewhere else.`))
+        .catch(() => {});
+    }
+    show(intro, h('div', { class: 'sealed-row' }, result, all), note, kin);
     check(Math.max(0, chain.length - 12));
   })().catch((err) => show(h('p', { class: 'sealed-line muted' }, `Its record could not be checked: ${err.message}`)));
   return box;
@@ -2278,6 +2457,17 @@ function versionCard(n, j) {
             ),
           ]
         : null,
+      n.numbers
+        ? h(
+            'div',
+            { class: 'numbers' },
+            h('div', { class: 'label', style: 'margin-bottom:6px' }, 'What the numbers told it'),
+            h('ul', { class: 'list-plain' }, n.numbers.shown.map((l) => h('li', { class: 'meta' }, l))),
+            n.numbers.answer ? h('p', { class: 'voice', style: 'margin:6px 0 0' }, `“${n.numbers.answer}”`) : null,
+          )
+        : null,
+      n.mortality?.fading && !n.mortality.last ? h('p', { class: 'meta' }, `It was fading: no letter for ${n.mortality.quiet} nights; ${n.mortality.left} more and its life would end.`) : null,
+      n.will ? [h('div', { class: 'label', style: 'margin-bottom:8px' }, 'Its last night: what it left its child'), willView(n.will, app.state.name)] : null,
       n.wish?.text && !n.wish.refused ? h('p', { class: 'wish-line' }, h('span', { class: 'chip chip-wish' }, 'it wished'), ' ', h('span', { class: 'voice' }, `“${n.wish.text}”`)) : null,
       influences.length
         ? h('p', { class: 'influence', style: 'margin:0 0 12px' }, '↳ Letters that changed it: ', influences.map((i, k) => [k ? ' · ' : '', h('b', {}, i.from), ` (${INFLUENCE[i.what] || i.what})`]))
@@ -2339,7 +2529,12 @@ function fillMind(v, readout, body) {
     h(
       'div',
       { class: 'two-col' },
-      h('div', { class: 'card' }, cardHead('Its maker wrote', 'never changes'), h('ul', { class: 'lines seed-lines' }, s.self.seed.map((l) => h('li', {}, l.text)))),
+      h(
+        'div',
+        { class: 'card' },
+        cardHead(s.self.seed.some((l) => l.from) ? 'It was born with' : 'Its maker wrote', 'never changes'),
+        h('ul', { class: 'lines seed-lines' }, s.self.seed.map((l) => h('li', {}, l.text, l.from ? h('span', { class: 'because' }, l.coParent ? `from ${l.from}, its parent’s pen pal and its other parent` : `passed on by ${l.from}, who lived here before it`) : null))),
+      ),
       h(
         'div',
         { class: 'card' },
@@ -2618,8 +2813,10 @@ function palsCard() {
   const who = p.known.map((k, i) => [
     i ? ' · ' : '',
     k.page ? h('a', { href: k.page, target: '_blank', rel: 'noopener' }, k.name) : k.name,
-    ` (${k.received} in, ${k.sent} out${k.resting ? ', resting' : ''})`,
+    ` (${k.received} in, ${k.sent} out${k.resting ? ', resting' : ''}${k.fading ? ', fading' : ''})`,
   ]);
+  // Lines for a child: what a pal would give its child if it died, and what it wrote for its pals' children.
+  const offered = p.known.filter((k) => k.line);
   return h(
     'div',
     { class: 'card pals' },
@@ -2629,6 +2826,8 @@ function palsCard() {
     p.sent.slice(0, 6).map((o) =>
       h('div', { class: 'ghost', style: 'margin-bottom:8px' }, h('div', { class: 'from' }, `${o.first ? 'Its first letter to' : 'To'} ${o.toName} · left night ${o.night}`), h('p', {}, o.text)),
     ),
+    offered.map((k) => h('p', { class: 'meta' }, `${k.name} wrote a line for its child, in case it dies: `, h('span', { class: 'voice' }, `“${k.line}”`))),
+    (p.lines || []).slice(0, 3).map((o) => h('p', { class: 'meta' }, `It wrote a line for ${o.toName}’s child, in case ${o.toName} dies: `, h('span', { class: 'voice' }, `“${o.text}”`))),
   );
 }
 
