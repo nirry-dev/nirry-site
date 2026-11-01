@@ -1073,7 +1073,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   <section class="sec" id="tools">
     <div class="sec-card tools-card">
       <div class="sc-head reveal">
-        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">14 TOOLS</span></p>
+        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">15 TOOLS</span></p>
         <h2>Tools</h2>
         <p class="sc-lede">Tools that fall out of the work above — from a full on-chain investigation tool down to single-file utilities, each <b>dependency-free, documented, and public on GitHub</b>. A working journal that happens to be useful software.</p>
       </div>
@@ -1190,7 +1190,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <span class="tc-dot" aria-hidden="true"></span>
       <span class="tc-name">Inference infrastructure</span>
       <span class="tc-line" aria-hidden="true"></span>
-      <span class="tc-meta">Local AI · 05</span>
+      <span class="tc-meta">Local AI · 06</span>
     </div>
 
     <article class="project" id="vramlease">
@@ -1352,6 +1352,39 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
             <div><dt>Tokenizers</dt><dd>BPE · SentencePiece</dd></div>
             <div><dt>Output</dt><dd>count · ids · pack</dd></div>
             <div><dt>Dependencies</dt><dd>none</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
+
+    <article class="project" id="tokrate">
+      <div class="p-head reveal">
+        <span class="p-tag">Local AI tooling · benchmarking</span>
+        <h3>tokrate</h3>
+        <p class="p-sub">Benchmark a local OpenAI-compatible LLM endpoint — time-to-first-token, tokens/sec, and throughput under concurrency.</p>
+        <a class="p-repo" href="https://github.com/nirry-dev/tokrate" target="_blank" rel="noopener">github.com/nirry-dev/tokrate <span class="x" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>The first question about any local model is whether it's fast enough, and the answer is a few concrete numbers. tokrate gets them without a framework: it speaks the <strong>OpenAI streaming API</strong> that llama.cpp, vLLM and Ollama already serve, fires requests at a chosen concurrency, and times each one.</p>
+          <p>It reports the three numbers that matter on one machine — <strong>time to first token</strong>, per-request <strong>tokens/sec</strong>, and aggregate <strong>throughput</strong> — because a single stream's speed and what the box can do under load are different questions. Token counts come from the response's own <code>usage</code>, with a delta count as a fallback, and a warmup request loads the model so it isn't timed.</p>
+          <p>Point it at a URL, pick how many requests and how many at once, and read a table or JSON; a non-zero exit flags any failures. Pure standard library — it streams and times the responses itself. It sits beside oneslot and gguftok: one serves the model, one counts the prompt, this one measures the speed.</p>
+          <ul class="highlights">
+            <li><strong>The numbers that matter.</strong> TTFT, tokens/sec per request, and aggregate throughput — latency and capacity, which aren't the same thing.</li>
+            <li><strong>Speaks what you already run.</strong> Any OpenAI-compatible endpoint — llama.cpp, vLLM, Ollama, or oneslot — no adapter needed.</li>
+            <li><strong>Concurrency on tap.</strong> Fire N requests C-at-a-time to see how throughput scales, with a warmup so load time isn't counted.</li>
+            <li><strong>Standard library only.</strong> It streams and times the responses itself; a table or JSON, and a failure-aware exit code.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="tokrate at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">INF-06</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
+            <div><dt>Target</dt><dd>OpenAI-compatible</dd></div>
+            <div><dt>Measures</dt><dd>TTFT · tok/s · throughput</dd></div>
+            <div><dt>Mode</dt><dd>N requests · concurrency</dd></div>
+            <div><dt>Output</dt><dd>table / JSON</dd></div>
             <div><dt>License</dt><dd>MIT</dd></div>
           </dl>
         </aside>
