@@ -1073,7 +1073,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   <section class="sec" id="tools">
     <div class="sec-card tools-card">
       <div class="sc-head reveal">
-        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">13 TOOLS</span></p>
+        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">14 TOOLS</span></p>
         <h2>Tools</h2>
         <p class="sc-lede">Tools that fall out of the work above — from a full on-chain investigation tool down to single-file utilities, each <b>dependency-free, documented, and public on GitHub</b>. A working journal that happens to be useful software.</p>
       </div>
@@ -1501,7 +1501,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <span class="tc-dot" aria-hidden="true"></span>
       <span class="tc-name">Eval &amp; guardrails</span>
       <span class="tc-line" aria-hidden="true"></span>
-      <span class="tc-meta">AI safety · 03</span>
+      <span class="tc-meta">AI safety · 04</span>
     </div>
 
     <article class="project art" id="promptscreen">
@@ -1597,6 +1597,39 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
             <div><dt>Removes</dt><dd>script · handlers · foreign</dd></div>
             <div><dt>Blocks</dt><dd>javascript: · remote refs</dd></div>
             <div><dt>Output</dt><dd>safe SVG + report</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
+
+    <article class="project art" id="sealedlog">
+      <div class="p-head reveal">
+        <span class="p-tag">Integrity · tamper-evident log</span>
+        <h3>sealedlog</h3>
+        <p class="p-sub">A tamper-evident, append-only log: every entry is hash-chained to the one before it, so any change breaks the seals.</p>
+        <a class="p-repo" href="https://github.com/nirry-dev/sealedlog" target="_blank" rel="noopener">github.com/nirry-dev/sealedlog <span class="x" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>An audit log is only worth as much as its resistance to editing — and a plain file can be rewritten by anyone who can write to it, silently. sealedlog makes edits <strong>evident</strong>: every entry is sealed with a hash over its own contents <em>and the seal before it</em>, so the records form a chain. Change any one — its content, its order, or anything earlier — and every seal from there on stops matching.</p>
+          <p>To check a log, it re-walks the chain and confirms every seal and link, pointing straight at the <strong>first broken record</strong>. The head seal is a fingerprint of the whole log: record it somewhere the writer can't reach, and you can prove nothing was altered up to that point. Sealing is SHA-256 so anyone can verify, or keyed HMAC when a secret should make the chain unforgeable.</p>
+          <p>It stores one JSON record per line, appends in a line of code, and verifies with a <strong>non-zero exit</strong> so it drops into a check. Pure standard library, with a Python API and a CLI. It's the sealed-record idea from Lype — which publishes its head after every night so its own history can't be quietly rewritten — as one small, readable library.</p>
+          <ul class="highlights">
+            <li><strong>Edits don't hide.</strong> A hash chain over every record: change, reorder or drop one and the seals break, and verify names the first bad record.</li>
+            <li><strong>Anchor the head.</strong> One seal fingerprints the whole log; publish it and a later rewrite can't reproduce it.</li>
+            <li><strong>SHA-256 or keyed.</strong> Anyone can verify by default, or seal with a secret (HMAC) so the chain can't be forged at all.</li>
+            <li><strong>Small and honest.</strong> Append-only JSONL, a pure chain core, no dependencies — and clear about what it can't catch (tail truncation) and why.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="sealedlog at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">GRD-04</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
+            <div><dt>Seals</dt><dd>SHA-256 / HMAC</dd></div>
+            <div><dt>Storage</dt><dd>append-only JSONL</dd></div>
+            <div><dt>Detects</dt><dd>edit · reorder · delete</dd></div>
+            <div><dt>Output</dt><dd>seal · verify · head</dd></div>
             <div><dt>License</dt><dd>MIT</dd></div>
           </dl>
         </aside>
