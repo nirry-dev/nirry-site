@@ -1073,7 +1073,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   <section class="sec" id="tools">
     <div class="sec-card tools-card">
       <div class="sc-head reveal">
-        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">16 TOOLS</span></p>
+        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">17 TOOLS</span></p>
         <h2>Tools</h2>
         <p class="sc-lede">Tools that fall out of the work above — from a full on-chain investigation tool down to single-file utilities, each <b>dependency-free, documented, and public on GitHub</b>. A working journal that happens to be useful software.</p>
       </div>
@@ -1567,7 +1567,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <span class="tc-dot" aria-hidden="true"></span>
       <span class="tc-name">Eval &amp; guardrails</span>
       <span class="tc-line" aria-hidden="true"></span>
-      <span class="tc-meta">AI safety · 04</span>
+      <span class="tc-meta">AI safety · 05</span>
     </div>
 
     <article class="project art" id="promptscreen">
@@ -1696,6 +1696,39 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
             <div><dt>Storage</dt><dd>append-only JSONL</dd></div>
             <div><dt>Detects</dt><dd>edit · reorder · delete</dd></div>
             <div><dt>Output</dt><dd>seal · verify · head</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
+
+    <article class="project art" id="evalkit">
+      <div class="p-head reveal">
+        <span class="p-tag">LLM eval · test harness</span>
+        <h3>evalkit</h3>
+        <p class="p-sub">A tiny offline eval harness: run a prompt suite against a local endpoint, score each output, and report pass-rates with variance.</p>
+        <a class="p-repo" href="https://github.com/nirry-dev/evalkit" target="_blank" rel="noopener">github.com/nirry-dev/evalkit <span class="x" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>You change a prompt, a model or a sampling setting, and you want to know if anything got worse — without standing up a whole eval framework. evalkit is the small version: a JSON file of cases, each a prompt and the checks its output must pass, run against the OpenAI-compatible endpoint your local server already speaks.</p>
+          <p>The checks are <strong>deterministic</strong> — substring, regex, exact match, valid JSON with required keys, length — so results reproduce. Run each case a few times and it makes <strong>flakiness a first-class result</strong>: a case that passes two times in three is a different thing from one that always passes, and evalkit says which is which.</p>
+          <p>It reports a per-case verdict — pass, flaky or fail — and an overall pass-rate, as a table or JSON, with a <strong>CI-friendly exit code</strong> keyed to a threshold you set. Pure standard library; the Python API takes any <code>generate</code> callable, so it drops into whatever harness you have. The guardrails sibling to promptscreen: one screens output at runtime, this one checks it before you ship.</p>
+          <ul class="highlights">
+            <li><strong>Flakiness is a result.</strong> Repeat each case and see pass / flaky / fail, not just a lucky single run.</li>
+            <li><strong>Deterministic checks.</strong> Substring, regex, exact match, valid JSON + required keys, length — reproducible, no model judging the answer.</li>
+            <li><strong>A CI gate.</strong> A pass-rate threshold and a non-zero exit, so a prompt or model regression fails the build; a table or JSON.</li>
+            <li><strong>Standard library only.</strong> A JSON suite, any OpenAI-compatible endpoint, and a Python API that takes any generate() — nothing to install.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="evalkit at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">GRD-05</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
+            <div><dt>Suite</dt><dd>JSON cases</dd></div>
+            <div><dt>Checks</dt><dd>regex · JSON · length</dd></div>
+            <div><dt>Runs</dt><dd>repeats + flakiness</dd></div>
+            <div><dt>Exit</dt><dd>pass-rate gate</dd></div>
             <div><dt>License</dt><dd>MIT</dd></div>
           </dl>
         </aside>
