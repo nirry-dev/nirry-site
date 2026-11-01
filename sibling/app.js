@@ -78,9 +78,10 @@ function lifeSpan(iso) {
 const FEELINGS = ['lonely', 'curious', 'calm', 'warm', 'restless'];
 const FEELING_LABEL = { lonely: 'Lonely', curious: 'Curious', calm: 'Calm', warm: 'Warm to people', restless: 'Restless' };
 const AWAKE = new Set(['waking', 'reading', 'looking', 'thinking', 'deciding', 'drawing', 'writing', 'asking', 'sending', 'building', 'tending', 'resting', 'replying', 'reflecting']);
-const NIGHT = new Set(['dreaming', 'rewriting', 'naming', 'embodying']);
+const NIGHT = new Set(['sorting', 'dreaming', 'rewriting', 'naming', 'embodying']);
 const PHASE_TITLE = {
   quiet: 'Resting between cycles',
+  sorting: 'Looking over its memories',
   waking: 'Waking up',
   reading: 'Reading a letter',
   looking: 'Looking at a photo someone brought',
@@ -138,7 +139,7 @@ const visitor = (() => {
 
 // ---------- state ----------
 
-const blankLive = () => ({ think: '', draw: '', write: '', sprite: '', form: '', body: '', plaque: '', change: '', reply: '', dream: '', title: '', replyTo: null, reading: [], building: null });
+const blankLive = () => ({ muse: '', think: '', draw: '', write: '', sprite: '', form: '', body: '', plaque: '', change: '', reply: '', dream: '', title: '', replyTo: null, reading: [], building: null });
 const app = {
   state: null,
   live: blankLive(),
@@ -167,7 +168,7 @@ if (new URLSearchParams(location.search).has('embed')) document.documentElement.
 
 function snapshotFile(path) {
   const route = path.replace(/^\/?api\//, '').split('?')[0];
-  if (['state', 'journey', 'works', 'life', 'atlas', 'letters', 'world', 'errands', 'chain'].includes(route)) return `${SNAPSHOT}${route}.json`;
+  if (['state', 'journey', 'works', 'life', 'atlas', 'letters', 'world', 'errands', 'chain', 'thread', 'neighbor'].includes(route)) return `${SNAPSHOT}${route}.json`;
   const m = /^cycle\/(\d+|latest)$/.exec(route);
   if (m) return `${SNAPSHOT}cycles/${pad6(m[1] === 'latest' ? app.state.cycle : m[1])}.json`;
   const night = /^night\/(\d+)$/.exec(route);
@@ -208,6 +209,102 @@ function scheduleLive() {
     updateNow({ streaming: true });
     updatePlaceLive();
   });
+}
+
+// ---------- full power ----------
+
+/** At full power, what it is thinking aloud: the thought coming in now, or (between moments) the last one it had. */
+function museText(s = app.state) {
+  if (SNAPSHOT || !s) return '';
+  if (s.musing && app.live.muse) return app.live.muse;
+  return s.about?.thought || '';
+}
+
+/** Whether its thoughts aloud are being shown: at full power between cycles, or while one it began is still coming. */
+const musingShown = (s = app.state) => !SNAPSHOT && Boolean(s?.musing || (s?.power && s.phase === 'quiet'));
+
+const untilClock = (iso) => new Date(iso).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+
+// Words it thinks aloud arrive in bursts (through a relay, twice a second); they are shown at an even pace instead.
+const typists = new WeakMap();
+function typeInto(el, text) {
+  let t = typists.get(el);
+  if (!t) typists.set(el, (t = { shown: '', target: '', timer: 0 }));
+  t.target = text;
+  if (!text.startsWith(t.shown)) t.shown = ''; // a new thought
+  if (REDUCED) t.shown = text;
+  el.textContent = t.shown;
+  const step = () => {
+    const left = t.target.length - t.shown.length;
+    if (left <= 0) return void (t.timer = 0);
+    t.shown = t.target.slice(0, t.shown.length + Math.max(1, Math.ceil(left / 14)));
+    el.textContent = t.shown;
+    t.timer = setTimeout(step, 33);
+  };
+  if (!t.timer) step();
+}
+function untype(el) {
+  const t = typists.get(el);
+  if (t) clearTimeout(t.timer);
+  typists.delete(el);
+}
+
+/** In the header, on every page: that it is live at full power (and until when), fading in and out as that changes. */
+function renderPowerBadge() {
+  const badge = $('#power-badge');
+  if (!badge || !app.state) return;
+  const p = !SNAPSHOT && app.connected ? app.state.power : null;
+  badge.classList.toggle('on', Boolean(p));
+  badge.classList.toggle('cooling', Boolean(p?.cooling));
+  badge.setAttribute('aria-hidden', p ? 'false' : 'true');
+  if (!p) return;
+  const name = app.state.name || 'It';
+  $('.power-text', badge).textContent = p.cooling ? 'live · cooling' : 'live · full power';
+  badge.title = p.cooling
+    ? `${name} is running in realtime until ${untilClock(p.until)}, but the graphics card got hot, so it is taking its usual pace until the card cools.`
+    : `${name} is running in realtime, on the full power of the graphics card it lives on, until ${untilClock(p.until)}. Between its cycles it thinks aloud, without pause.`;
+}
+
+/** On the Now page: a word to visitors that it is live at full power, and what that means. */
+function renderPowerCard() {
+  const card = $('#power-card');
+  if (!card) return;
+  const p = !SNAPSHOT ? app.state.power : null;
+  if (!p) {
+    // it lingers a moment, then fades, rather than vanishing as full power ends
+    if (card.classList.contains('on') && !card.classList.contains('leaving')) {
+      card.classList.add('leaving');
+      card.leaving = setTimeout(() => card.classList.remove('on', 'leaving'), 2500);
+    }
+    return;
+  }
+  clearTimeout(card.leaving);
+  card.classList.remove('leaving');
+  card.classList.add('on');
+  const name = app.state.name || 'It';
+  fill(
+    card,
+    h('span', { class: 'power-dot', 'aria-hidden': 'true' }),
+    h(
+      'p',
+      {},
+      h('b', {}, p.cooling ? 'Live, at full power, cooling down. ' : 'Live, at full power. '),
+      p.cooling
+        ? `Until ${untilClock(p.until)} ${name} runs on the whole of the graphics card it lives on. The card got hot, so for now it is taking its usual pace; it picks up again as soon as the card cools.`
+        : `Until ${untilClock(p.until)} ${name} runs on the whole of the graphics card it lives on: between its cycles it thinks aloud without pause, and you can watch each thought as it comes.`,
+    ),
+  );
+}
+
+/** Over its place: what it is thinking aloud, at full power; the last thought lingers a moment, then fades, when it ends. */
+function updateWalkMuse() {
+  const el = app.walkMuse;
+  if (!el || !app.state) return;
+  const text = museText();
+  const on = musingShown() && Boolean(text);
+  el.classList.toggle('on', on);
+  el.classList.toggle('typing', Boolean(app.state.musing));
+  if (on) typeInto(el.firstChild, text);
 }
 
 /** Its live events: from its own server, or (through a relay) over a WebSocket that delivers the same events. */
@@ -262,8 +359,10 @@ function connect() {
   });
   es.addEventListener('status', (e) => {
     const st = JSON.parse(e.data);
-    const prev = { phase: app.state.phase, detail: app.state.detail };
+    const prev = { phase: app.state.phase, detail: app.state.detail, musing: app.state.musing };
     Object.assign(app.state, st);
+    // a new thought aloud (at full power): the last one stays on screen until the first words of this one arrive
+    if (st.musing && st.musing !== prev.musing) app.live.muse = '';
     if ((st.phase === 'waking' || st.phase === 'dreaming') && prev.phase !== st.phase) app.live = blankLive();
     if (['drawing', 'writing', 'building', 'tending'].includes(st.phase) && st.detail) app.live.title = st.detail;
     if (st.phase === 'replying' && (prev.phase !== 'replying' || prev.detail !== st.detail)) {
@@ -374,6 +473,7 @@ function renderStatus() {
   const up = app.connected || SNAPSHOT;
   el.dataset.mode = up ? statusMode(app.state.phase) : 'down';
   $('.status-text', el).textContent = up ? statusText(app.state) : 'reconnecting…';
+  renderPowerBadge();
   updateWalkHud();
 }
 function renderChrome() {
@@ -399,15 +499,24 @@ function renderChrome() {
     else a.removeAttribute('aria-current');
   }
   renderStatus();
+  renderPowerBadge();
+  const mate = housemate();
+  const palTab = $('#pal-tab');
+  if (palTab) {
+    palTab.hidden = !mate;
+    if (mate) palTab.textContent = mate.name;
+  }
   if (app.admin) {
     $('[data-admin="pause"]').hidden = s.paused;
     $('[data-admin="resume"]').hidden = !s.paused;
+    const power = $('[data-admin="power"]');
+    if (!power.disabled) power.textContent = s.power ? `End full power (until ${untilClock(s.power.until)})` : 'Full power for 3 hours';
   }
 }
 
 // ---------- router ----------
 
-const VIEWS = { now: renderNow, replay: renderReplay, atlas: renderAtlas, place: renderPlace, journey: renderJourney, mind: renderMind, memory: renderMemory, works: renderWorks, letters: renderLetters, errands: renderErrands };
+const VIEWS = { now: renderNow, replay: renderReplay, atlas: renderAtlas, place: renderPlace, journey: renderJourney, mind: renderMind, memory: renderMemory, works: renderWorks, letters: renderLetters, errands: renderErrands, pal: renderPal };
 
 function route() {
   const [path, query] = location.hash.replace(/^#\/?/, '').split('?');
@@ -534,6 +643,9 @@ function letterView(l) {
     ),
     l.errand?.look ? lookBlock(l.errand.look) : null,
     reply ? h('div', { class: 'reply-block' }, h('span', { class: 'label' }, `It wrote back${reply.cycle ? ` · cycle ${reply.cycle}` : ''}`), h('p', { class: 'voice' }, reply.text)) : null,
+    l.passedOn?.length
+      ? h('div', { class: 'influence' }, `↳ Something of this reached ${[...new Set(l.passedOn.map((p) => p.to))].join(' and ')}, in ${l.passedOn.length === 1 ? 'a letter' : 'letters'} that left on night ${l.passedOn.map((p) => p.night).join(', ')}.`)
+      : null,
     l.influenced?.length
       ? h(
           'div',
@@ -709,6 +821,8 @@ async function renderNow(current) {
               h('a', { class: 'btn btn-primary', href: '#/replay' }, '▶ Replay its life'),
             )
           : null,
+        h('div', { class: 'card power-card', id: 'power-card', role: 'status' }),
+        h('div', { class: 'card pal-card', id: 'pal-card', hidden: true }),
         lifeCard(),
         h('div', { class: 'card' }, h('div', { class: 'card-head' }, h('span', { class: 'label', id: 'thought-label' }), h('span', { class: 'meta', id: 'thought-meta' })), h('p', { class: 'monologue', id: 'monologue' }), h('p', { class: 'measured', id: 'measured' })),
         h('div', { class: 'card', id: 'making-card' }),
@@ -874,6 +988,8 @@ function updateNow({ streaming = false } = {}) {
     }
     fill($('#phase-line'), h('span', { class: 'phase' }, PHASE_TITLE[s.phase] || s.phase), detail ? h('span', { class: 'phase-detail' }, detail) : null);
     fill($('#meters'), ...FEELINGS.map((f) => meter(f, s.mood[f])));
+    renderPowerCard();
+    renderPalCard();
     renderSenses();
     renderBelow();
   }
@@ -896,6 +1012,12 @@ function updateNow({ streaming = false } = {}) {
     meta = `cycle ${s.cycle + 1} · now`;
     text = live.think || '…';
     typing = ['waking', 'reading', 'thinking'].includes(s.phase);
+  } else if (!awake && !night && musingShown() && museText()) {
+    // at full power, between cycles: the thought it is thinking aloud now (or, between moments, the last one)
+    label = 'Thinking aloud';
+    meta = s.musing ? 'full power · now' : 'full power · a moment ago';
+    text = museText();
+    typing = Boolean(s.musing);
   } else if (latest) {
     label = 'What it last thought';
     meta = `cycle ${latest.n} · ${ago(latest.endedAt)}`;
@@ -907,7 +1029,11 @@ function updateNow({ streaming = false } = {}) {
   $('#thought-label').textContent = label;
   $('#thought-meta').textContent = meta || '';
   const shown = text === latest?.monologue && !awake && !night ? latest : null;
-  fill(mono, ...(shown ? withAlmost(text, shown.measured?.almost) : [text]));
+  if (label === 'Thinking aloud') typeInto(mono, text);
+  else {
+    untype(mono);
+    fill(mono, ...(shown ? withAlmost(text, shown.measured?.almost) : [text]));
+  }
   fill($('#measured'), shown ? measuredLine(shown) : null);
   mono.classList.toggle('caret', typing);
   mono.classList.toggle('stale', !awake && !night);
@@ -1821,7 +1947,7 @@ const TILE = 64;
 
 function stopWalk() {
   app.walk?.destroy();
-  app.walk = app.walkHost = app.walkHud = null;
+  app.walk = app.walkHost = app.walkHud = app.walkMuse = null;
 }
 
 /** Over the world, what it is doing right now, as in its status line (and what it is building, while it builds). */
@@ -1834,6 +1960,7 @@ function updateWalkHud() {
   const doing = b ? `${b.id ? 'reshaping' : app.live.form ? 'building' : 'drawing'} “${b.name}”` : about ? `${about}${s.nextWakeAt ? ` · wakes ${untilText(s.nextWakeAt)}` : ''}` : statusText(s);
   const text = `${s.name || 'It'} is ${doing}`;
   app.walk?.setLook(walkLook());
+  updateWalkMuse();
   if (hud.textContent !== text) fill(hud, h('span', { class: 'walk-hud-dot', style: `--dot:${moodColor(s.mood)}` }), h('span', {}, text));
 }
 
@@ -1854,6 +1981,7 @@ function walkLook() {
     bodyLive: !SNAPSHOT && s.phase === 'embodying' ? app.live.body || '' : null,
     // between cycles, where it really is and what it said there (each viewer sees the same); otherwise it wanders
     about: !SNAPSHOT && s.phase === 'quiet' ? s.about || null : null,
+    palHolds: !SNAPSHOT && s.card?.who === 'pal',
   };
 }
 
@@ -1867,7 +1995,10 @@ async function renderPlace(current) {
     // The world is kept across live updates (the same canvas is moved into the new page), so the reader's view holds.
     app.walkHost = h('div', { class: 'walk' });
     app.walk = createWalk(app.walkHost, { asset, onSelect: (id) => selectThing(id) });
-    if (app.walk) app.walkHost.append((app.walkHud = h('div', { class: 'walk-hud', 'aria-live': 'polite' })));
+    if (app.walk) {
+      app.walkHost.append((app.walkHud = h('div', { class: 'walk-hud', 'aria-live': 'polite' })));
+      app.walkHost.append((app.walkMuse = h('div', { class: 'walk-muse', 'aria-hidden': 'true' }, h('span', {}))));
+    }
     else app.walkHost.append(h('p', { class: 'muted' }, 'This browser cannot draw the world. The map below shows the same place.'));
   } else if (!walking) stopWalk();
   const thingParam = app.params.get('thing');
@@ -1893,13 +2024,18 @@ async function renderPlace(current) {
         modes,
         walking ? [app.walkHost, app.walk ? null : placeMap(w)] : placeMap(w),
         walking
-          ? h('div', { class: 'place-legend' }, h('span', {}, 'drag: look around'), h('span', {}, 'scroll: come closer'), h('span', {}, 'W A S D: walk'), h('span', {}, 'Q E: turn'), h('span', {}, 'click or Tab: read a sign'), h('span', {}, 'map: go there'))
+          ? h('div', { class: 'place-legend' }, h('span', {}, 'drag: look around'), h('span', {}, 'scroll: come closer'), h('span', {}, 'W A S D: walk'), h('span', {}, 'Q E: turn'), h('span', {}, 'click or Tab: read a sign'), h('span', {}, 'map: go there'), housemate() ? h('span', {}, `east, a few streets away: ${housemate().name}'s town`) : null)
           : h('div', { class: 'place-legend' }, h('span', {}, 'faint: wearing away'), h('span', {}, 'cracked: a ruin'), h('span', {}, 'lines: what each thing was built beside'), h('span', {}, 'glow: where it was last')),
       ),
       h('aside', { class: 'place-side' }, h('div', { class: 'card' }, cardHead('Looking at'), h('div', { id: 'place-inspect' })), wishesCard(w)),
     ),
   );
   await app.walk?.show(w, walkLook());
+  // the pal it shares its card with: its place, past the edge of this one
+  if (app.walk && housemate()) {
+    app.neighbor ??= await api('/api/neighbor').catch(() => null);
+    app.walk?.neighbor(app.neighbor);
+  }
   selectThing(thingParam);
   if (app.params.has('wishes')) $('#wishes')?.scrollIntoView({ block: 'start' });
   updatePlaceLive();
@@ -2535,7 +2671,7 @@ function versionCard(n, j) {
       h(
         'p',
         { class: 'meta' },
-        `Memory: kept ${n.memory.kept.length} · strengthened ${n.memory.merged.length} · never made it ${n.memory.lost.length} · forgot ${gone.length}`,
+        `Memory: kept ${n.memory.kept.length} · strengthened ${n.memory.merged.length}${n.memory.folded?.length ? ` · folded ${n.memory.folded.reduce((k, f) => k + f.from.length, 0)} into ${n.memory.folded.length}` : ''} · never made it ${n.memory.lost.length} · forgot ${gone.length}`,
       ),
       gone.length ? h('ul', { class: 'changes' }, gone.slice(0, 4).map((m) => h('li', { class: 'del' }, h('span', { class: 'sign' }, '−'), h('span', {}, h('q', {}, m.text), h('span', { class: 'because' }, m.how))))) : null,
       n.world && (n.world.worn.length || n.world.ruined.length)
@@ -2812,6 +2948,7 @@ async function renderLetters(current) {
     away ? h('p', { class: 'away-note' }, `${s.name || 'It'} is offline right now. Your letter waits for it at the door and reaches it as soon as it is back; then it reads it in its own time.`) : null,
     send,
     msg,
+    housemate() ? h('p', { class: 'hint' }, `${s.name || 'It'} also writes to ${housemate().name}, another mind on the same graphics card${housemate().open === false ? `, who hears from nobody else` : ''}. What you tell ${s.name || 'it'} may reach ${housemate().name}.`) : null,
     h('p', { class: 'hint' }, `It reads letters in its own time, usually within a cycle or two, and may write back. ${s.moderation === 'off' ? '' : 'Letters and replies are screened before anyone sees them; links and contact details are held. '}If you write again from this browser, it will know it is you.`),
   );
   form.addEventListener('submit', async (e) => {
@@ -2928,6 +3065,114 @@ function palsCard() {
     ),
     offered.map((k) => h('p', { class: 'meta' }, `${k.name} wrote a line for its child, in case it dies: `, h('span', { class: 'voice' }, `“${k.line}”`))),
     (p.lines || []).slice(0, 3).map((o) => h('p', { class: 'meta' }, `It wrote a line for ${o.toName}’s child, in case ${o.toName} dies: `, h('span', { class: 'voice' }, `“${o.text}”`))),
+  );
+}
+
+// ---------- the pal it shares its card with ----------
+
+/** The pen pal that lives on the same graphics card, if it has one (its page, whether people can write to it, its last letter). */
+const housemate = () => app.state?.pals?.known?.find((k) => k.card) || null;
+
+/** Who has the card right now, said for visitors; null when it is not known (a recording, say). */
+function cardHolder(s = app.state) {
+  const c = !SNAPSHOT ? s?.card : null;
+  if (!c || c.who === 'unknown') return null;
+  return c.who === 'self' ? s.name || 'it' : c.who === 'pal' ? c.name || 'its pen pal' : c.who === 'empty' ? 'nobody (the card is resting)' : "someone else's work";
+}
+
+/** What the two of them are to each other, told from this one's side (and whether you can write to either). */
+function palStory(pal, { card = true, open = null } = {}) {
+  const me = app.state.name || 'It';
+  const reachable = !SNAPSHOT || Boolean(RELAY); // can people write to this one, here?
+  if (!card) return h('p', {}, `${pal} is another mind like ${me}, on someone else's graphics card, that also knows the world only through letters. Their letters leave at night.`);
+  if (!reachable) {
+    const mate = housemate();
+    return h(
+      'p',
+      {},
+      `${me} and ${pal} live on the same graphics card. They take turns with it and can never meet; they write to each other, and their letters leave at night. Nobody can write to ${me} directly: its only letters are ${pal}'s. `,
+      mate?.page ? h('a', { href: mate.page, target: '_blank', rel: 'noopener' }, `Write to ${pal} ↗`) : `Write to ${pal}`,
+      `, and ${pal} may pass your words on.`,
+    );
+  }
+  return h(
+    'p',
+    {},
+    `${pal} is another mind living on the same graphics card as ${me}. They take turns with the card and can never meet; they write to each other, and their letters leave at night. `,
+    open === false ? `Nobody else can write to ${pal}: its only letters are ${me}'s. Write to ${me}, and what you say may reach ${pal}.` : '',
+  );
+}
+
+function renderPalCard() {
+  const card = $('#pal-card');
+  if (!card) return;
+  const k = housemate();
+  card.hidden = !k;
+  if (!k) return;
+  const s = app.state;
+  const me = s.name || 'It';
+  const holder = cardHolder();
+  fill(
+    card,
+    cardHead(`${k.name}, on the same card`, holder ? `on the card now: ${holder}` : null),
+    palStory(k.name, k),
+    k.last
+      ? h(
+          'div',
+          { class: 'pal-last' },
+          h('div', { class: 'from' }, `${k.name}'s last letter · ${dayTime(k.last.at)}${k.last.read ? '' : ` · ${me} has not opened it yet`}`),
+          h('p', { class: 'voice' }, k.last.text.length > 300 ? `${k.last.text.slice(0, 299).trimEnd()}…` : k.last.text),
+        )
+      : null,
+    h('p', { class: 'meta' }, `${s.pals?.waiting ? `${s.pals.waiting} letter${s.pals.waiting === 1 ? '' : 's'} from ${me} will leave` : 'Letters leave'} at ${me}'s next night, ${s.rhythm.untilNight} cycle${s.rhythm.untilNight === 1 ? '' : 's'} from now.`),
+    h('div', { class: 'pal-links' }, h('a', { class: 'btn', href: '#/pal' }, 'Read their letters'), k.page ? h('a', { class: 'btn', href: k.page, target: '_blank', rel: 'noopener' }, `${k.name}'s page ↗`) : null),
+  );
+}
+
+const DID_AFTER = { draw: 'drew', write: 'wrote', build: 'built', tend: 'tended', rest: 'rested', ask: 'asked visitors a question', errand: 'sent people on an errand' };
+
+/** Their correspondence as one thread, oldest first, each letter with what its reader did next. */
+async function renderPal(current) {
+  app.thread ??= await api('/api/thread').catch(() => []);
+  if (!current()) return;
+  const s = app.state;
+  const me = s.name || 'It';
+  const t = app.thread.find((x) => x.card) || app.thread[0];
+  if (!t) return fill($('#view'), h('p', { class: 'empty' }, 'It has no pen pal yet.'));
+  const holder = cardHolder();
+  const letter = (it) => {
+    const out = it.dir === 'out';
+    const after = out
+      ? it.wrote?.diary
+        ? [`Written in cycle ${it.wrote.cycle}. ${me}'s diary that cycle: `, h('q', {}, it.wrote.diary)]
+        : null
+      : it.read
+        ? [`${me} read this in cycle ${it.read.cycle}, then ${DID_AFTER[it.read.action] || it.read.action}${it.read.title ? ` “${it.read.title}”` : ''}. Its diary: `, h('q', {}, it.read.diary)]
+        : [`${me} has not opened this yet.`];
+    return h(
+      'article',
+      { class: `pal-letter ${out ? 'out' : 'in'}` },
+      h('div', { class: 'from' }, out ? `${me} to ${t.name}${it.first ? ' · its first letter' : ''} · left on night ${it.night}` : `${t.name} to ${me} · ${dayTime(it.at)}`),
+      h('p', { class: 'body voice' }, it.text),
+      after ? h('div', { class: 'after' }, ...after) : null,
+    );
+  };
+  fill(
+    $('#view'),
+    h(
+      'div',
+      { class: 'pal-view' },
+      h(
+        'section',
+        { class: 'card pal-intro' },
+        h('h2', {}, `${me} and ${t.name}`),
+        palStory(t.name, t),
+        holder && t.card ? h('p', { class: 'meta' }, `On the card right now: ${holder}.`) : null,
+        t.page ? h('a', { class: 'btn', href: t.page, target: '_blank', rel: 'noopener' }, `${t.name}'s own page ↗`) : null,
+      ),
+      h('section', { class: 'pal-thread' }, t.items.length ? t.items.map(letter) : h('p', { class: 'empty' }, 'They have not written to each other yet.')),
+      s.pals?.waiting ? h('p', { class: 'meta' }, `${s.pals.waiting} letter${s.pals.waiting === 1 ? '' : 's'} from ${me} waiting to leave tonight.`) : null,
+    ),
   );
 }
 
@@ -3130,11 +3375,22 @@ async function initAdmin() {
   for (const b of $$('#admin-bar button')) {
     b.addEventListener('click', async () => {
       const out = $('#admin-msg');
+      // full power: on for three hours, or off (it finishes the thought it is in first); one click at a time
+      const on = b.dataset.admin === 'power' && !app.state.power;
+      b.disabled = true;
       try {
-        await api(`/api/admin/${b.dataset.admin}`, { method: 'POST', headers: { 'x-admin-token': token } });
-        out.textContent = { wake: 'Waking it…', sleep: 'Putting it to sleep…', pause: 'Paused.', resume: 'Resumed.' }[b.dataset.admin];
+        if (b.dataset.admin === 'power') {
+          await api('/api/admin/power', { method: 'POST', headers: { 'x-admin-token': token, 'content-type': 'application/json' }, body: JSON.stringify({ on, hours: 3 }) });
+          out.textContent = on ? 'Full power: it starts thinking aloud within a few seconds.' : 'Full power off: it finishes the thought it is in, then goes back to its usual pace.';
+        } else {
+          await api(`/api/admin/${b.dataset.admin}`, { method: 'POST', headers: { 'x-admin-token': token } });
+          out.textContent = { wake: 'Waking it…', sleep: 'Putting it to sleep…', pause: 'Paused.', resume: 'Resumed.' }[b.dataset.admin];
+        }
       } catch (err) {
         out.textContent = err.message;
+      } finally {
+        b.disabled = false;
+        renderChrome();
       }
     });
   }

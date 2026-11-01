@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css?v=20261101211114" />
+    <link rel="stylesheet" href="style.css?v=20261101235408" />
   </head>
   <body>
     <header class="top">
@@ -20,6 +20,7 @@
         <span class="brand-name" id="brand-name">unnamed</span>
         <span class="chip chip-version" id="brand-version">v0</span>
       </a>
+      <span class="power-badge" id="power-badge" aria-hidden="true"><span class="power-dot"></span><span class="power-text">live · full power</span></span>
       <nav class="tabs" id="tabs" aria-label="Views">
         <a href="#/" data-view="now">Now</a>
         <a href="#/replay" data-view="replay">Replay</a>
@@ -31,6 +32,7 @@
         <a href="#/memory" data-view="memory">Memory</a>
         <a href="#/works" data-view="works">Works</a>
         <a href="#/letters" data-view="letters">Letters</a>
+        <a href="#/pal" data-view="pal" id="pal-tab" hidden>Pen pal</a>
       </nav>
       <a class="write-cta" id="write-cta" href="#/letters" hidden>Write to <span id="write-cta-name">it</span></a>
       <div class="status" id="status" role="status" aria-live="polite">
@@ -44,6 +46,7 @@
       <button type="button" data-admin="sleep">Let it sleep now</button>
       <button type="button" data-admin="pause">Pause its life</button>
       <button type="button" data-admin="resume" hidden>Resume its life</button>
+      <button type="button" data-admin="power">Full power for 3 hours</button>
       <label class="admin-pals">Pen pal mail
         <select id="admin-pals">
           <option value="open">open</option>
@@ -59,6 +62,6 @@
     <dialog id="detail" aria-label="Details"></dialog>
     <div class="toasts" id="toasts" aria-live="polite"></div>
 
-    <script type="module" src="app.js?v=20261101211114"></script>
+    <script type="module" src="app.js?v=20261101235408"></script>
   </body>
 </html>
