@@ -1073,7 +1073,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   <section class="sec" id="tools">
     <div class="sec-card tools-card">
       <div class="sc-head reveal">
-        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">10 TOOLS</span></p>
+        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">11 TOOLS</span></p>
         <h2>Tools</h2>
         <p class="sc-lede">Tools that fall out of the work above — from a full on-chain investigation tool down to single-file utilities, each <b>dependency-free, documented, and public on GitHub</b>. A working journal that happens to be useful software.</p>
       </div>
@@ -1173,7 +1173,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="Chainscope at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-01</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">OC-01</span></div>
           <dl>
             <div><dt>Engine</dt><dd>Python (stdlib)</dd></div>
             <div><dt>Front end</dt><dd>buildless JS</dd></div>
@@ -1190,7 +1190,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <span class="tc-dot" aria-hidden="true"></span>
       <span class="tc-name">Inference infrastructure</span>
       <span class="tc-line" aria-hidden="true"></span>
-      <span class="tc-meta">Local AI · 03</span>
+      <span class="tc-meta">Local AI · 04</span>
     </div>
 
     <article class="project" id="vramlease">
@@ -1213,7 +1213,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="vramlease at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-02</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">INF-01</span></div>
           <dl>
             <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
             <div><dt>Transport</dt><dd>TCP · line-JSON</dd></div>
@@ -1246,7 +1246,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="llm-council at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-03</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">INF-02</span></div>
           <dl>
             <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
             <div><dt>Transport</dt><dd>urllib → OpenAI API</dd></div>
@@ -1279,13 +1279,46 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="ggufpeek at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-04</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">INF-03</span></div>
           <dl>
             <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
             <div><dt>Format</dt><dd>GGUF v2 / v3</dd></div>
             <div><dt>Reads</dt><dd>header + metadata</dd></div>
             <div><dt>Output</dt><dd>summary / JSON</dd></div>
             <div><dt>Tests</dt><dd>unittest</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
+
+    <article class="project" id="oneslot">
+      <div class="p-head reveal">
+        <span class="p-tag">Local AI tooling · model routing</span>
+        <h3>oneslot</h3>
+        <p class="p-sub">An OpenAI-compatible proxy that keeps one model loaded on a single GPU, hot-swapping backends on demand with idle unload.</p>
+        <a class="p-repo" href="https://github.com/nirry-dev/oneslot" target="_blank" rel="noopener">github.com/nirry-dev/oneslot <span class="x" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>A single consumer GPU holds one decent model at a time, so switching between local models means stopping one server and starting another by hand. oneslot is a small <strong>OpenAI-compatible proxy</strong> that does it for you: point a client at it, name any configured model in the request, and oneslot makes sure that model — and only that model — is the one running on the card.</p>
+          <p>It treats the GPU as a <strong>single slot</strong> and serializes access to it. A request for a model that isn't loaded triggers a swap: the outgoing model's in-flight requests are drained first, then it's stopped and the new one started and waited for. After a quiet spell the resident model is unloaded, so the card is free for whatever needs it next.</p>
+          <p>Unlike routers that assume every backend is already running, oneslot is built for the one-card constraint. It launches your inference servers (llama.cpp, or anything that speaks OpenAI over HTTP), streams their replies straight back, and answers <code>/status</code> and <code>/v1/models</code> itself. Plain Node, <strong>no dependencies</strong> — the model-router core of a local-AI stack, as one readable service.</p>
+          <ul class="highlights">
+            <li><strong>One slot, one model.</strong> Exactly one model resident on the GPU, swapped on demand — built for a single card, not a fleet.</li>
+            <li><strong>Drained, not dropped.</strong> A swap waits for the outgoing model's in-flight requests to finish before stopping it.</li>
+            <li><strong>Idle unload.</strong> When nothing is loaded-and-busy, the model is released so the GPU is free for other work.</li>
+            <li><strong>Drop-in OpenAI endpoint.</strong> Point any client at it; it routes by the request's model field and streams the reply back. No dependencies.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="oneslot at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">INF-04</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>JavaScript (Node)</dd></div>
+            <div><dt>API</dt><dd>OpenAI-compatible</dd></div>
+            <div><dt>Slot</dt><dd>one model · swapped</dd></div>
+            <div><dt>Lifecycle</dt><dd>drain · idle unload</dd></div>
+            <div><dt>Dependencies</dt><dd>none</dd></div>
             <div><dt>License</dt><dd>MIT</dd></div>
           </dl>
         </aside>
@@ -1319,7 +1352,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="vulntriage at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-05</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">REC-01</span></div>
           <dl>
             <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
             <div><dt>Feeds</dt><dd>OSV · KEV · EPSS</dd></div>
@@ -1352,7 +1385,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="netprobe at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-06</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">REC-02</span></div>
           <dl>
             <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
             <div><dt>Scan</dt><dd>asyncio connect</dd></div>
@@ -1385,7 +1418,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="inscope at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-07</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">REC-03</span></div>
           <dl>
             <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
             <div><dt>Scope</dt><dd>CIDR · range · domain</dd></div>
@@ -1425,7 +1458,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="promptscreen at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-08</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">GRD-01</span></div>
           <dl>
             <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
             <div><dt>Screens</dt><dd>input + output</dd></div>
@@ -1458,7 +1491,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="jsonmend at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-09</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">GRD-02</span></div>
           <dl>
             <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
             <div><dt>Input</dt><dd>almost-JSON</dd></div>
@@ -1491,7 +1524,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
           </ul>
         </div>
         <aside class="spec reveal" aria-label="svgscrub at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-10</span></div>
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">GRD-03</span></div>
           <dl>
             <div><dt>Language</dt><dd>JavaScript (ESM)</dd></div>
             <div><dt>Runtime</dt><dd>Node + browser</dd></div>
