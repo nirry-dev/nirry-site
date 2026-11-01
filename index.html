@@ -1073,7 +1073,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   <section class="sec" id="tools">
     <div class="sec-card tools-card">
       <div class="sc-head reveal">
-        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">11 TOOLS</span></p>
+        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">12 TOOLS</span></p>
         <h2>Tools</h2>
         <p class="sc-lede">Tools that fall out of the work above — from a full on-chain investigation tool down to single-file utilities, each <b>dependency-free, documented, and public on GitHub</b>. A working journal that happens to be useful software.</p>
       </div>
@@ -1190,7 +1190,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <span class="tc-dot" aria-hidden="true"></span>
       <span class="tc-name">Inference infrastructure</span>
       <span class="tc-line" aria-hidden="true"></span>
-      <span class="tc-meta">Local AI · 04</span>
+      <span class="tc-meta">Local AI · 05</span>
     </div>
 
     <article class="project" id="vramlease">
@@ -1318,6 +1318,39 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
             <div><dt>API</dt><dd>OpenAI-compatible</dd></div>
             <div><dt>Slot</dt><dd>one model · swapped</dd></div>
             <div><dt>Lifecycle</dt><dd>drain · idle unload</dd></div>
+            <div><dt>Dependencies</dt><dd>none</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
+
+    <article class="project" id="gguftok">
+      <div class="p-head reveal">
+        <span class="p-tag">Local AI tooling · tokenization</span>
+        <h3>gguftok</h3>
+        <p class="p-sub">Count tokens and pack context straight from a GGUF, using the model's own tokenizer and context length — no weights loaded.</p>
+        <a class="p-repo" href="https://github.com/nirry-dev/gguftok" target="_blank" rel="noopener">github.com/nirry-dev/gguftok <span class="x" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>A GGUF already carries everything needed to tokenize the way its model does — the tokenizer type, the vocabulary, the merges or scores — plus the context length it was trained for. gguftok reads exactly that prefix (never a byte of weights, nothing to download) and counts tokens the model's own way, so you can measure a prompt or trim it before you ever load the model.</p>
+          <p>It implements the two tokenizers GGUF files carry: <strong>byte-level BPE</strong> for the GPT-2 family (Llama 3, Qwen, Mistral, Phi) with the GPT-2 pre-tokenizer, and <strong>SentencePiece</strong> for Llama 1/2 with score-based merging and a byte fallback. Counts come from the file's own vocabulary and merge rules, so for those families they match the reference tokenizer.</p>
+          <p>Beyond counting, it <strong>packs context</strong>: give it a pile of segments and a budget — the model's context length by default — and it keeps the most recent that fit and reports what it dropped. Pure standard library, with a Python API and a CLI. It pairs with ggufpeek — one says what a model is, the other how much of it your text will take.</p>
+          <ul class="highlights">
+            <li><strong>The model's own tokenizer.</strong> Built from the GGUF's vocabulary and merges, not an approximation from a separate library.</li>
+            <li><strong>No weights, no deps.</strong> It reads the header and stops — pure standard library, nothing to install alongside the file.</li>
+            <li><strong>BPE and SentencePiece.</strong> The two tokenizers GGUF files carry, covering the GPT-2 and Llama families; anything else is flagged, not guessed.</li>
+            <li><strong>Packs to a budget.</strong> Trim a pile of text to the newest that fits a context window, and see exactly what was dropped.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="gguftok at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">INF-05</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
+            <div><dt>Reads</dt><dd>GGUF v2 / v3 header</dd></div>
+            <div><dt>Tokenizers</dt><dd>BPE · SentencePiece</dd></div>
+            <div><dt>Output</dt><dd>count · ids · pack</dd></div>
             <div><dt>Dependencies</dt><dd>none</dd></div>
             <div><dt>License</dt><dd>MIT</dd></div>
           </dl>
