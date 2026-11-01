@@ -1073,7 +1073,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   <section class="sec" id="tools">
     <div class="sec-card tools-card">
       <div class="sc-head reveal">
-        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">08 TOOLS</span></p>
+        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">09 TOOLS</span></p>
         <h2>Tools</h2>
         <p class="sc-lede">Tools that fall out of the work above — from a full on-chain investigation tool down to single-file utilities, each <b>dependency-free, documented, and public on GitHub</b>. A working journal that happens to be useful software.</p>
       </div>
@@ -1369,7 +1369,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <span class="tc-dot" aria-hidden="true"></span>
       <span class="tc-name">Eval &amp; guardrails</span>
       <span class="tc-line" aria-hidden="true"></span>
-      <span class="tc-meta">AI safety · 02</span>
+      <span class="tc-meta">AI safety · 03</span>
     </div>
 
     <article class="project art" id="promptscreen">
@@ -1432,6 +1432,39 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
             <div><dt>Forgives</dt><dd>fences · quotes · commas</dd></div>
             <div><dt>Truncation</dt><dd>closed, not dropped</dd></div>
             <div><dt>Schema</dt><dd>subset + coerce</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
+
+    <article class="project art" id="svgscrub">
+      <div class="p-head reveal">
+        <span class="p-tag">SVG security · sanitizer</span>
+        <h3>svgscrub</h3>
+        <p class="p-sub">Sanitize untrusted or model-generated SVG into a safe drawing — strip scripts, handlers, foreign content and external references. Zero dependencies, Node and the browser.</p>
+        <a class="p-repo" href="https://github.com/nirry-dev/svgscrub" target="_blank" rel="noopener">github.com/nirry-dev/svgscrub <span class="x" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>SVG is code. A file someone uploaded — or one a model just drew — can carry <code>&lt;script&gt;</code>, an <code>onload</code> handler, a <code>&lt;foreignObject&gt;</code> full of HTML, or a <code>javascript:</code> link, and the moment it's inlined in a page, that runs. svgscrub takes the SVG and gives back a drawing with all of it removed.</p>
+          <p>It works by <strong>allowlist, not blocklist</strong>: its own tokenizer keeps only known drawing elements and inert presentation attributes, and drops <code>&lt;script&gt;</code>, <code>&lt;style&gt;</code>, <code>&lt;foreignObject&gt;</code> and any unknown element <strong>with its whole subtree</strong>, every <code>on*</code> handler, and references that reach off the document — <code>javascript:</code> always, remote and <code>data:</code> URLs by default. What survives is re-serialized with escaping, so no value can break out of its attribute.</p>
+          <p>It brings its own parser and never touches the DOM, so the same code runs in Node and the browser with <strong>no dependencies</strong>. A reporting mode returns exactly what was taken out — a drawing that needed scrubbing is often worth noticing. Generalized from the sanitizer that keeps Lype's self-drawn SVG safe to show.</p>
+          <ul class="highlights">
+            <li><strong>Allowlist, not blocklist.</strong> Unknown elements and attributes are dropped, so a new trick fails closed rather than open.</li>
+            <li><strong>Kills the whole class.</strong> Scripts, event handlers, foreign content, and off-document URLs — removed, with the subtree they hid in.</li>
+            <li><strong>No DOM, no deps.</strong> Its own tokenizer runs identically server-side and in the browser; nothing is fetched or executed while sanitizing.</li>
+            <li><strong>Tells you what it took.</strong> A report of every removal, for logging or alerting — sanitizing silently hides the signal.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="svgscrub at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-09</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>JavaScript (ESM)</dd></div>
+            <div><dt>Runtime</dt><dd>Node + browser</dd></div>
+            <div><dt>Removes</dt><dd>script · handlers · foreign</dd></div>
+            <div><dt>Blocks</dt><dd>javascript: · remote refs</dd></div>
+            <div><dt>Output</dt><dd>safe SVG + report</dd></div>
             <div><dt>License</dt><dd>MIT</dd></div>
           </dl>
         </aside>
