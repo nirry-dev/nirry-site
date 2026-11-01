@@ -1073,7 +1073,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   <section class="sec" id="tools">
     <div class="sec-card tools-card">
       <div class="sc-head reveal">
-        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">07 TOOLS</span></p>
+        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">08 TOOLS</span></p>
         <h2>Tools</h2>
         <p class="sc-lede">Tools that fall out of the work above — from a full on-chain investigation tool down to single-file utilities, each <b>dependency-free, documented, and public on GitHub</b>. A working journal that happens to be useful software.</p>
       </div>
@@ -1369,7 +1369,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <span class="tc-dot" aria-hidden="true"></span>
       <span class="tc-name">Eval &amp; guardrails</span>
       <span class="tc-line" aria-hidden="true"></span>
-      <span class="tc-meta">AI safety · 01</span>
+      <span class="tc-meta">AI safety · 02</span>
     </div>
 
     <article class="project art" id="promptscreen">
@@ -1399,6 +1399,39 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
             <div><dt>Detects</dt><dd>injection · secrets · PII</dd></div>
             <div><dt>Verdict</dt><dd>allow / flag / block</dd></div>
             <div><dt>Audit</dt><dd>hashed · keeper queue</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
+
+    <article class="project art" id="jsonmend">
+      <div class="p-head reveal">
+        <span class="p-tag">LLM output · JSON repair</span>
+        <h3>jsonmend</h3>
+        <p class="p-sub">Turn almost-JSON from a model into valid JSON — tolerant repair, with optional JSON Schema validation and coercion.</p>
+        <a class="p-repo" href="https://github.com/nirry-dev/jsonmend" target="_blank" rel="noopener">github.com/nirry-dev/jsonmend <span class="x" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>A model asked for JSON still wraps it in a sentence, fences it in Markdown, leaves a trailing comma, or gets cut off mid-object by a token limit. jsonmend sits between the model and <code>json.loads</code> and reads that generously — not by patching the text with regexes, but with a small, <strong>forgiving reader</strong> that rebuilds a real value and re-emits it as strict JSON.</p>
+          <p>In one pass it looks past prose and code fences, accepts single and curly quotes, unquoted keys, trailing and missing commas, <code>//</code> comments and Python's <code>True</code>/<code>False</code>/<code>None</code>, and reads lenient numbers. A stream cut off partway is simply <strong>closed</strong> — a reply that hit the token limit still parses as far as it got.</p>
+          <p>Hand it a JSON Schema and it holds the result to shape: a deliberate subset — types, <code>enum</code>, <code>required</code>, bounds — that can <strong>coerce</strong> the near-misses (<code>"3"</code> → <code>3</code>, <code>"yes"</code> → <code>true</code>) and fill declared defaults. Pure standard library, with a CLI and an importable API.</p>
+          <ul class="highlights">
+            <li><strong>A reader, not a regex.</strong> It parses almost-JSON the way a patient human would, so the next odd input doesn't break it.</li>
+            <li><strong>Survives truncation.</strong> Anything still open at the end of a cut-off stream is closed, so a token-limited reply still parses.</li>
+            <li><strong>Shapes to a schema.</strong> An honest JSON Schema subset validates, coerces the scalars that unambiguously fit, and fills defaults.</li>
+            <li><strong>Never guesses.</strong> It won't invent fields you didn't get — a missing value is null or an error, not a fabrication.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="jsonmend at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">TOOL-08</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
+            <div><dt>Input</dt><dd>almost-JSON</dd></div>
+            <div><dt>Forgives</dt><dd>fences · quotes · commas</dd></div>
+            <div><dt>Truncation</dt><dd>closed, not dropped</dd></div>
+            <div><dt>Schema</dt><dd>subset + coerce</dd></div>
             <div><dt>License</dt><dd>MIT</dd></div>
           </dl>
         </aside>
