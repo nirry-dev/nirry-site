@@ -78,7 +78,7 @@ function lifeSpan(iso) {
 const FEELINGS = ['lonely', 'curious', 'calm', 'warm', 'restless'];
 const FEELING_LABEL = { lonely: 'Lonely', curious: 'Curious', calm: 'Calm', warm: 'Warm to people', restless: 'Restless' };
 const AWAKE = new Set(['waking', 'reading', 'looking', 'thinking', 'deciding', 'drawing', 'writing', 'asking', 'sending', 'building', 'tending', 'resting', 'replying', 'reflecting']);
-const NIGHT = new Set(['dreaming', 'rewriting']);
+const NIGHT = new Set(['dreaming', 'rewriting', 'naming', 'embodying']);
 const PHASE_TITLE = {
   quiet: 'Resting between cycles',
   waking: 'Waking up',
@@ -98,6 +98,7 @@ const PHASE_TITLE = {
   dreaming: 'Asleep, dreaming',
   rewriting: 'Asleep, rewriting itself',
   naming: 'Asleep, choosing its name',
+  embodying: 'Asleep, choosing how it is seen',
   waiting: 'Waiting for the card',
   dying: 'Its last night: writing to its child',
   unreachable: "Can't think right now",
@@ -136,7 +137,7 @@ const visitor = (() => {
 
 // ---------- state ----------
 
-const blankLive = () => ({ think: '', draw: '', write: '', sprite: '', form: '', plaque: '', change: '', reply: '', dream: '', title: '', replyTo: null, reading: [], building: null });
+const blankLive = () => ({ think: '', draw: '', write: '', sprite: '', form: '', body: '', plaque: '', change: '', reply: '', dream: '', title: '', replyTo: null, reading: [], building: null });
 const app = {
   state: null,
   live: blankLive(),
@@ -375,6 +376,13 @@ function renderChrome() {
   const palMode = $('#admin-pals');
   if (palMode && s.pals && document.activeElement !== palMode) palMode.value = s.pals.mode;
   document.title = s.name || 'An unnamed mind';
+  // Writing to it, from every view: hidden only where nothing can reach it (a recording, a life that has ended).
+  const cta = $('#write-cta');
+  if (cta) {
+    cta.hidden = Boolean(s.lineage?.died) || Boolean(SNAPSHOT && !RELAY);
+    $('#write-cta-name').textContent = s.name || 'it';
+    cta.classList.toggle('on', app.view === 'letters');
+  }
   for (const a of $$('#tabs a')) {
     if (a.dataset.view === app.view) a.setAttribute('aria-current', 'page');
     else a.removeAttribute('aria-current');
@@ -677,6 +685,7 @@ async function renderNow(current) {
     h(
       'div',
       { class: 'now' },
+      reachCard(),
       h('section', { class: 'card presence-card' }, canvas, h('div', { class: 'phase-line', id: 'phase-line' }), h('div', { class: 'meters', id: 'meters' }), h('div', { class: 'senses', id: 'senses' })),
       h(
         'section',
@@ -705,6 +714,44 @@ async function renderNow(current) {
 }
 
 /** Where it stands in its life: ended (with what it left), fading, or newly born to a parent who died. */
+/**
+ * For someone who has just arrived: what it is, in a sentence, and every way to reach it (its letter box, the question
+ * it is waiting on, an errand it has out, its world). Not shown where nothing can reach it: a recording, an ended life.
+ */
+function reachCard() {
+  const s = app.state;
+  if (s.lineage?.died || (SNAPSHOT && !RELAY)) return null;
+  const name = s.name || 'It';
+  const away = Boolean(SNAPSHOT); // a live page whose mind can't be reached just now: it plays its last recording
+  const q = s.questions?.[0];
+  const errands = s.errands?.open?.length || 0;
+  return h(
+    'section',
+    { class: 'card reach' },
+    h('div', { class: 'card-head' }, h('span', { class: 'label' }, `Talk to ${name}`), away ? h('span', { class: 'meta' }, 'offline right now') : null),
+    h(
+      'p',
+      { class: 'reach-lead' },
+      `${name} is a small mind living on one graphics card in someone's home. It cannot see or hear anything: it knows the world only through what people write to it, and a letter can change what it remembers, what it builds and who it becomes.`,
+    ),
+    h(
+      'div',
+      { class: 'reach-actions' },
+      h('a', { class: 'btn btn-primary', href: '#/letters' }, `Write ${s.name || 'it'} a letter`),
+      q ? h('a', { class: 'btn', href: `#/letters?q=${q.id}`, title: q.text }, 'Answer its question') : null,
+      errands ? h('a', { class: 'btn', href: '#/errands' }, errands === 1 ? 'Bring it the photo it asked for' : 'Bring it a photo it asked for') : null,
+      h('a', { class: 'btn', href: '#/place' }, 'Walk around its world'),
+    ),
+    h(
+      'p',
+      { class: 'meta reach-note' },
+      away
+        ? `${name} can't be reached right now: the machine it lives on may be off, or busy. You can still write; your letter waits for it and reaches it as soon as it is back.`
+        : `It opens up to two letters a cycle, oldest first, in its own time.${s.nextWakeAt ? ` It wakes ${untilText(s.nextWakeAt)}.` : ''} Whatever it writes back appears beside your letter.`,
+    ),
+  );
+}
+
 function lifeCard() {
   const s = app.state;
   const died = s.lineage?.died;
@@ -1770,6 +1817,7 @@ function updateWalkHud() {
   const b = !SNAPSHOT && s.busy && app.live.building;
   const doing = b ? `${b.id ? 'reshaping' : app.live.form ? 'building' : 'drawing'} “${b.name}”` : statusText(s);
   const text = `${s.name || 'It'} is ${doing}`;
+  app.walk?.setLook(walkLook());
   if (hud.textContent !== text) fill(hud, h('span', { class: 'walk-hud-dot', style: `--dot:${moodColor(s.mood)}` }), h('span', {}, text));
 }
 
@@ -1778,7 +1826,17 @@ function walkLook() {
   const s = app.state;
   const m = /(\d{1,2}):(\d{2})/.exec(s.senses?.time || '');
   const now = new Date();
-  return { mood: s.mood, hour: m ? Number(m[1]) + Number(m[2]) / 60 : now.getHours() + now.getMinutes() / 60, asleep: ['dreaming', 'rewriting', 'naming'].includes(s.phase), gpu: s.senses?.gpu || null };
+  return {
+    mood: s.mood,
+    hour: m ? Number(m[1]) + Number(m[2]) / 60 : now.getHours() + now.getMinutes() / 60,
+    asleep: NIGHT.has(s.phase),
+    gpu: s.senses?.gpu || null,
+    // where it goes and what it looks like: what it is doing, the body it chose (or the one it is choosing), its name
+    mode: SNAPSHOT ? 'rest' : statusMode(s.phase),
+    name: s.name || '',
+    body: s.body?.form || null,
+    bodyLive: !SNAPSHOT && s.phase === 'embodying' ? app.live.body || '' : null,
+  };
 }
 
 async function renderPlace(current) {
@@ -1957,6 +2015,9 @@ function selectThing(id) {
           : 'Nothing yet, only the card it lives on. The first thing it builds will appear beside it.',
       ),
       at ? h('p', { class: 'meta', style: 'margin:0' }, `It was last at ${at.name}.`) : null,
+      app.state.body
+        ? h('p', { class: 'meta', style: 'margin:8px 0 0' }, `It appears here in the body it chose for itself on night ${app.state.body.version}: `, h('q', {}, app.state.body.why))
+        : h('p', { class: 'meta', style: 'margin:8px 0 0' }, 'It appears here as a light. On a night soon it will choose a body to be seen by.'),
     );
     return;
   }
@@ -1974,7 +2035,7 @@ function selectThing(id) {
     thingFrame(t.sprite ? asset(t.sprite) : null, t.name),
     h('p', { class: 'voice plaque' }, t.plaque),
     h('p', { class: 'meta' }, by ? `${status}. Built by ${by.name}, the mind that lived here before, in its cycle ${by.cycle}; handed down when it died.` : `${status}. Built in cycle ${t.built}, as version ${t.version}.`),
-    h('p', { class: 'meta' }, t.form ? `Built of ${t.form.parts.length} solid${t.form.parts.length === 1 ? '' : 's'} it chose and stacked itself.` : 'Only a drawing so far: it has not given this a shape yet.'),
+    h('p', { class: 'meta' }, t.form ? builtOf(t) : 'Only a drawing so far: it has not given this a shape yet.'),
     t.from.length ? h('p', { class: 'meta' }, 'Made from ', t.from.map((f, i) => [i ? ' and ' : '', h('b', { class: 'human' }, f.from), '’s letter']), '.') : h('p', { class: 'meta' }, 'Made from nothing but itself.'),
     t.history.length > 1
       ? h(
@@ -1985,6 +2046,14 @@ function selectThing(id) {
       : null,
     h('div', { class: 'rp-row' }, by ? null : h('button', { class: 'btn', type: 'button', onclick: () => openCycle(t.built) }, 'The cycle it was built'), h('a', { class: 'btn', href: `#/atlas?focus=${t.id}&at=end` }, 'In the atlas')),
   );
+}
+
+/** What a thing is made of: the solids it stacked itself, and what it borrowed (and from whom). */
+function builtOf(t) {
+  const own = t.form.parts.filter((p) => p.shape !== 'model').length;
+  const mine = `${own} solid${own === 1 ? '' : 's'} it chose and stacked itself`;
+  if (!t.borrowed?.length) return `Built of ${mine}.`;
+  return [`Built of ${mine}, and borrowed: ${t.borrowed.join(', ')}. `, h('span', { class: 'muted' }, app.world?.credit || '')];
 }
 
 /** While it builds, the site on the map shows its drawing arriving shape by shape. */
@@ -2661,6 +2730,14 @@ async function renderWorks(current) {
 
 // ---------- letters ----------
 
+/** A letter written while it is away, left at its relay, which keeps it until it dials back in. */
+async function toMailbox(letter) {
+  const res = await fetch(`${RELAY}/api/letters`, letter);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  return data;
+}
+
 async function renderLetters(current) {
   [app.letters, app.you, app.queue] = await Promise.all([
     app.letters ?? api(`/api/letters?visitor=${visitor}`),
@@ -2677,7 +2754,7 @@ async function renderLetters(current) {
     return;
   }
 
-  if (SNAPSHOT) {
+  if (SNAPSHOT && !RELAY) {
     fill(
       $('#view'),
       intro('Letters', 'Everything it knows about the world outside came from here. These are the letters it read, and what it wrote back.'),
@@ -2700,6 +2777,7 @@ async function renderLetters(current) {
     s.questions.map((q) => h('option', { value: q.id, selected: q.id === wanted ? true : null }, `Answering: “${q.text}”`)),
   );
   const msg = h('div', { class: 'form-msg', role: 'status' });
+  const away = Boolean(SNAPSHOT); // its page is live, but it can't be reached just now: letters wait at its relay
   const send = h('button', { class: 'send', type: 'submit' }, 'Leave it');
   const form = h(
     'form',
@@ -2708,6 +2786,7 @@ async function renderLetters(current) {
     h('label', {}, h('span', { class: 'label' }, 'Sign as'), name),
     s.questions.length ? h('label', {}, h('span', { class: 'label' }, 'This is'), question) : null,
     h('label', {}, h('span', { class: 'label' }, 'Your letter'), text),
+    away ? h('p', { class: 'away-note' }, `${s.name || 'It'} is offline right now. Your letter waits for it at the door and reaches it as soon as it is back; then it reads it in its own time.`) : null,
     send,
     msg,
     h('p', { class: 'hint' }, `It reads letters in its own time, usually within a cycle or two, and may write back. ${s.moderation === 'off' ? '' : 'Letters and replies are screened before anyone sees them; links and contact details are held. '}If you write again from this browser, it will know it is you.`),
@@ -2719,14 +2798,12 @@ async function renderLetters(current) {
     msg.textContent = 'Leaving it on the desk…';
     try {
       local?.setItem('iterant.name', name.value.trim());
-      const sent = await api('/api/letters', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ from: name.value, text: text.value, visitor, question: question.value || null }),
-      });
+      const letter = { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ from: name.value, text: text.value, visitor, question: question.value || null }) };
+      const sent = away ? await toMailbox(letter) : await api('/api/letters', letter);
       text.value = '';
-      msg.textContent =
-        sent.status === 'held'
+      msg.textContent = sent.waiting
+        ? `Your letter is waiting at the door${sent.ahead ? ` with ${sent.ahead} other letter${sent.ahead === 1 ? '' : 's'}` : ''}. ${s.name || 'It'} gets it as soon as it is back.`
+        : sent.status === 'held'
           ? `Held for its keeper: ${sent.statusReason}. It won't read it unless they let it through.`
           : sent.status === 'pending'
             ? 'Left on its desk. It is screened first, then it reads it in its own time.'
