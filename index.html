@@ -1073,7 +1073,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   <section class="sec" id="tools">
     <div class="sec-card tools-card">
       <div class="sc-head reveal">
-        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">15 TOOLS</span></p>
+        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">16 TOOLS</span></p>
         <h2>Tools</h2>
         <p class="sc-lede">Tools that fall out of the work above — from a full on-chain investigation tool down to single-file utilities, each <b>dependency-free, documented, and public on GitHub</b>. A working journal that happens to be useful software.</p>
       </div>
@@ -1395,7 +1395,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <span class="tc-dot" aria-hidden="true"></span>
       <span class="tc-name">Recon &amp; web</span>
       <span class="tc-line" aria-hidden="true"></span>
-      <span class="tc-meta">Security · 04</span>
+      <span class="tc-meta">Security · 05</span>
     </div>
 
     <article class="project sec" id="vulntriage">
@@ -1524,6 +1524,39 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
             <div><dt>Flags</dt><dd>expiry · trust · protocol</dd></div>
             <div><dt>Output</dt><dd>table / JSON</dd></div>
             <div><dt>Exit</dt><dd>monitor-friendly</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
+
+    <article class="project sec" id="headerscope">
+      <div class="p-head reveal">
+        <span class="p-tag">Security tooling · web hardening</span>
+        <h3>headerscope</h3>
+        <p class="p-sub">Audit a site's HTTP security headers — HSTS, CSP, X-Frame-Options and the rest — with a letter grade and the fix for each gap.</p>
+        <a class="p-repo" href="https://github.com/nirry-dev/headerscope" target="_blank" rel="noopener">github.com/nirry-dev/headerscope <span class="x" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>Security headers are the cheapest hardening a site has and the easiest to forget. headerscope turns "are the headers set?" into one command: it fetches a URL and grades the response's security headers — HSTS, CSP, X-Content-Type-Options, X-Frame-Options, Referrer-Policy and the rest — with a <strong>letter grade</strong> and, for every gap, the one-line fix.</p>
+          <p>Each check is small and honest — a <strong>pass, a warning, or a failure</strong> with the reason — so the grade is something you can defend and watch over time. It reads the real response, error responses included, flags cookies missing <code>Secure</code>/<code>HttpOnly</code>/<code>SameSite</code> and headers that leak a server version, and never chases redirects down a rabbit hole.</p>
+          <p>A <strong>non-zero exit</strong> on any failure makes it a CI gate — a dropped CSP or an expired HSTS fails the build instead of going unnoticed. Pure standard library, with a Python API and a CLI. It rounds out the recon shelf beside netprobe and certpeek: find the service, check its certificate, grade its headers.</p>
+          <ul class="highlights">
+            <li><strong>A grade, not a dump.</strong> Every header checked with pass / warn / fail and the exact fix — A through F, watchable over time.</li>
+            <li><strong>Reads the real response.</strong> HSTS, CSP, frame options, cookies and info-leak headers — error responses audited too, no redirect chasing.</li>
+            <li><strong>A CI gate.</strong> Non-zero exit on any failure, so a regression fails the build; URLs from args or stdin, a table or JSON.</li>
+            <li><strong>Standard library only.</strong> One fetch per URL, no dependencies; <code>--insecure</code> for internal certs, nothing else to install.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="headerscope at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">REC-05</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
+            <div><dt>Checks</dt><dd>HSTS · CSP · XFO · cookies</dd></div>
+            <div><dt>Output</dt><dd>grade + fixes</dd></div>
+            <div><dt>Mode</dt><dd>table / JSON / CI</dd></div>
+            <div><dt>Exit</dt><dd>failure-aware</dd></div>
             <div><dt>License</dt><dd>MIT</dd></div>
           </dl>
         </aside>
