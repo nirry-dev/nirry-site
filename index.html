@@ -1977,12 +1977,15 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   },{threshold:.3});
   ["nirry-labs","pentest","neuron-steering","lype"].forEach(function(id){ var s=document.getElementById(id); if(s)focObs.observe(s); });
 
-  /* ---------- floating "all repositories" button, shown only across Tools ---------- */
-  var reposFab=document.getElementById("reposFab"), toolsSec=document.getElementById("tools");
-  if(reposFab&&toolsSec){
-    new IntersectionObserver(function(es){
-      es.forEach(function(e){ reposFab.classList.toggle("show", e.isIntersecting); });
-    },{rootMargin:"-12% 0px -12% 0px"}).observe(toolsSec);
+  /* ---------- floating "all repositories" button — appears from Flagship onward ---------- */
+  var reposFab=document.getElementById("reposFab"), flagSec=document.getElementById("systems"), flagTop=0;
+  if(reposFab&&flagSec){
+    function measureFab(){ flagTop=flagSec.getBoundingClientRect().top+root.scrollTop; }
+    // show once Flagship rises into the upper viewport, and keep it shown through everything after
+    function updFab(){ reposFab.classList.toggle("show", root.scrollTop>=flagTop-innerHeight*0.55); }
+    addEventListener("scroll",updFab,{passive:true});
+    addEventListener("resize",function(){ measureFab(); updFab(); },{passive:true});
+    measureFab(); updFab();
   }
 
   /* ---------- copy email ---------- */
