@@ -92,11 +92,20 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .brand{font-family:var(--f-mono);font-weight:600;letter-spacing:.22em;font-size:15px;color:var(--fg);
   text-decoration:none;display:flex;align-items:center;gap:9px}
 .brand .bk{color:var(--cyan)}
-nav{margin-left:auto;display:flex;gap:26px}
+nav{margin-left:auto;display:flex;align-items:center;gap:26px}
 nav a{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
   color:var(--muted);text-decoration:none;transition:color .2s;position:relative}
 nav a:hover,nav a.active{color:var(--fg)}
 nav a.active::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;background:var(--cyan)}
+/* Lype — standout nav CTA in its violet, the living-creature accent */
+nav a.lype{display:inline-flex;align-items:center;gap:7px;color:var(--violet);
+  border:1px solid var(--violet-dim);border-radius:999px;padding:5px 12px;
+  background:rgba(155,140,255,.09);letter-spacing:.14em;
+  transition:color .2s,border-color .2s,background .2s,box-shadow .2s}
+nav a.lype:hover{color:var(--fg);border-color:var(--violet);background:rgba(155,140,255,.17);box-shadow:0 0 20px -5px rgba(155,140,255,.6)}
+nav a.lype::after{content:none}
+nav a.lype .lv{width:6px;height:6px;border-radius:50%;background:var(--violet);box-shadow:0 0 8px var(--violet);flex:none;animation:lypepulse 2.4s ease-in-out infinite}
+@keyframes lypepulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.6)}}
 .cmd-hint{appearance:none;font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:var(--muted);
   background:transparent;border:1px solid var(--line-2);border-radius:4px;padding:5px 9px;cursor:pointer;transition:.2s}
 .cmd-hint:hover{color:var(--fg);border-color:var(--muted)}
@@ -597,7 +606,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
 @media (max-width:860px){ .p-body{grid-template-columns:1fr;gap:32px} }
 @media (max-width:820px){
   .metrics{grid-template-columns:repeat(2,1fr)}
-  nav{display:none}
+  nav a:not(.lype){display:none}
   .cmd-hint{display:none}
   .win{transform:none}
   .win-body{grid-template-columns:1fr}
@@ -635,10 +644,11 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     <a class="brand" href="#top" aria-label="Nirry — home"><span class="bk">◢</span>NIRRY</a>
     <nav aria-label="Primary">
       <a href="#about">About</a>
-      <a href="#systems">Systems</a>
+      <a href="#systems">Flagship</a>
       <a href="#research">Research</a>
       <a href="#tools">Tools</a>
       <a href="#contact">Contact</a>
+      <a class="lype" href="https://nirry.net/lype/#/place"><span class="lv" aria-hidden="true"></span>Lype</a>
     </nav>
     <button class="cmd-hint" id="cmdHint" type="button" aria-label="Open command palette">⌘K</button>
     <div class="sysclock"><span class="dot" aria-hidden="true"></span><span id="clock">SYSTEM ONLINE</span></div>
@@ -678,7 +688,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   <section class="sec" id="systems">
     <div class="sec-h reveal">
       <span class="idx">02</span>
-      <h2>Selected systems</h2>
+      <h2>Flagship</h2>
       <span class="rule"></span>
       <span class="count">02 / ACTIVE</span>
     </div>
@@ -1647,7 +1657,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   var back=document.getElementById("cmdk"), input=document.getElementById("cmdkInput"), list=document.getElementById("cmdkList"), hint=document.getElementById("cmdHint");
   var CMDS=[
     ["About","go","jump","#about"],
-    ["Systems","go","jump","#systems"],
+    ["Flagship","go","jump","#systems"],
     ["AI Suite","go","jump","#nirry-labs"],
     ["Pentest Suite","go","jump","#pentest"],
     ["AI Research","go","jump","#research"],
