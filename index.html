@@ -1073,7 +1073,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   <section class="sec" id="tools">
     <div class="sec-card tools-card">
       <div class="sc-head reveal">
-        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">12 TOOLS</span></p>
+        <p class="sc-kicker"><span class="n">04</span> Open source<span class="rule"></span><span class="count">13 TOOLS</span></p>
         <h2>Tools</h2>
         <p class="sc-lede">Tools that fall out of the work above — from a full on-chain investigation tool down to single-file utilities, each <b>dependency-free, documented, and public on GitHub</b>. A working journal that happens to be useful software.</p>
       </div>
@@ -1362,7 +1362,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <span class="tc-dot" aria-hidden="true"></span>
       <span class="tc-name">Recon &amp; web</span>
       <span class="tc-line" aria-hidden="true"></span>
-      <span class="tc-meta">Security · 03</span>
+      <span class="tc-meta">Security · 04</span>
     </div>
 
     <article class="project sec" id="vulntriage">
@@ -1458,6 +1458,39 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
             <div><dt>Targets</dt><dd>IP · host · URL</dd></div>
             <div><dt>Matching</dt><dd>lexical · no DNS</dd></div>
             <div><dt>Output</dt><dd>filter + verdict</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
+
+    <article class="project sec" id="certpeek">
+      <div class="p-head reveal">
+        <span class="p-tag">Security tooling · TLS inspection</span>
+        <h3>certpeek</h3>
+        <p class="p-sub">Inspect the TLS certificate a host serves — expiry, SANs, issuer, chain trust and protocol — including certificates that don't validate.</p>
+        <a class="p-repo" href="https://github.com/nirry-dev/certpeek" target="_blank" rel="noopener">github.com/nirry-dev/certpeek <span class="x" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>The obvious way to read a certificate — ask the connection for it — only works when the certificate <em>validates</em>. So the moment one is expired, self-signed or wrong-hostname, the one time you most need to look, it comes back empty. certpeek works the way you'd want instead: it fetches the certificate with verification off, so <strong>any</strong> cert comes back, decodes it, and runs a separate validating connection just to learn whether the chain and hostname are trusted.</p>
+          <p>For each host it reports who the certificate is for and who signed it, its validity window and the days until it expires, the subject alternative names, and the TLS version negotiated — then <strong>flags</strong> what's wrong: expired, not yet valid, expiring soon, self-signed, untrusted, hostname mismatch, or a weak protocol.</p>
+          <p>It takes hosts, <code>host:port</code> or URLs from arguments or stdin, prints a line each or JSON, and sets a <strong>monitoring-friendly exit code</strong> — non-zero if anything's amiss — so <code>certpeek api.example.com --days 14 || alert</code> is a complete check. Pure standard library, with a Python API and a CLI.</p>
+          <ul class="highlights">
+            <li><strong>Reads the broken ones.</strong> Expired, self-signed, wrong-hostname — the certificates you most need to see, which the usual API hides.</li>
+            <li><strong>Facts and verdict.</strong> The certificate's details <em>and</em> whether the chain and hostname validate, from a separate trusted connection.</li>
+            <li><strong>Built to monitor.</strong> A threshold for expiry and a non-zero exit when anything's wrong — one line in a cron job or a pipeline.</li>
+            <li><strong>Standard library only.</strong> No dependencies; host / port / URL inputs, a table or JSON out.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="certpeek at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">REC-04</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>Python (stdlib)</dd></div>
+            <div><dt>Reads</dt><dd>TLS cert · chain</dd></div>
+            <div><dt>Flags</dt><dd>expiry · trust · protocol</dd></div>
+            <div><dt>Output</dt><dd>table / JSON</dd></div>
+            <div><dt>Exit</dt><dd>monitor-friendly</dd></div>
             <div><dt>License</dt><dd>MIT</dd></div>
           </dl>
         </aside>
