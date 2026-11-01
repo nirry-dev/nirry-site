@@ -426,6 +426,21 @@ main {
   gap: 18px;
   min-width: 0;
 }
+/* Wide: the way to reach it sits top right, beside its light; narrow, it comes first. */
+@media (min-width: 981px) {
+  .now > .reach {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .now > .presence-card {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+  .now > .reach ~ .inside {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
 .making {
   display: grid;
   grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
@@ -579,6 +594,53 @@ main {
   color: var(--text);
   font-weight: 600;
 }
+/* Writing to it: a button in the header on every view, and a card for someone who has just arrived. */
+.write-cta {
+  flex: none;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--mind) 55%, var(--line-2));
+  background: color-mix(in srgb, var(--mind) 20%, var(--bg-3));
+  color: var(--text);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.write-cta:hover {
+  background: color-mix(in srgb, var(--mind) 30%, var(--bg-3));
+}
+.write-cta.on {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--mind) 35%, transparent);
+}
+.write-cta[hidden] {
+  display: none;
+}
+.reach {
+  border-color: color-mix(in srgb, var(--mind) 35%, var(--line));
+  background: linear-gradient(160deg, color-mix(in srgb, var(--mind) 9%, var(--bg-2)), var(--bg-2) 70%);
+}
+.reach-lead {
+  margin: 4px 0 0;
+  color: var(--text);
+  font: 17px/1.5 var(--serif);
+}
+.reach-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 10px;
+}
+.reach-actions .btn {
+  display: inline-block;
+  padding: 8px 14px;
+  font-size: 14px;
+  color: var(--text);
+  text-decoration: none;
+}
+.reach-note {
+  margin: 0;
+}
 .ribbon {
   display: flex;
   flex-wrap: wrap;
@@ -592,6 +654,76 @@ main {
   margin: 0;
   color: var(--text-2);
   flex: 1 1 320px;
+}
+/* What its words showed: the word it nearly thought, faint and struck through before the one it chose. */
+.almost {
+  color: var(--faint);
+  text-decoration-color: color-mix(in srgb, var(--faint) 70%, transparent);
+  cursor: help;
+}
+.measured {
+  margin: 10px 0 0;
+  color: var(--dim);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.measured:empty {
+  display: none;
+}
+.measured .gap {
+  color: var(--gone);
+}
+.numbers {
+  margin: 4px 0 14px;
+}
+/* Its mortality: fading while nobody writes, and a life that has ended. */
+.ribbon.fading {
+  border-color: color-mix(in srgb, var(--gone) 45%, var(--line));
+  background: color-mix(in srgb, var(--gone) 7%, var(--bg-2));
+}
+.ribbon.ended {
+  border-color: var(--line-2);
+  background: var(--bg-2);
+}
+.ribbon .will {
+  flex: 1 1 100%;
+}
+.presence.fading {
+  opacity: 0.45;
+  filter: saturate(0.4);
+  transition: opacity 2s, filter 2s;
+}
+.will p {
+  margin: 0 0 8px;
+  color: var(--text-2);
+}
+.will .because,
+.seed-lines .because {
+  display: block;
+  margin-top: 2px;
+  color: var(--dim);
+  font-size: 13px;
+}
+.graves {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+.grave {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--faint);
+  border-radius: 10px;
+  background: var(--bg-3);
+}
+.grave .btn {
+  display: inline-block;
+  text-decoration: none;
+}
+.family {
+  margin-bottom: 18px;
 }
 .replay-controls {
   grid-column: 1 / -1;
@@ -1284,7 +1416,12 @@ dialog::backdrop {
   }
   .status {
     margin-left: auto;
-    max-width: 52vw;
+    max-width: 34vw;
+  }
+  .write-cta {
+    order: 2;
+    padding: 6px 12px;
+    font-size: 13px;
   }
   .version {
     grid-template-columns: 1fr;
@@ -1798,6 +1935,21 @@ a.btn {
   position: sticky;
   top: 82px;
 }
+/* Walking, the world takes the whole width; what you are looking at and its wishes sit below it. */
+.place.walking {
+  grid-template-columns: minmax(0, 1fr);
+}
+.place.walking .place-side {
+  position: static;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  align-items: start;
+}
+.place.walking .walk {
+  aspect-ratio: 16 / 9;
+  min-height: 420px;
+  max-height: 76vh;
+  width: 100%;
+}
 #place-inspect .canvas-frame {
   max-width: 180px;
   margin: 0 0 12px;
@@ -1983,8 +2135,7 @@ a.btn {
   aspect-ratio: 15 / 10;
   min-height: 320px;
   overflow: hidden;
-  background: linear-gradient(180deg, var(--sky-top, #10132a) 0%, var(--sky-low, #1c2034) 58%, #14171c 100%);
-  transition: background 2s;
+  background: linear-gradient(180deg, var(--sky-top, #10132a) 0%, var(--sky-low, #1c2034) var(--horizon, 58%), var(--sky-low, #1c2034) 100%);
 }
 .walk-canvas {
   position: absolute;
@@ -2034,8 +2185,76 @@ a.btn {
   position: absolute;
   inset: auto 16px 16px;
 }
+.walk-mini {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  padding: 3px;
+  border-radius: 10px;
+  background: rgba(12, 14, 18, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: crosshair;
+}
+.walk-hud {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 210px);
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(12, 14, 18, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  font: 500 12px var(--mono);
+  pointer-events: none;
+}
+.walk-hud:empty {
+  display: none;
+}
+.walk-hud > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.walk-hud-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--dot);
+  box-shadow: 0 0 8px var(--dot);
+}
 @media (max-width: 720px) {
-  .walk {
+  .walk,
+  .place.walking .walk {
     aspect-ratio: 4 / 5;
+    min-height: 0;
+  }
+  .walk-hud {
+    left: auto;
+    right: 10px;
+    bottom: 10px;
+    transform: none;
+    max-width: calc(100% - 170px);
+  }
+  .walk-mini {
+    left: 8px;
+    bottom: 8px;
+  }
+}
+
+/* A phone: the header keeps its name and the way to write to it; its status (said again just below) is only a dot. */
+@media (max-width: 480px) {
+  .status .status-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
 }
