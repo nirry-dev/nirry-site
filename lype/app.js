@@ -1,9 +1,9 @@
 // The viewer: what it is doing right now, its whole journey, who it has become, and the letter box.
-import { createAtlas } from './atlas.js?v=20261102004133';
-import { verifyChain } from './lib/seal.js?v=20261102004133';
-import { cleanSvg } from './lib/svgclean.js?v=20261102004133';
-import { createPresence, moodColor } from './presence.js?v=20261102004133';
-import { createWalk } from './world.js?v=20261102004133';
+import { createAtlas } from './atlas.js?v=20261102013108';
+import { verifyChain } from './lib/seal.js?v=20261102013108';
+import { cleanSvg } from './lib/svgclean.js?v=20261102013108';
+import { createPresence, moodColor } from './presence.js?v=20261102013108';
+import { createWalk } from './world.js?v=20261102013108';
 
 // ---------- tiny DOM helpers ----------
 
@@ -526,9 +526,17 @@ function route() {
   const changed = next !== app.view;
   app.view = next;
   app.params = new URLSearchParams(query || '');
+  app.anchored = false;
   render().then(() => {
-    if (changed) window.scrollTo({ top: 0 });
+    if (changed && !app.anchored) window.scrollTo({ top: 0 });
   });
+}
+
+/** A view asked for one part of itself (#/place?wishes, #/errands?e=e7): it is shown there, not at the top. */
+function anchor(el) {
+  if (!el) return;
+  app.anchored = true;
+  el.scrollIntoView({ block: 'start' });
 }
 window.addEventListener('hashchange', route);
 
@@ -2039,7 +2047,7 @@ async function renderPlace(current) {
     app.walk?.neighbor?.(app.neighbor);
   }
   selectThing(thingParam);
-  if (app.params.has('wishes')) $('#wishes')?.scrollIntoView({ block: 'start' });
+  if (app.params.has('wishes')) anchor($('#wishes'));
   updatePlaceLive();
 }
 
@@ -2367,8 +2375,8 @@ async function renderJourney(current) {
   const wrap = $('#strand-wrap');
   wrap.scrollLeft = wrap.scrollWidth;
   const v = app.params.get('v');
-  if (v) document.getElementById(`v${v}`)?.scrollIntoView({ block: 'start' });
-  if (app.params.has('family')) $('#family')?.scrollIntoView({ block: 'start' });
+  if (v) anchor(document.getElementById(`v${v}`));
+  if (app.params.has('family')) anchor($('#family'));
 }
 
 /**
@@ -3403,7 +3411,7 @@ async function renderErrands(current) {
       asked.querySelector('.rp-row .btn')?.remove();
       fill(asked.querySelector('.errand-slot'), errandForm(open.find((e) => e.id === app.params.get('e'))));
     }
-    asked.scrollIntoView({ block: 'start' });
+    anchor(asked);
   }
 }
 
