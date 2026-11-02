@@ -1,9 +1,9 @@
 // The viewer: what it is doing right now, its whole journey, who it has become, and the letter box.
-import { createAtlas } from './atlas.js?v=20261102041056';
-import { verifyChain } from './lib/seal.js?v=20261102041056';
-import { cleanSvg } from './lib/svgclean.js?v=20261102041056';
-import { createPresence, moodColor } from './presence.js?v=20261102041056';
-import { createWalk } from './world.js?v=20261102041056';
+import { createAtlas } from './atlas.js?v=20261102070011';
+import { verifyChain } from './lib/seal.js?v=20261102070011';
+import { cleanSvg } from './lib/svgclean.js?v=20261102070011';
+import { createPresence, moodColor } from './presence.js?v=20261102070011';
+import { createWalk } from './world.js?v=20261102070011';
 
 // ---------- tiny DOM helpers ----------
 
@@ -164,7 +164,8 @@ let SNAPSHOT = document.querySelector('meta[name="iterant-snapshot"]')?.getAttri
 const RELAY = document.querySelector('meta[name="iterant-relay"]')?.getAttribute('content') ?? null;
 let BASE = '';
 // Framed inside another page (?embed): no header or keeper bar; the host page supplies the context.
-if (new URLSearchParams(location.search).has('embed')) document.documentElement.classList.add('embed');
+const EMBED = new URLSearchParams(location.search).has('embed');
+if (EMBED) document.documentElement.classList.add('embed');
 
 function snapshotFile(path) {
   const route = path.replace(/^\/?api\//, '').split('?')[0];
@@ -2005,7 +2006,7 @@ async function renderPlace(current) {
   if (fresh) {
     // The world is kept across live updates (the same canvas is moved into the new page), so the reader's view holds.
     app.walkHost = h('div', { class: 'walk' });
-    app.walk = createWalk(app.walkHost, { asset, onSelect: (id) => selectThing(id), onLens: (l) => local?.setItem('iterant.lens', l) });
+    app.walk = createWalk(app.walkHost, { asset, onSelect: (id) => selectThing(id), onLens: (l) => !EMBED && local?.setItem('iterant.lens', l) }); // a lens chosen in a frame is the host page's, not remembered
     if (app.walk) {
       app.walkHost.append((app.walkHud = h('div', { class: 'walk-hud', 'aria-live': 'polite' })));
       app.walkHost.append((app.walkMuse = h('div', { class: 'walk-muse', 'aria-hidden': 'true' }, h('span', {}))));
@@ -2035,7 +2036,7 @@ async function renderPlace(current) {
         modes,
         walking ? [app.walkHost, app.walk ? null : placeMap(w)] : placeMap(w),
         walking
-          ? h('div', { class: 'place-legend' }, h('span', {}, 'Above · Follow · Eye level: how you see it'), h('span', {}, 'drag: look around'), h('span', {}, 'scroll: come closer'), h('span', {}, 'W A S D: walk'), h('span', {}, 'Q E: turn'), h('span', {}, 'click or Tab: read a sign'), h('span', {}, 'map: go there'), housemate() ? h('span', {}, `east, a few streets away: ${housemate().name}'s town`) : null)
+          ? h('div', { class: 'place-legend' }, h('span', {}, 'Above · Follow · Eye level: how you see it'), h('span', {}, 'drag: look around'), h('span', {}, 'scroll: come closer'), h('span', {}, 'W A S D: walk'), h('span', {}, 'Q E: turn'), h('span', {}, 'eye level: click, then the mouse looks · Shift: run · Space: jump · Esc: let go'), h('span', {}, 'click or Tab: read a sign'), h('span', {}, 'map: go there'), housemate() ? h('span', {}, `east, a few streets away: ${housemate().name}'s town`) : null)
           : h('div', { class: 'place-legend' }, h('span', {}, 'faint: wearing away'), h('span', {}, 'cracked: a ruin'), h('span', {}, 'lines: what each thing was built beside'), h('span', {}, 'glow: where it was last')),
       ),
       h('aside', { class: 'place-side' }, h('div', { class: 'card' }, cardHead('Looking at'), h('div', { id: 'place-inspect' })), wishesCard(w)),
@@ -2043,7 +2044,7 @@ async function renderPlace(current) {
   );
   await app.walk?.show(w, walkLook());
   // first seen following it (or as the reader last chose, or as the link says): from above is one click away
-  if (fresh) app.walk?.lens(app.params.get('lens') || local?.getItem('iterant.lens') || 'follow');
+  if (fresh) app.walk?.lens(app.params.get('lens') || local?.getItem('iterant.lens') || 'eyes');
   // the pal it shares its card with: its place, past the edge of this one
   if (app.walk && housemate()) {
     app.neighbor ??= await api('/api/neighbor').catch(() => null);
