@@ -122,9 +122,11 @@ select {
   cursor: help;
   opacity: 0;
   visibility: hidden;
+  position: absolute; /* off, it takes no room from the tabs (it fades out where it stood) */
   transition: opacity 0.9s ease 1.5s, visibility 0s linear 2.4s;
 }
 .power-badge.on {
+  position: static;
   opacity: 1;
   visibility: visible;
   transition: opacity 0.6s ease, visibility 0s;
@@ -1597,6 +1599,24 @@ dialog::backdrop {
   }
   .two-col {
     grid-template-columns: 1fr;
+  }
+}
+/* Where every tab won't fit beside its name and status, the tabs take their own row instead of hiding off the end */
+@media (max-width: 1240px) {
+  .top {
+    flex-wrap: wrap;
+    gap: 8px 14px;
+  }
+  .tabs {
+    order: 3;
+    width: 100%;
+    margin: 0;
+  }
+  .status {
+    margin-left: auto;
+  }
+  .write-cta {
+    order: 2;
   }
 }
 @media (max-width: 720px) {

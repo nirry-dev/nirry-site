@@ -1,9 +1,9 @@
 // The viewer: what it is doing right now, its whole journey, who it has become, and the letter box.
-import { createAtlas } from './atlas.js';
-import { verifyChain } from './lib/seal.js';
-import { cleanSvg } from './lib/svgclean.js';
-import { createPresence, moodColor } from './presence.js';
-import { createWalk } from './world.js';
+import { createAtlas } from './atlas.js?v=20261102004133';
+import { verifyChain } from './lib/seal.js?v=20261102004133';
+import { cleanSvg } from './lib/svgclean.js?v=20261102004133';
+import { createPresence, moodColor } from './presence.js?v=20261102004133';
+import { createWalk } from './world.js?v=20261102004133';
 
 // ---------- tiny DOM helpers ----------
 
@@ -2036,7 +2036,7 @@ async function renderPlace(current) {
   // the pal it shares its card with: its place, past the edge of this one
   if (app.walk && housemate()) {
     app.neighbor ??= await api('/api/neighbor').catch(() => null);
-    app.walk?.neighbor(app.neighbor);
+    app.walk?.neighbor?.(app.neighbor);
   }
   selectThing(thingParam);
   if (app.params.has('wishes')) $('#wishes')?.scrollIntoView({ block: 'start' });
