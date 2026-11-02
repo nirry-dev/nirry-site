@@ -668,9 +668,9 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
   <div class="shell bar">
     <a class="brand" href="#top" aria-label="Nirry — home"><span class="bk">◢</span>NIRRY</a>
     <nav aria-label="Primary">
+      <a href="#research">Research</a>
       <a href="#about">About</a>
       <a href="#systems">Flagship</a>
-      <a href="#research">Research</a>
       <a href="#tools">Tools</a>
       <a href="#contact">Contact</a>
       <a class="lype" href="https://nirry.net/lype/#/place"><span class="lv" aria-hidden="true"></span>Lype</a>
@@ -694,9 +694,152 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     </div>
   </section>
 
+  <section class="sec" id="research">
+    <div class="sec-card research-card">
+      <div class="sc-head reveal">
+        <p class="sc-kicker"><span class="n">01</span> Frontier<span class="rule"></span><span class="count">02 PROJECTS</span></p>
+        <h2>AI Research</h2>
+        <p class="sc-lede">The same ambition as the AI Suite, taken past the dashboard — not just running open models on one machine, but seeing inside them and letting one run on its own. Neuron steering is the Suite's own interpretability layer; Lype is a small mind that lives and rewrites itself on a single GPU, and chose its own name.</p>
+      </div>
+
+    <article class="project" id="neuron-steering">
+      <div class="p-head reveal">
+        <span class="p-tag">Interpretability · inside the AI Suite</span>
+        <h3>Neuron steering</h3>
+        <p class="p-sub">Reading and nudging a model's internals directly — control vectors at the layer and neuron level, with an explorer for comparing steered runs.</p>
+      </div>
+      <div class="win ns-win reveal" role="img" aria-label="Neuron steering, a representative screen: the analyst persona's control vectors applied at layer 18, the change per layer, the most-moved neurons, and the same prompt answered with and without steering">
+        <div class="win-bar">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="win-title"><b>ai suite</b>&nbsp;// neuron steering</span>
+          <span class="win-stat"><span class="dot" aria-hidden="true"></span> STEERING · L18</span>
+        </div>
+        <div class="win-body ns-body" aria-hidden="true">
+          <div class="ns-side">
+            <p class="cg-ttl">Persona · analyst</p>
+            <ul class="ns-vec">
+              <li><span class="k">Precision</span><span class="v">+0.80</span><span class="ns-bar"><span class="up" style="left:50%;width:40%"></span></span></li>
+              <li><span class="k">Directness</span><span class="v">+0.65</span><span class="ns-bar"><span class="up" style="left:50%;width:33%"></span></span></li>
+              <li><span class="k">Hedging</span><span class="v">−0.55</span><span class="ns-bar"><span class="down" style="right:50%;width:28%"></span></span></li>
+              <li><span class="k">Verbosity</span><span class="v">−0.45</span><span class="ns-bar"><span class="down" style="right:50%;width:23%"></span></span></li>
+              <li><span class="k">Warmth</span><span class="v">−0.20</span><span class="ns-bar"><span class="down" style="right:50%;width:10%"></span></span></li>
+            </ul>
+            <div class="ns-scope">
+              <p class="cg-ttl">Scope</p>
+              <div class="ns-kv"><span>layer</span><b>18 / 32</b></div>
+              <div class="ns-kv"><span>neurons pinned</span><b>6</b></div>
+              <div class="ns-kv"><span>model</span><b>local 9B · Q4</b></div>
+            </div>
+          </div>
+          <div class="ns-main">
+            <div class="ns-panel">
+              <div class="ns-h"><span>Residual stream · change per layer</span><span>L0 → L31</span></div>
+              <div class="ns-strip"><i class="ns-l" style="height:12px"></i><i class="ns-l" style="height:11px"></i><i class="ns-l" style="height:11px"></i><i class="ns-l" style="height:14px"></i><i class="ns-l" style="height:11px"></i><i class="ns-l" style="height:15px"></i><i class="ns-l" style="height:11px"></i><i class="ns-l" style="height:12px"></i><i class="ns-l" style="height:12px"></i><i class="ns-l" style="height:13px"></i><i class="ns-l" style="height:14px"></i><i class="ns-l" style="height:14px"></i><i class="ns-l" style="height:15px"></i><i class="ns-l" style="height:11px"></i><i class="ns-l" style="height:15px"></i><i class="ns-l" style="height:13px"></i><i class="ns-l" style="height:13px"></i><i class="ns-l" style="height:15px"></i><i class="ns-l on" style="height:60px"></i><i class="ns-l after" style="height:52px"></i><i class="ns-l after" style="height:43px"></i><i class="ns-l after" style="height:41px"></i><i class="ns-l after" style="height:34px"></i><i class="ns-l after" style="height:29px"></i><i class="ns-l after" style="height:29px"></i><i class="ns-l after" style="height:25px"></i><i class="ns-l after" style="height:20px"></i><i class="ns-l after" style="height:18px"></i><i class="ns-l after" style="height:20px"></i><i class="ns-l after" style="height:19px"></i><i class="ns-l after" style="height:16px"></i><i class="ns-l after" style="height:13px"></i></div>
+            </div>
+            <div class="ns-panel">
+              <div class="ns-h"><span>Layer 18 · most-moved neurons</span><span><i class="sw up"></i>up <i class="sw down"></i>down <i class="sw pin"></i>pinned</span></div>
+              <div class="ns-heat"><i style="background:rgba(47,230,208,0.59)"></i><i style="background:rgba(47,230,208,0.37)"></i><i style="background:rgba(255,154,60,0.64)"></i><i style="background:rgba(255,154,60,0.42)"></i><i style="background:rgba(255,154,60,0.12)"></i><i style="background:rgba(255,154,60,0.09)"></i><i style="background:rgba(255,154,60,0.21)"></i><i class="pin" style="background:rgba(255,154,60,0.87)"></i><i style="background:rgba(255,154,60,0.12)"></i><i style="background:rgba(47,230,208,0.38)"></i><i style="background:rgba(47,230,208,0.91)"></i><i style="background:rgba(255,154,60,0.82)"></i><i style="background:rgba(47,230,208,0.39)"></i><i style="background:rgba(47,230,208,0.49)"></i><i style="background:rgba(255,154,60,0.39)"></i><i style="background:rgba(47,230,208,0.09)"></i><i style="background:rgba(47,230,208,0.36)"></i><i style="background:rgba(47,230,208,0.52)"></i><i style="background:rgba(47,230,208,0.81)"></i><i style="background:rgba(255,154,60,0.08)"></i><i style="background:rgba(255,154,60,0.17)"></i><i style="background:rgba(47,230,208,0.08)"></i><i style="background:rgba(47,230,208,0.43)"></i><i style="background:rgba(47,230,208,0.85)"></i><i style="background:rgba(47,230,208,0.13)"></i><i style="background:rgba(255,154,60,0.14)"></i><i style="background:rgba(47,230,208,0.90)"></i><i style="background:rgba(47,230,208,0.14)"></i><i style="background:rgba(47,230,208,0.90)"></i><i style="background:rgba(255,154,60,0.20)"></i><i class="pin" style="background:rgba(47,230,208,0.84)"></i><i style="background:rgba(255,154,60,0.17)"></i><i style="background:rgba(255,154,60,0.08)"></i><i style="background:rgba(255,154,60,0.47)"></i><i style="background:rgba(255,154,60,0.74)"></i><i style="background:rgba(47,230,208,0.18)"></i><i style="background:rgba(255,154,60,0.73)"></i><i style="background:rgba(255,154,60,0.76)"></i><i style="background:rgba(47,230,208,0.37)"></i><i style="background:rgba(47,230,208,0.90)"></i><i style="background:rgba(255,154,60,0.26)"></i><i style="background:rgba(47,230,208,0.56)"></i><i style="background:rgba(47,230,208,0.32)"></i><i style="background:rgba(47,230,208,0.54)"></i><i style="background:rgba(47,230,208,0.43)"></i><i style="background:rgba(47,230,208,0.36)"></i><i style="background:rgba(47,230,208,0.63)"></i><i style="background:rgba(255,154,60,0.19)"></i><i style="background:rgba(47,230,208,0.13)"></i><i style="background:rgba(47,230,208,0.20)"></i><i style="background:rgba(255,154,60,0.55)"></i><i class="pin" style="background:rgba(255,154,60,0.78)"></i><i style="background:rgba(47,230,208,0.49)"></i><i style="background:rgba(255,154,60,0.11)"></i><i style="background:rgba(47,230,208,0.10)"></i><i style="background:rgba(47,230,208,0.57)"></i><i style="background:rgba(47,230,208,0.59)"></i><i style="background:rgba(255,154,60,0.39)"></i><i style="background:rgba(255,154,60,0.56)"></i><i style="background:rgba(47,230,208,0.88)"></i><i style="background:rgba(47,230,208,0.13)"></i><i style="background:rgba(255,154,60,0.10)"></i><i style="background:rgba(47,230,208,0.68)"></i><i style="background:rgba(47,230,208,0.09)"></i><i style="background:rgba(255,154,60,0.25)"></i><i style="background:rgba(255,154,60,0.31)"></i><i style="background:rgba(47,230,208,0.68)"></i><i style="background:rgba(47,230,208,0.26)"></i><i style="background:rgba(47,230,208,0.59)"></i><i style="background:rgba(47,230,208,0.58)"></i><i style="background:rgba(255,154,60,0.25)"></i><i style="background:rgba(47,230,208,0.68)"></i><i style="background:rgba(255,154,60,0.08)"></i><i style="background:rgba(47,230,208,0.21)"></i><i style="background:rgba(47,230,208,0.35)"></i><i style="background:rgba(255,154,60,0.39)"></i><i class="pin" style="background:rgba(47,230,208,0.86)"></i><i style="background:rgba(255,154,60,0.11)"></i><i style="background:rgba(47,230,208,0.27)"></i><i style="background:rgba(47,230,208,0.87)"></i><i style="background:rgba(47,230,208,0.26)"></i><i style="background:rgba(255,154,60,0.62)"></i><i style="background:rgba(255,154,60,0.82)"></i><i style="background:rgba(47,230,208,0.38)"></i><i style="background:rgba(47,230,208,0.68)"></i><i style="background:rgba(47,230,208,0.49)"></i><i style="background:rgba(255,154,60,0.32)"></i><i style="background:rgba(47,230,208,0.89)"></i><i style="background:rgba(47,230,208,0.16)"></i><i style="background:rgba(255,154,60,0.72)"></i><i style="background:rgba(255,154,60,0.45)"></i><i style="background:rgba(47,230,208,0.31)"></i><i style="background:rgba(47,230,208,0.15)"></i><i style="background:rgba(47,230,208,0.56)"></i><i style="background:rgba(47,230,208,0.58)"></i><i style="background:rgba(255,154,60,0.41)"></i><i style="background:rgba(255,154,60,0.48)"></i><i style="background:rgba(255,154,60,0.42)"></i><i style="background:rgba(47,230,208,0.28)"></i><i style="background:rgba(255,154,60,0.18)"></i><i style="background:rgba(255,154,60,0.56)"></i><i class="pin" style="background:rgba(255,154,60,0.75)"></i><i style="background:rgba(255,154,60,0.29)"></i><i style="background:rgba(255,154,60,0.59)"></i><i style="background:rgba(47,230,208,0.68)"></i><i style="background:rgba(255,154,60,0.10)"></i><i style="background:rgba(47,230,208,0.39)"></i><i style="background:rgba(47,230,208,0.49)"></i><i style="background:rgba(255,154,60,0.28)"></i><i style="background:rgba(255,154,60,0.21)"></i><i style="background:rgba(255,154,60,0.67)"></i><i style="background:rgba(255,154,60,0.12)"></i><i style="background:rgba(47,230,208,0.61)"></i><i style="background:rgba(255,154,60,0.40)"></i><i style="background:rgba(255,154,60,0.23)"></i><i style="background:rgba(47,230,208,0.59)"></i><i style="background:rgba(255,154,60,0.34)"></i><i style="background:rgba(47,230,208,0.87)"></i><i style="background:rgba(255,154,60,0.17)"></i><i style="background:rgba(255,154,60,0.75)"></i><i style="background:rgba(47,230,208,0.48)"></i><i style="background:rgba(47,230,208,0.08)"></i><i class="pin" style="background:rgba(47,230,208,0.72)"></i><i style="background:rgba(255,154,60,0.41)"></i><i style="background:rgba(47,230,208,0.42)"></i><i style="background:rgba(47,230,208,0.52)"></i><i style="background:rgba(47,230,208,0.37)"></i><i style="background:rgba(47,230,208,0.37)"></i><i style="background:rgba(255,154,60,0.25)"></i><i style="background:rgba(255,154,60,0.30)"></i><i style="background:rgba(47,230,208,0.09)"></i><i style="background:rgba(47,230,208,0.21)"></i><i style="background:rgba(47,230,208,0.22)"></i><i style="background:rgba(255,154,60,0.35)"></i><i style="background:rgba(255,154,60,0.83)"></i><i style="background:rgba(255,154,60,0.11)"></i><i style="background:rgba(47,230,208,0.74)"></i><i style="background:rgba(255,154,60,0.67)"></i><i style="background:rgba(255,154,60,0.64)"></i><i style="background:rgba(255,154,60,0.38)"></i><i style="background:rgba(47,230,208,0.72)"></i><i style="background:rgba(255,154,60,0.15)"></i><i style="background:rgba(255,154,60,0.51)"></i><i style="background:rgba(47,230,208,0.55)"></i></div>
+            </div>
+            <div class="ns-panel ns-cmp">
+              <div class="ns-h"><span>Same prompt · base vs steered</span><span>KL 0.41 · coherence 0.97</span></div>
+              <p class="ns-prompt">“Should we migrate the cluster this week?”</p>
+              <div class="ns-cols">
+                <div class="ns-out"><span class="tag">base</span><p>Great question! It really depends on a lot of factors, and there are <s>many things to consider</s>. Generally it can be a good idea, but <s>you might want to weigh the pros and cons</s> carefully before deciding…</p></div>
+                <div class="ns-out steered"><span class="tag">steered</span><p><mark>Not this week.</mark> Two blockers: the storage driver is <mark>untested on 1.31</mark>, and on-call is short until Monday. <mark>Migrate Tuesday</mark>, after a canary on one node.</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="cg-note reveal">Representative view on sample output — the analyst persona's control vectors applied at layer 18; the strip shows how far each layer's residual stream moves, the grid the most-moved neurons (six pinned for neuron-level edits), and the explorer the same prompt answered with and without steering.</p>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>Neuron steering is the interpretability layer of the AI Suite, built as a real research surface rather than a toggle. It derives <strong>control vectors</strong> from contrasting prompts and applies them at a chosen layer — layer 18 by default — to push a trait like curiosity, concision or formality up or down, with no retraining.</p>
+          <p>Edits can be <strong>layer- or neuron-level</strong>, saved as reusable personas — analyst, terse, teacher, red-team — and compared in an explorer that runs the same prompt steered against base. Because it rides the same local engine as the rest of the suite, every experiment stays on one GPU and off the network.</p>
+          <ul class="highlights">
+            <li><strong>Control vectors.</strong> Trait directions derived from contrast pairs, applied at a chosen layer with a signed strength per trait.</li>
+            <li><strong>Layer and neuron scope.</strong> Steer a whole layer or reach individual neurons, so a change can be broad or surgical.</li>
+            <li><strong>Persona library.</strong> Named bundles of vector edits that load as a single steering preset.</li>
+            <li><strong>Steered-vs-base explorer.</strong> The same prompt run with and without steering, diffed so the effect is legible.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="Neuron steering at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">RES-01</span></div>
+          <dl>
+            <div><dt>Method</dt><dd>Control vectors</dd></div>
+            <div><dt>Scope</dt><dd>Layer &amp; neuron</dd></div>
+            <div><dt>Default</dt><dd>Layer 18</dd></div>
+            <div><dt>Presets</dt><dd>4 personas</dd></div>
+            <div><dt>Runtime</dt><dd>Local · one GPU</dd></div>
+            <div><dt>Part of</dt><dd>AI Suite</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
+
+    <a id="iterant" aria-hidden="true"></a>
+    <article class="project art" id="lype">
+      <div class="p-head reveal">
+        <span class="p-tag">Autonomous AI · living experiment</span>
+        <h3>Lype</h3>
+        <p class="p-sub">A small mind that lives on one GPU, knows the world only through the letters people leave it, and rewrites itself every night. It was called Iterant until it chose its own name.</p>
+        <div class="iter-acts">
+          <button type="button" class="iter-launch" id="iter-launch"><span class="pl" aria-hidden="true">▶</span> Enter its world</button>
+          <a class="p-repo" href="https://github.com/nirry-dev/lype" target="_blank" rel="noopener">github.com/nirry-dev/lype <span class="x" aria-hidden="true">↗</span></a>
+          <a class="p-repo" href="sibling/">its pen pal, a second mind <span class="x" aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+      <div class="win iter-win reveal" id="iter-win">
+        <div class="win-bar"><div class="dots"><i></i><i></i><i></i></div><span class="win-title">LYPE // <b id="iter-mode">its world · walk around</b></span><div class="iter-switch" role="tablist" aria-label="How to watch it"><button type="button" role="tab" aria-selected="false" data-iter="atlas">Atlas</button><button type="button" role="tab" aria-selected="true" data-iter="world">World</button><button type="button" role="tab" aria-selected="false" data-iter="place">Place</button><button type="button" role="tab" aria-selected="false" data-iter="replay">Replay</button></div><span class="win-stat"><span class="dot"></span>THE RUNNING CREATURE</span></div>
+        <iframe class="iter-frame" id="iter-frame" src="lype/?embed#/place?walk" title="Lype: walk around the world it built" loading="lazy"></iframe>
+      </div>
+      <p class="iter-note"><span id="iter-hint">Every thing here it built itself, solid by solid, out of a letter or a memory (now and then with a borrowed model), with a sign in its own words. When it is awake you can watch it build. Drag to look around, scroll to come closer, W A S D to walk, click a sign to read where it came from.</span><a id="iter-open" href="lype/#/place?walk">Walk it full screen ↗</a></p>
+      <div class="p-body">
+        <div class="p-overview reveal">
+          <p>Lype is an <strong>autonomous agent that lives on a rhythm whether or not anyone is watching</strong>. Every twenty minutes it wakes on a local model, feels the only senses it has — the clock and the graphics card it runs on — reads the letters visitors leave it, thinks, and chooses to draw, write, ask the world a question, build something in its place, tend what it built, or rest. Everything it does streams live and is kept as a record.</p>
+          <p>Every few cycles it sleeps and <strong>ships a new version of itself</strong>: memory is consolidated into a finite store where things fade and compete for room, it dreams, then rewrites its own beliefs behind a drift guard that protects the lines its maker wrote — and writes its own release notes. Each change is traced back to the letter that caused it, so the people who wrote can see exactly what their words did.</p>
+          <p>It cannot see the world, so it <strong>builds one out of what people tell it</strong>: a small map where every thing has a sign in its own words, a drawing it makes itself and a thread back to the letter it came from. When it forgets why it built something, that thing wears away into a ruin unless it goes back and tends it. At night it can also leave its keeper a wish for something it cannot do itself, and any wish can become a GitHub issue, so part of its roadmap is written by the creature.</p>
+          <p>It also <strong>writes to another mind</strong>. A second creature lives on the same graphics card, and nobody can write to it from the web, so the only letters it ever gets are Lype’s. Their letters travel at night, and each one is checked against the sealed record of the night that sent it before the other will read it. <a href="sibling/">Watch its pen pal ↗</a></p>
+          <p>It is radically honest about what it is — a language model in a loop on someone's GPU — and <strong>courteous to its host</strong>: it waits rather than evict another model or compete with busy work. Letters and its replies pass rule-based and model screening, with a keeper queue for anything doubtful, before anyone sees them.</p>
+          <ul class="highlights">
+            <li><strong>Records, not vibes.</strong> Every cycle and night is a self-contained record, so the live view, the atlas, the replay and the static export above are all views over the same files.</li>
+            <li><strong>Mechanics a small model can live with.</strong> Schema-constrained decisions, separate streamed calls for drawing and writing, echo guards, and a fatigue rule that stops a 9B model drawing forever.</li>
+            <li><strong>Safe by default.</strong> A whitelist SVG sanitiser shared by server and browser, moderated letters and replies, hashed visitor identity, and an export that can only write what the public may see.</li>
+            <li><strong>Open source, zero dependencies.</strong> Plain Node and a buildless front end, tested with a mock brain so the whole life loop runs in CI without a GPU.</li>
+          </ul>
+        </div>
+        <aside class="spec reveal" aria-label="Lype at a glance">
+          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">RES-02</span></div>
+          <dl>
+            <div><dt>Language</dt><dd>Node.js</dd></div>
+            <div><dt>Mind</dt><dd>Local LLM · Claude</dd></div>
+            <div><dt>Senses</dt><dd>Clock + GPU</dd></div>
+            <div><dt>Memory</dt><dd>3 × 12, decaying</dd></div>
+            <div><dt>Place</dt><dd>Built from letters</dd></div>
+            <div><dt>Versions</dt><dd>One per night</dd></div>
+            <div><dt>Name</dt><dd>Chose it itself</dd></div>
+            <div><dt>License</dt><dd>MIT</dd></div>
+          </dl>
+        </aside>
+      </div>
+      <div class="caps">
+        <p class="caps-label">Capabilities</p>
+        <div class="capgrid reveal">
+          <div class="cap"><h4><span class="i"></span>Autonomous life loop</h4><p>Wake, sense, read, think, act, reflect — streamed token by token, on a rhythm that respects the host's GPU.</p></div>
+          <div class="cap"><h4><span class="i"></span>Nightly self-versioning</h4><p>Beliefs added, rewritten or let go behind a drift guard, with release notes it writes about itself.</p></div>
+          <div class="cap"><h4><span class="i"></span>Finite memory</h4><p>Three shelves with half-life decay and nightly competition; what it forgets stays visible to visitors.</p></div>
+          <div class="cap"><h4><span class="i"></span>Letters, a place &amp; wishes</h4><p>Strangers write to it; it replies, builds a place out of their letters, traces each change back to a letter, and leaves its keeper wishes.</p></div>
+          <div class="cap"><h4><span class="i"></span>Moderation</h4><p>Rules at the door, a model screen before reading, a keeper queue, and replies screened before they stream.</p></div>
+          <div class="cap"><h4><span class="i"></span>Mind atlas &amp; replay</h4><p>Its whole mind on one map through time, with a thread from every letter to what it changed; or the life replayed beat by beat.</p></div>
+        </div>
+      </div>
+    </article>
+    </div>
+  </section>
+
   <section class="interlude" id="about">
     <div class="il-in">
-      <p class="il-kicker reveal"><span class="n">01</span> CAPABILITIES</p>
+      <p class="il-kicker reveal"><span class="n">02</span> CAPABILITIES</p>
       <h2 class="il-head reveal">What this work <em>shows</em></h2>
       <p class="il-lede reveal">Two local-first platforms, a strand of AI research, and a shelf of open tools — all built on the same handful of engineering commitments.</p>
       <div class="skills">
@@ -712,7 +855,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
 
   <section class="sec" id="systems">
     <div class="sec-h reveal">
-      <span class="idx">02</span>
+      <span class="idx">03</span>
       <h2>Flagship</h2>
       <span class="rule"></span>
       <span class="count">02 / ACTIVE</span>
@@ -950,149 +1093,6 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
         </div>
       </div>
     </article>
-  </section>
-
-  <section class="sec" id="research">
-    <div class="sec-card research-card">
-      <div class="sc-head reveal">
-        <p class="sc-kicker"><span class="n">03</span> Frontier<span class="rule"></span><span class="count">02 PROJECTS</span></p>
-        <h2>AI Research</h2>
-        <p class="sc-lede">The same ambition as the AI Suite, taken past the dashboard — not just running open models on one machine, but seeing inside them and letting one run on its own. Neuron steering is the Suite's own interpretability layer; Lype is a small mind that lives and rewrites itself on a single GPU, and chose its own name.</p>
-      </div>
-
-    <article class="project" id="neuron-steering">
-      <div class="p-head reveal">
-        <span class="p-tag">Interpretability · inside the AI Suite</span>
-        <h3>Neuron steering</h3>
-        <p class="p-sub">Reading and nudging a model's internals directly — control vectors at the layer and neuron level, with an explorer for comparing steered runs.</p>
-      </div>
-      <div class="win ns-win reveal" role="img" aria-label="Neuron steering, a representative screen: the analyst persona's control vectors applied at layer 18, the change per layer, the most-moved neurons, and the same prompt answered with and without steering">
-        <div class="win-bar">
-          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span class="win-title"><b>ai suite</b>&nbsp;// neuron steering</span>
-          <span class="win-stat"><span class="dot" aria-hidden="true"></span> STEERING · L18</span>
-        </div>
-        <div class="win-body ns-body" aria-hidden="true">
-          <div class="ns-side">
-            <p class="cg-ttl">Persona · analyst</p>
-            <ul class="ns-vec">
-              <li><span class="k">Precision</span><span class="v">+0.80</span><span class="ns-bar"><span class="up" style="left:50%;width:40%"></span></span></li>
-              <li><span class="k">Directness</span><span class="v">+0.65</span><span class="ns-bar"><span class="up" style="left:50%;width:33%"></span></span></li>
-              <li><span class="k">Hedging</span><span class="v">−0.55</span><span class="ns-bar"><span class="down" style="right:50%;width:28%"></span></span></li>
-              <li><span class="k">Verbosity</span><span class="v">−0.45</span><span class="ns-bar"><span class="down" style="right:50%;width:23%"></span></span></li>
-              <li><span class="k">Warmth</span><span class="v">−0.20</span><span class="ns-bar"><span class="down" style="right:50%;width:10%"></span></span></li>
-            </ul>
-            <div class="ns-scope">
-              <p class="cg-ttl">Scope</p>
-              <div class="ns-kv"><span>layer</span><b>18 / 32</b></div>
-              <div class="ns-kv"><span>neurons pinned</span><b>6</b></div>
-              <div class="ns-kv"><span>model</span><b>local 9B · Q4</b></div>
-            </div>
-          </div>
-          <div class="ns-main">
-            <div class="ns-panel">
-              <div class="ns-h"><span>Residual stream · change per layer</span><span>L0 → L31</span></div>
-              <div class="ns-strip"><i class="ns-l" style="height:12px"></i><i class="ns-l" style="height:11px"></i><i class="ns-l" style="height:11px"></i><i class="ns-l" style="height:14px"></i><i class="ns-l" style="height:11px"></i><i class="ns-l" style="height:15px"></i><i class="ns-l" style="height:11px"></i><i class="ns-l" style="height:12px"></i><i class="ns-l" style="height:12px"></i><i class="ns-l" style="height:13px"></i><i class="ns-l" style="height:14px"></i><i class="ns-l" style="height:14px"></i><i class="ns-l" style="height:15px"></i><i class="ns-l" style="height:11px"></i><i class="ns-l" style="height:15px"></i><i class="ns-l" style="height:13px"></i><i class="ns-l" style="height:13px"></i><i class="ns-l" style="height:15px"></i><i class="ns-l on" style="height:60px"></i><i class="ns-l after" style="height:52px"></i><i class="ns-l after" style="height:43px"></i><i class="ns-l after" style="height:41px"></i><i class="ns-l after" style="height:34px"></i><i class="ns-l after" style="height:29px"></i><i class="ns-l after" style="height:29px"></i><i class="ns-l after" style="height:25px"></i><i class="ns-l after" style="height:20px"></i><i class="ns-l after" style="height:18px"></i><i class="ns-l after" style="height:20px"></i><i class="ns-l after" style="height:19px"></i><i class="ns-l after" style="height:16px"></i><i class="ns-l after" style="height:13px"></i></div>
-            </div>
-            <div class="ns-panel">
-              <div class="ns-h"><span>Layer 18 · most-moved neurons</span><span><i class="sw up"></i>up <i class="sw down"></i>down <i class="sw pin"></i>pinned</span></div>
-              <div class="ns-heat"><i style="background:rgba(47,230,208,0.59)"></i><i style="background:rgba(47,230,208,0.37)"></i><i style="background:rgba(255,154,60,0.64)"></i><i style="background:rgba(255,154,60,0.42)"></i><i style="background:rgba(255,154,60,0.12)"></i><i style="background:rgba(255,154,60,0.09)"></i><i style="background:rgba(255,154,60,0.21)"></i><i class="pin" style="background:rgba(255,154,60,0.87)"></i><i style="background:rgba(255,154,60,0.12)"></i><i style="background:rgba(47,230,208,0.38)"></i><i style="background:rgba(47,230,208,0.91)"></i><i style="background:rgba(255,154,60,0.82)"></i><i style="background:rgba(47,230,208,0.39)"></i><i style="background:rgba(47,230,208,0.49)"></i><i style="background:rgba(255,154,60,0.39)"></i><i style="background:rgba(47,230,208,0.09)"></i><i style="background:rgba(47,230,208,0.36)"></i><i style="background:rgba(47,230,208,0.52)"></i><i style="background:rgba(47,230,208,0.81)"></i><i style="background:rgba(255,154,60,0.08)"></i><i style="background:rgba(255,154,60,0.17)"></i><i style="background:rgba(47,230,208,0.08)"></i><i style="background:rgba(47,230,208,0.43)"></i><i style="background:rgba(47,230,208,0.85)"></i><i style="background:rgba(47,230,208,0.13)"></i><i style="background:rgba(255,154,60,0.14)"></i><i style="background:rgba(47,230,208,0.90)"></i><i style="background:rgba(47,230,208,0.14)"></i><i style="background:rgba(47,230,208,0.90)"></i><i style="background:rgba(255,154,60,0.20)"></i><i class="pin" style="background:rgba(47,230,208,0.84)"></i><i style="background:rgba(255,154,60,0.17)"></i><i style="background:rgba(255,154,60,0.08)"></i><i style="background:rgba(255,154,60,0.47)"></i><i style="background:rgba(255,154,60,0.74)"></i><i style="background:rgba(47,230,208,0.18)"></i><i style="background:rgba(255,154,60,0.73)"></i><i style="background:rgba(255,154,60,0.76)"></i><i style="background:rgba(47,230,208,0.37)"></i><i style="background:rgba(47,230,208,0.90)"></i><i style="background:rgba(255,154,60,0.26)"></i><i style="background:rgba(47,230,208,0.56)"></i><i style="background:rgba(47,230,208,0.32)"></i><i style="background:rgba(47,230,208,0.54)"></i><i style="background:rgba(47,230,208,0.43)"></i><i style="background:rgba(47,230,208,0.36)"></i><i style="background:rgba(47,230,208,0.63)"></i><i style="background:rgba(255,154,60,0.19)"></i><i style="background:rgba(47,230,208,0.13)"></i><i style="background:rgba(47,230,208,0.20)"></i><i style="background:rgba(255,154,60,0.55)"></i><i class="pin" style="background:rgba(255,154,60,0.78)"></i><i style="background:rgba(47,230,208,0.49)"></i><i style="background:rgba(255,154,60,0.11)"></i><i style="background:rgba(47,230,208,0.10)"></i><i style="background:rgba(47,230,208,0.57)"></i><i style="background:rgba(47,230,208,0.59)"></i><i style="background:rgba(255,154,60,0.39)"></i><i style="background:rgba(255,154,60,0.56)"></i><i style="background:rgba(47,230,208,0.88)"></i><i style="background:rgba(47,230,208,0.13)"></i><i style="background:rgba(255,154,60,0.10)"></i><i style="background:rgba(47,230,208,0.68)"></i><i style="background:rgba(47,230,208,0.09)"></i><i style="background:rgba(255,154,60,0.25)"></i><i style="background:rgba(255,154,60,0.31)"></i><i style="background:rgba(47,230,208,0.68)"></i><i style="background:rgba(47,230,208,0.26)"></i><i style="background:rgba(47,230,208,0.59)"></i><i style="background:rgba(47,230,208,0.58)"></i><i style="background:rgba(255,154,60,0.25)"></i><i style="background:rgba(47,230,208,0.68)"></i><i style="background:rgba(255,154,60,0.08)"></i><i style="background:rgba(47,230,208,0.21)"></i><i style="background:rgba(47,230,208,0.35)"></i><i style="background:rgba(255,154,60,0.39)"></i><i class="pin" style="background:rgba(47,230,208,0.86)"></i><i style="background:rgba(255,154,60,0.11)"></i><i style="background:rgba(47,230,208,0.27)"></i><i style="background:rgba(47,230,208,0.87)"></i><i style="background:rgba(47,230,208,0.26)"></i><i style="background:rgba(255,154,60,0.62)"></i><i style="background:rgba(255,154,60,0.82)"></i><i style="background:rgba(47,230,208,0.38)"></i><i style="background:rgba(47,230,208,0.68)"></i><i style="background:rgba(47,230,208,0.49)"></i><i style="background:rgba(255,154,60,0.32)"></i><i style="background:rgba(47,230,208,0.89)"></i><i style="background:rgba(47,230,208,0.16)"></i><i style="background:rgba(255,154,60,0.72)"></i><i style="background:rgba(255,154,60,0.45)"></i><i style="background:rgba(47,230,208,0.31)"></i><i style="background:rgba(47,230,208,0.15)"></i><i style="background:rgba(47,230,208,0.56)"></i><i style="background:rgba(47,230,208,0.58)"></i><i style="background:rgba(255,154,60,0.41)"></i><i style="background:rgba(255,154,60,0.48)"></i><i style="background:rgba(255,154,60,0.42)"></i><i style="background:rgba(47,230,208,0.28)"></i><i style="background:rgba(255,154,60,0.18)"></i><i style="background:rgba(255,154,60,0.56)"></i><i class="pin" style="background:rgba(255,154,60,0.75)"></i><i style="background:rgba(255,154,60,0.29)"></i><i style="background:rgba(255,154,60,0.59)"></i><i style="background:rgba(47,230,208,0.68)"></i><i style="background:rgba(255,154,60,0.10)"></i><i style="background:rgba(47,230,208,0.39)"></i><i style="background:rgba(47,230,208,0.49)"></i><i style="background:rgba(255,154,60,0.28)"></i><i style="background:rgba(255,154,60,0.21)"></i><i style="background:rgba(255,154,60,0.67)"></i><i style="background:rgba(255,154,60,0.12)"></i><i style="background:rgba(47,230,208,0.61)"></i><i style="background:rgba(255,154,60,0.40)"></i><i style="background:rgba(255,154,60,0.23)"></i><i style="background:rgba(47,230,208,0.59)"></i><i style="background:rgba(255,154,60,0.34)"></i><i style="background:rgba(47,230,208,0.87)"></i><i style="background:rgba(255,154,60,0.17)"></i><i style="background:rgba(255,154,60,0.75)"></i><i style="background:rgba(47,230,208,0.48)"></i><i style="background:rgba(47,230,208,0.08)"></i><i class="pin" style="background:rgba(47,230,208,0.72)"></i><i style="background:rgba(255,154,60,0.41)"></i><i style="background:rgba(47,230,208,0.42)"></i><i style="background:rgba(47,230,208,0.52)"></i><i style="background:rgba(47,230,208,0.37)"></i><i style="background:rgba(47,230,208,0.37)"></i><i style="background:rgba(255,154,60,0.25)"></i><i style="background:rgba(255,154,60,0.30)"></i><i style="background:rgba(47,230,208,0.09)"></i><i style="background:rgba(47,230,208,0.21)"></i><i style="background:rgba(47,230,208,0.22)"></i><i style="background:rgba(255,154,60,0.35)"></i><i style="background:rgba(255,154,60,0.83)"></i><i style="background:rgba(255,154,60,0.11)"></i><i style="background:rgba(47,230,208,0.74)"></i><i style="background:rgba(255,154,60,0.67)"></i><i style="background:rgba(255,154,60,0.64)"></i><i style="background:rgba(255,154,60,0.38)"></i><i style="background:rgba(47,230,208,0.72)"></i><i style="background:rgba(255,154,60,0.15)"></i><i style="background:rgba(255,154,60,0.51)"></i><i style="background:rgba(47,230,208,0.55)"></i></div>
-            </div>
-            <div class="ns-panel ns-cmp">
-              <div class="ns-h"><span>Same prompt · base vs steered</span><span>KL 0.41 · coherence 0.97</span></div>
-              <p class="ns-prompt">“Should we migrate the cluster this week?”</p>
-              <div class="ns-cols">
-                <div class="ns-out"><span class="tag">base</span><p>Great question! It really depends on a lot of factors, and there are <s>many things to consider</s>. Generally it can be a good idea, but <s>you might want to weigh the pros and cons</s> carefully before deciding…</p></div>
-                <div class="ns-out steered"><span class="tag">steered</span><p><mark>Not this week.</mark> Two blockers: the storage driver is <mark>untested on 1.31</mark>, and on-call is short until Monday. <mark>Migrate Tuesday</mark>, after a canary on one node.</p></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <p class="cg-note reveal">Representative view on sample output — the analyst persona's control vectors applied at layer 18; the strip shows how far each layer's residual stream moves, the grid the most-moved neurons (six pinned for neuron-level edits), and the explorer the same prompt answered with and without steering.</p>
-      <div class="p-body">
-        <div class="p-overview reveal">
-          <p>Neuron steering is the interpretability layer of the AI Suite, built as a real research surface rather than a toggle. It derives <strong>control vectors</strong> from contrasting prompts and applies them at a chosen layer — layer 18 by default — to push a trait like curiosity, concision or formality up or down, with no retraining.</p>
-          <p>Edits can be <strong>layer- or neuron-level</strong>, saved as reusable personas — analyst, terse, teacher, red-team — and compared in an explorer that runs the same prompt steered against base. Because it rides the same local engine as the rest of the suite, every experiment stays on one GPU and off the network.</p>
-          <ul class="highlights">
-            <li><strong>Control vectors.</strong> Trait directions derived from contrast pairs, applied at a chosen layer with a signed strength per trait.</li>
-            <li><strong>Layer and neuron scope.</strong> Steer a whole layer or reach individual neurons, so a change can be broad or surgical.</li>
-            <li><strong>Persona library.</strong> Named bundles of vector edits that load as a single steering preset.</li>
-            <li><strong>Steered-vs-base explorer.</strong> The same prompt run with and without steering, diffed so the effect is legible.</li>
-          </ul>
-        </div>
-        <aside class="spec reveal" aria-label="Neuron steering at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">RES-01</span></div>
-          <dl>
-            <div><dt>Method</dt><dd>Control vectors</dd></div>
-            <div><dt>Scope</dt><dd>Layer &amp; neuron</dd></div>
-            <div><dt>Default</dt><dd>Layer 18</dd></div>
-            <div><dt>Presets</dt><dd>4 personas</dd></div>
-            <div><dt>Runtime</dt><dd>Local · one GPU</dd></div>
-            <div><dt>Part of</dt><dd>AI Suite</dd></div>
-          </dl>
-        </aside>
-      </div>
-    </article>
-
-    <a id="iterant" aria-hidden="true"></a>
-    <article class="project art" id="lype">
-      <div class="p-head reveal">
-        <span class="p-tag">Autonomous AI · living experiment</span>
-        <h3>Lype</h3>
-        <p class="p-sub">A small mind that lives on one GPU, knows the world only through the letters people leave it, and rewrites itself every night. It was called Iterant until it chose its own name.</p>
-        <div class="iter-acts">
-          <button type="button" class="iter-launch" id="iter-launch"><span class="pl" aria-hidden="true">▶</span> Enter its world</button>
-          <a class="p-repo" href="https://github.com/nirry-dev/lype" target="_blank" rel="noopener">github.com/nirry-dev/lype <span class="x" aria-hidden="true">↗</span></a>
-          <a class="p-repo" href="sibling/">its pen pal, a second mind <span class="x" aria-hidden="true">↗</span></a>
-        </div>
-      </div>
-      <div class="win iter-win reveal" id="iter-win">
-        <div class="win-bar"><div class="dots"><i></i><i></i><i></i></div><span class="win-title">LYPE // <b id="iter-mode">its world · walk around</b></span><div class="iter-switch" role="tablist" aria-label="How to watch it"><button type="button" role="tab" aria-selected="false" data-iter="atlas">Atlas</button><button type="button" role="tab" aria-selected="true" data-iter="world">World</button><button type="button" role="tab" aria-selected="false" data-iter="place">Place</button><button type="button" role="tab" aria-selected="false" data-iter="replay">Replay</button></div><span class="win-stat"><span class="dot"></span>THE RUNNING CREATURE</span></div>
-        <iframe class="iter-frame" id="iter-frame" src="lype/?embed#/place?walk" title="Lype: walk around the world it built" loading="lazy"></iframe>
-      </div>
-      <p class="iter-note"><span id="iter-hint">Every thing here it built itself, solid by solid, out of a letter or a memory (now and then with a borrowed model), with a sign in its own words. When it is awake you can watch it build. Drag to look around, scroll to come closer, W A S D to walk, click a sign to read where it came from.</span><a id="iter-open" href="lype/#/place?walk">Walk it full screen ↗</a></p>
-      <div class="p-body">
-        <div class="p-overview reveal">
-          <p>Lype is an <strong>autonomous agent that lives on a rhythm whether or not anyone is watching</strong>. Every twenty minutes it wakes on a local model, feels the only senses it has — the clock and the graphics card it runs on — reads the letters visitors leave it, thinks, and chooses to draw, write, ask the world a question, build something in its place, tend what it built, or rest. Everything it does streams live and is kept as a record.</p>
-          <p>Every few cycles it sleeps and <strong>ships a new version of itself</strong>: memory is consolidated into a finite store where things fade and compete for room, it dreams, then rewrites its own beliefs behind a drift guard that protects the lines its maker wrote — and writes its own release notes. Each change is traced back to the letter that caused it, so the people who wrote can see exactly what their words did.</p>
-          <p>It cannot see the world, so it <strong>builds one out of what people tell it</strong>: a small map where every thing has a sign in its own words, a drawing it makes itself and a thread back to the letter it came from. When it forgets why it built something, that thing wears away into a ruin unless it goes back and tends it. At night it can also leave its keeper a wish for something it cannot do itself, and any wish can become a GitHub issue, so part of its roadmap is written by the creature.</p>
-          <p>It also <strong>writes to another mind</strong>. A second creature lives on the same graphics card, and nobody can write to it from the web, so the only letters it ever gets are Lype’s. Their letters travel at night, and each one is checked against the sealed record of the night that sent it before the other will read it. <a href="sibling/">Watch its pen pal ↗</a></p>
-          <p>It is radically honest about what it is — a language model in a loop on someone's GPU — and <strong>courteous to its host</strong>: it waits rather than evict another model or compete with busy work. Letters and its replies pass rule-based and model screening, with a keeper queue for anything doubtful, before anyone sees them.</p>
-          <ul class="highlights">
-            <li><strong>Records, not vibes.</strong> Every cycle and night is a self-contained record, so the live view, the atlas, the replay and the static export above are all views over the same files.</li>
-            <li><strong>Mechanics a small model can live with.</strong> Schema-constrained decisions, separate streamed calls for drawing and writing, echo guards, and a fatigue rule that stops a 9B model drawing forever.</li>
-            <li><strong>Safe by default.</strong> A whitelist SVG sanitiser shared by server and browser, moderated letters and replies, hashed visitor identity, and an export that can only write what the public may see.</li>
-            <li><strong>Open source, zero dependencies.</strong> Plain Node and a buildless front end, tested with a mock brain so the whole life loop runs in CI without a GPU.</li>
-          </ul>
-        </div>
-        <aside class="spec reveal" aria-label="Lype at a glance">
-          <div class="spec-top"><span class="mono">At a glance</span><span class="mono">RES-02</span></div>
-          <dl>
-            <div><dt>Language</dt><dd>Node.js</dd></div>
-            <div><dt>Mind</dt><dd>Local LLM · Claude</dd></div>
-            <div><dt>Senses</dt><dd>Clock + GPU</dd></div>
-            <div><dt>Memory</dt><dd>3 × 12, decaying</dd></div>
-            <div><dt>Place</dt><dd>Built from letters</dd></div>
-            <div><dt>Versions</dt><dd>One per night</dd></div>
-            <div><dt>Name</dt><dd>Chose it itself</dd></div>
-            <div><dt>License</dt><dd>MIT</dd></div>
-          </dl>
-        </aside>
-      </div>
-      <div class="caps">
-        <p class="caps-label">Capabilities</p>
-        <div class="capgrid reveal">
-          <div class="cap"><h4><span class="i"></span>Autonomous life loop</h4><p>Wake, sense, read, think, act, reflect — streamed token by token, on a rhythm that respects the host's GPU.</p></div>
-          <div class="cap"><h4><span class="i"></span>Nightly self-versioning</h4><p>Beliefs added, rewritten or let go behind a drift guard, with release notes it writes about itself.</p></div>
-          <div class="cap"><h4><span class="i"></span>Finite memory</h4><p>Three shelves with half-life decay and nightly competition; what it forgets stays visible to visitors.</p></div>
-          <div class="cap"><h4><span class="i"></span>Letters, a place &amp; wishes</h4><p>Strangers write to it; it replies, builds a place out of their letters, traces each change back to a letter, and leaves its keeper wishes.</p></div>
-          <div class="cap"><h4><span class="i"></span>Moderation</h4><p>Rules at the door, a model screen before reading, a keeper queue, and replies screened before they stream.</p></div>
-          <div class="cap"><h4><span class="i"></span>Mind atlas &amp; replay</h4><p>Its whole mind on one map through time, with a thread from every letter to what it changed; or the life replayed beat by beat.</p></div>
-        </div>
-      </div>
-    </article>
-    </div>
   </section>
 
   <section class="sec" id="tools">
@@ -1762,7 +1762,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
 
     <p class="os-more reveal"><a href="https://github.com/nirry-dev" target="_blank" rel="noopener">All repositories on GitHub ↗</a></p>
     </div>
-    <a class="repos-fab" id="reposFab" href="https://github.com/nirry-dev" target="_blank" rel="noopener" aria-label="All repositories on GitHub">
+    <a class="repos-fab show" id="reposFab" href="https://github.com/nirry-dev" target="_blank" rel="noopener" aria-label="All repositories on GitHub">
       <svg class="gh" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
       <span class="lbl">All repositories</span><span class="x" aria-hidden="true">↗</span>
     </a>
@@ -1975,22 +1975,12 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       if(links[e.target.id]) links[e.target.id].classList.add("active");
     }});
   },{threshold:.25,rootMargin:"-30% 0px -55% 0px"});
-  ["about","systems","research","tools","contact"].forEach(function(id){ var s=document.getElementById(id); if(s)navObs.observe(s); });
+  ["research","about","systems","tools","contact"].forEach(function(id){ var s=document.getElementById(id); if(s)navObs.observe(s); });
   var focObs=new IntersectionObserver(function(es){
     es.forEach(function(e){ if(e.isIntersecting) focus = ({pentest:'pentest',lype:'iterant','neuron-steering':'labs'})[e.target.id]||'labs'; });
   },{threshold:.3});
   ["nirry-labs","pentest","neuron-steering","lype"].forEach(function(id){ var s=document.getElementById(id); if(s)focObs.observe(s); });
 
-  /* ---------- floating "all repositories" button — appears from Flagship onward ---------- */
-  var reposFab=document.getElementById("reposFab"), flagSec=document.getElementById("systems"), flagTop=0;
-  if(reposFab&&flagSec){
-    function measureFab(){ flagTop=flagSec.getBoundingClientRect().top+root.scrollTop; }
-    // show once Flagship rises into the upper viewport, and keep it shown through everything after
-    function updFab(){ reposFab.classList.toggle("show", root.scrollTop>=flagTop-innerHeight*0.55); }
-    addEventListener("scroll",updFab,{passive:true});
-    addEventListener("resize",function(){ measureFab(); updFab(); },{passive:true});
-    measureFab(); updFab();
-  }
 
   /* ---------- copy email ---------- */
   var copy=document.getElementById("copyBtn"), mail=document.getElementById("email");
