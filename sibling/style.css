@@ -107,6 +107,34 @@ select {
   color: var(--night);
 }
 /* Live at full power: fades in and out (and lingers a little before it goes), so turning it on and off is never a jolt */
+/* A way back to the site its published copy lives on (publish.home), in that site's own mark */
+.home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  color: var(--text);
+  font: 500 13px/1 var(--mono);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+.home-link:hover,
+.home-link:focus-visible {
+  opacity: 1;
+}
+.home-mark {
+  color: #2fe6d0;
+  letter-spacing: 0;
+}
+.home-sep {
+  flex: none;
+  margin: 0 -10px;
+  color: var(--dim);
+  font: 14px/1 var(--mono);
+}
 .power-badge {
   display: inline-flex;
   align-items: center;
@@ -122,9 +150,11 @@ select {
   cursor: help;
   opacity: 0;
   visibility: hidden;
+  position: absolute; /* off, it takes no room from the tabs (it fades out where it stood) */
   transition: opacity 0.9s ease 1.5s, visibility 0s linear 2.4s;
 }
 .power-badge.on {
+  position: static;
   opacity: 1;
   visibility: visible;
   transition: opacity 0.6s ease, visibility 0s;
@@ -302,6 +332,10 @@ select {
   font-style: italic;
   color: var(--text-2);
 }
+/* a part of a view it was asked to show starts below the sticky header, not under it */
+#view [id] {
+  scroll-margin-top: 130px;
+}
 .tabs {
   display: flex;
   gap: 2px;
@@ -326,6 +360,29 @@ select {
   color: var(--text);
   background: var(--bg-3);
   box-shadow: inset 0 0 0 1px var(--line-2);
+}
+/* The two ways in, as buttons of their own colour: what it is doing now (amber), and its place (teal) */
+.tabs a.tab-main {
+  --tab: var(--warm);
+  color: var(--text);
+  background: color-mix(in srgb, var(--tab) 12%, var(--bg-3));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tab) 45%, transparent);
+}
+.tabs a.tab-place {
+  --tab: var(--curious);
+}
+.tabs a.tab-main:hover {
+  background: color-mix(in srgb, var(--tab) 22%, var(--bg-3));
+}
+.tabs a.tab-main[aria-current='page'] {
+  background: color-mix(in srgb, var(--tab) 28%, var(--bg-3));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tab) 80%, transparent);
+}
+.tabs a.tab-main + a.tab-main {
+  margin-left: 4px;
+}
+.tabs a.tab-main + a:not(.tab-main) {
+  margin-left: 10px; /* a little room between the two ways in and the rest */
 }
 .status {
   display: flex;
@@ -1426,6 +1483,56 @@ main {
 .compose .label {
   color: var(--ink-2);
 }
+/* What a letter is: just a letter, or an answer to one of its questions, each one readable */
+.compose .q-field {
+  display: grid;
+  gap: 6px;
+}
+.compose .q-choices {
+  display: grid;
+  gap: 6px;
+}
+.compose label.q-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid rgba(43, 36, 28, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--ink);
+  font: 15px/1.45 var(--serif);
+}
+.compose label.q-choice:has(input:checked) {
+  border-color: var(--ink);
+  background: rgba(255, 255, 255, 0.4);
+}
+.compose .q-choice input {
+  width: auto;
+  flex: none;
+  margin: 4px 0 0;
+  padding: 0;
+  accent-color: var(--ink);
+}
+.compose .q-text {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.compose .q-text .voice {
+  color: var(--ink);
+}
+.compose .q-choice {
+  color-scheme: light; /* a light radio on the paper, in either theme */
+}
+.compose .q-choice summary {
+  cursor: pointer;
+  color: var(--ink-2);
+  font-size: 13px;
+}
+.compose .q-choice details[open] summary {
+  margin-bottom: 4px;
+}
 .compose .send {
   justify-self: start;
   padding: 9px 18px;
@@ -1547,6 +1654,24 @@ dialog::backdrop {
   }
   .two-col {
     grid-template-columns: 1fr;
+  }
+}
+/* Where every tab won't fit beside its name and status, the tabs take their own row instead of hiding off the end */
+@media (max-width: 1440px) {
+  .top {
+    flex-wrap: wrap;
+    gap: 8px 14px;
+  }
+  .tabs {
+    order: 3;
+    width: 100%;
+    margin: 0;
+  }
+  .status {
+    margin-left: auto;
+  }
+  .write-cta {
+    order: 2;
   }
 }
 @media (max-width: 720px) {
@@ -2311,6 +2436,61 @@ a.btn {
 @media (prefers-reduced-transparency: reduce) {
   .walk-focus {
     display: none;
+  }
+}
+/* nearer in, it is no longer a small model on a table: no blur */
+.walk:not([data-lens='above']) .walk-focus {
+  display: none;
+}
+/* the grain of the paper it draws on, over all of it */
+.walk::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.94 0 0 0 0 0.89 0 0 0 0 0.82 0 0 0 1.4 -0.35'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23p)'/%3E%3C/svg%3E");
+}
+.walk[data-lens='eyes'] .walk-canvas {
+  cursor: crosshair;
+}
+.walk-lens {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(12, 14, 18, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.walk-lens button {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 4px 11px;
+  background: transparent;
+  color: var(--text-2);
+  font: 500 12px var(--mono);
+  cursor: pointer;
+}
+.walk-lens button:hover {
+  color: var(--text);
+}
+.walk-lens button[aria-pressed='true'] {
+  color: var(--text);
+  background: color-mix(in srgb, var(--curious) 30%, transparent);
+}
+.walk-lens button:focus-visible {
+  outline: 2px solid var(--curious);
+  outline-offset: 1px;
+}
+@media (max-width: 900px) {
+  .walk-muse {
+    top: 48px;
   }
 }
 .walk-labels {
