@@ -7,12 +7,12 @@
 // chose one, as a light), wandering from thing to thing while it rests, at its card while it thinks, at its building
 // site while it builds, and settled on the card at night. What it borrowed (ready-made models
 // from the catalogue in models/) stands among its own solids, in the colours it came in.
-import { COLORS, LOT, MADE, expand, formHeight, inlay, isMesh, partialParts } from './lib/form.js?v=20261103094929';
-import { BLOCK, avenue } from './lib/town.js?v=20261103094929';
+import { COLORS, LOT, MADE, expand, formHeight, inlay, isMesh, partialParts } from './lib/form.js?v=20261103183751';
+import { BLOCK, avenue } from './lib/town.js?v=20261103183751';
 
 /** Which mesh a part stands as: a borrowed model's id, or "made:<id>" for something made from its words. */
 const meshRef = (p) => (p.shape === MADE ? (p.made ? `made:${p.made}` : null) : p.model);
-import { moodRGB } from './presence.js?v=20261103094929';
+import { moodRGB } from './presence.js?v=20261103183751';
 
 const PAPER = '#efe4d0';
 const INK = [0.1, 0.09, 0.11, 1];
