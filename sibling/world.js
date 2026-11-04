@@ -7,13 +7,13 @@
 // chose one, as a light), wandering from thing to thing while it rests, at its card while it thinks, at its building
 // site while it builds, and settled on the card at night. What it borrowed (ready-made models
 // from the catalogue in models/) stands among its own solids, in the colours it came in.
-import { COLORS, LOT, MADE, expand, formHeight, inlay, isMesh, partialParts } from './lib/form.js?v=20261104083005';
-import { clear as clearOf, route as routeOf } from './lib/route.js?v=20261104083005';
-import { BLOCK, avenue } from './lib/town.js?v=20261104083005';
+import { COLORS, LOT, MADE, expand, formHeight, inlay, isMesh, partialParts } from './lib/form.js?v=20261104193828';
+import { clear as clearOf, route as routeOf } from './lib/route.js?v=20261104193828';
+import { BLOCK, avenue } from './lib/town.js?v=20261104193828';
 
 /** Which mesh a part stands as: a borrowed model's id, or "made:<id>" for something made from its words. */
 const meshRef = (p) => (p.shape === MADE ? (p.made ? `made:${p.made}` : null) : p.model);
-import { moodRGB } from './presence.js?v=20261104083005';
+import { moodRGB } from './presence.js?v=20261104193828';
 
 const PAPER = '#efe4d0';
 const INK = [0.1, 0.09, 0.11, 1];
@@ -2516,6 +2516,23 @@ export function createWalk(host, { asset, onSelect, onLens = null, onArrive = nu
       dirty = true;
       schedule();
     },
+    /** From above, its whole place in the middle of the view (for a still of it): its card and all it built. */
+    frame: () => {
+      const xs = [0, ...things.map((th) => th.pos[0])];
+      const zs = [0, ...things.map((th) => th.pos[2])];
+      const half = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...zs) - Math.min(...zs)) / 2;
+      cam.target = [(Math.max(...xs) + Math.min(...xs)) / 2, 0.4, (Math.max(...zs) + Math.min(...zs)) / 2];
+      cam.goal = null;
+      cam.dist = clamp(6 + half * 2.6, 8, 26);
+      dirty = true;
+      schedule();
+    },
+    /** Once its place is drawn in full: every borrowed model in, and the camera still (for a still of it, server/sight.js). */
+    ready: () =>
+      new Promise((done) => {
+        const check = () => (world && names !== 'loading' && ![...models.values()].includes('loading') && !cam.goal ? requestAnimationFrame(() => requestAnimationFrame(done)) : setTimeout(check, 200));
+        check();
+      }),
     /** The moment its body is at now, where that moment put it (null while it is still on its way, or has none). */
     arrived: () => (creature.goal?.about != null && creature.arrived ? creature.goal.about : null),
     /** What it is doing now, its body, its name: it goes where that takes it. */
