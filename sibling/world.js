@@ -7,12 +7,12 @@
 // chose one, as a light), wandering from thing to thing while it rests, at its card while it thinks, at its building
 // site while it builds, and settled on the card at night. What it borrowed (ready-made models
 // from the catalogue in models/) stands among its own solids, in the colours it came in.
-import { COLORS, LOT, MADE, expand, formHeight, inlay, isMesh, partialParts } from './lib/form.js?v=20261103215407';
-import { BLOCK, avenue } from './lib/town.js?v=20261103215407';
+import { COLORS, LOT, MADE, expand, formHeight, inlay, isMesh, partialParts } from './lib/form.js?v=20261104010547';
+import { BLOCK, avenue } from './lib/town.js?v=20261104010547';
 
 /** Which mesh a part stands as: a borrowed model's id, or "made:<id>" for something made from its words. */
 const meshRef = (p) => (p.shape === MADE ? (p.made ? `made:${p.made}` : null) : p.model);
-import { moodRGB } from './presence.js?v=20261103215407';
+import { moodRGB } from './presence.js?v=20261104010547';
 
 const PAPER = '#efe4d0';
 const INK = [0.1, 0.09, 0.11, 1];
@@ -20,6 +20,7 @@ const ORIGIN_PITCH = 0.52;
 const FOV = 0.6; // narrow, and from a little higher, so its place reads as a small town seen whole
 const SPAN = 0.9; // how wide a lot is, in world units
 const PITCH = 1.4; // how far apart the tiles are: a lot, and a street round it
+const WANDER = 14000; // with no moment to go by, how long it stays with each thing it wanders to (ms, by the clock)
 const BODY = 0.042; // its body's steps, in world units: a body 24 steps tall stands about as high as a small house's door
 // Three ways to see its place: from above, the whole town at once; following it, low behind it as it goes about; and at
 // eye level, walking its streets yourself, a visitor a little shorter than its doors.
@@ -909,10 +910,11 @@ function placedAround(t, dimsOf = () => null) {
 
 /**
  * @param {HTMLElement} host  an element to fill (it gets a canvas, a minimap and a layer of name labels)
- * @param {{ asset: (path: string) => string, onSelect: (id: string | null) => void, models?: string }} opts  `models`: where the
- *   borrowed models' catalogue and meshes are served from (default: models/ beside the page)
+ * @param {{ asset: (path: string) => string, onSelect: (id: string | null) => void, onArrive?: (n: number) => void, models?: string }} opts
+ *   `onArrive`: told when its body gets to where a moment put it (the moment's number), so what is said of it can
+ *   wait until it is there; `models`: where the borrowed models' catalogue and meshes are served from (default: models/)
  */
-export function createWalk(host, { asset, onSelect, onLens = null, models: modelsAt = 'models/' }) {
+export function createWalk(host, { asset, onSelect, onLens = null, onArrive = null, models: modelsAt = 'models/' }) {
   const canvas = document.createElement('canvas');
   canvas.className = 'walk-canvas';
   canvas.tabIndex = 0;
@@ -1648,14 +1650,19 @@ export function createWalk(host, { asset, onSelect, onLens = null, models: model
 
   const angleTo = (from, to) => Math.atan2(to[0] - from[0], to[1] - from[1]);
   const turn = (a, b, k) => a + (((((b - a) % (Math.PI * 2)) + Math.PI * 3) % (Math.PI * 2)) - Math.PI) * k;
-  /** A spot beside a thing, on its side facing `toward`, and the way to face to look at it. */
-  function beside(th, toward = [0, 0], close = false) {
+  /**
+   * A spot beside a thing, on its side facing `toward`, and the way to face to look at it. With a `seed` (a string
+   * everyone watching shares), the side is chosen by it instead, so everyone sees it on the same side.
+   */
+  function beside(th, toward = [0, 0], close = false, seed = null) {
     // far enough out that all of its body stands clear of the lot, not only its middle (just clear of it, to touch it)
     const out = SPAN / 2 + reach() + (close ? 0.03 : 0.08);
-    // the sides of its lot, nearest to `toward` first; open ground before a side where something else stands
+    // the sides of its lot, nearest to `toward` (or in the seed's order) first; open ground before a side where
+    // something else stands
+    const away = (spot, dir) => (seed == null ? Math.hypot(spot[0] - toward[0], spot[1] - toward[1]) : hash(`${seed}|${dir}`));
     const sides = [[0, 1], [0, -1], [1, 0], [-1, 0]]
       .map((dir) => ({ dir, spot: [th.pos[0] + dir[0] * out, th.pos[2] + dir[1] * out] }))
-      .sort((a, b) => Math.hypot(a.spot[0] - toward[0], a.spot[1] - toward[1]) - Math.hypot(b.spot[0] - toward[0], b.spot[1] - toward[1]));
+      .sort((a, b) => away(a.spot, a.dir) - away(b.spot, b.dir));
     const { spot } = sides.find((s) => !clearance(...s.spot)) || sides[0];
     return { spot, face: angleTo(spot, [th.pos[0], th.pos[2]]) };
   }
@@ -1682,7 +1689,8 @@ export function createWalk(host, { asset, onSelect, onLens = null, models: model
       creature.visiting = null;
       return { spot: [0, 0], face: null, settle: true };
     }
-    if (look.mode === 'awake' || reduced) {
+    // (with motion reduced it still goes where its moment put it, at once; with no moment, by what it last built)
+    if (look.mode === 'awake' || (reduced && !look.about)) {
       creature.visiting = null;
       const at = reduced && things.find((th) => th.t.id === world.at);
       return at ? beside(at, [0, 0]) : { spot: [0.25, 0.62], face: Math.PI };
@@ -1690,35 +1698,53 @@ export function createWalk(host, { asset, onSelect, onLens = null, models: model
     // between cycles: where its moment put it (the same for everyone watching), doing what it chose to do there
     if (look.about) {
       const a = look.about;
-      const th = a.at !== 'card' && things.find((x) => x.t.id === a.at);
-      if (creature.goal?.about === a.n && (!creature.visiting || creature.visiting === th)) return creature.goal;
-      creature.visiting = th || null;
+      const th = (a.at !== 'card' && things.find((x) => x.t.id === a.at)) || null;
+      // the same moment at the same thing: keep going there (a thing it raised or set something down by this moment may
+      // only reach the page a moment after the moment does: then it goes on from the card to it)
+      if (creature.goal?.about === a.n && (creature.visiting?.t.id ?? null) === (th?.t.id ?? null)) {
+        creature.visiting = th;
+        return creature.goal;
+      }
+      creature.visiting = th;
       creature.arrived = 0;
-      const viewer = [eye[0], eye[2]];
-      if (!th) return { ...(a.doing === 'sit' ? { spot: [0, 0], face: null, settle: true } : { spot: [0.25, 0.62], face: Math.PI }), about: a.n, doing: a.doing };
-      const g = beside(th, viewer, a.doing === 'touch');
-      // walking round it: far enough out to clear its corners
-      const orbit = a.doing === 'circle' && !reduced ? { c: [th.pos[0], th.pos[2]], r: (SPAN / 2) * Math.SQRT2 + reach() + 0.06 } : null;
+      if (!th) {
+        if (a.doing === 'sit') return { spot: [0, 0], face: null, settle: true, about: a.n, doing: a.doing };
+        // walking round its card: round its edge, from its front
+        const orbit = a.doing === 'circle' && !reduced ? { c: [0, 0], r: 0.78 + reach(), from: Math.atan2(0.62, 0.25), since: Date.parse(a.since) || Date.now() } : null;
+        return { spot: [0.25, 0.62], face: Math.PI, about: a.n, doing: a.doing, orbit };
+      }
+      // the side of it it went to, the same for everyone watching (by the moment, not by where each viewer stands)
+      const g = beside(th, [0, 0], a.doing === 'touch', `${th.t.id}|${a.n}`);
+      // walking round it: far enough out to clear its corners, from that side, and as far round as the time since the
+      // moment began has taken it, so everyone sees it at the same point
+      const orbit =
+        a.doing === 'circle' && !reduced
+          ? { c: [th.pos[0], th.pos[2]], r: (SPAN / 2) * Math.SQRT2 + reach() + 0.06, from: Math.atan2(g.spot[1] - th.pos[2], g.spot[0] - th.pos[0]), since: Date.parse(a.since) || Date.now() }
+          : null;
       return { ...g, about: a.n, doing: a.doing, orbit, sit: a.doing === 'sit' };
     }
-    // resting: wander
+    // resting with no moment to go by: it wanders from one thing it built to the next, a new one every WANDER of the
+    // clock, picked by the clock, so everyone watching sees it go to the same place at the same time
     const standing = things.filter((th) => !th.t.ruin);
-    if (!creature.goal || (creature.arrived && now > creature.next) || (creature.visiting && !standing.includes(creature.visiting))) {
+    const slot = Math.floor(Date.now() / WANDER);
+    if (!creature.goal || creature.goal.slot !== slot || (creature.visiting && !standing.includes(creature.visiting))) {
       const newest = Math.max(1, ...standing.map((th) => th.t.tended ?? th.t.built ?? 0));
-      const choices = [...standing.filter((th) => th !== creature.visiting).map((th) => ({ th, w: 1 + (2 * (th.t.tended ?? th.t.built ?? 0)) / newest })), { th: null, w: 0.8 }];
-      let r = Math.random() * choices.reduce((a, c) => a + c.w, 0);
+      const choices = [...standing.map((th) => ({ th, w: 1 + (2 * (th.t.tended ?? th.t.built ?? 0)) / newest })), { th: null, w: 0.8 }];
+      let r = hash(`wander|${slot}`) * choices.reduce((a, c) => a + c.w, 0);
       const pick = choices.find((c) => (r -= c.w) <= 0) || choices.at(-1);
       creature.visiting = pick.th;
       creature.arrived = 0;
-      if (pick.th) {
-        // on the side of it that faces whoever is watching (where the camera is, even before its first frame),
-        // so what it built doesn't hide it
-        return beside(pick.th, [eye[0], eye[2]]);
-      }
-      const a = Math.random() * Math.PI * 2;
-      return { spot: [Math.cos(a) * 0.9, Math.sin(a) * 0.9], face: angleTo([Math.cos(a), Math.sin(a)], [0, 0]) };
+      if (pick.th) return { ...beside(pick.th, [0, 0], false, `${pick.th.t.id}|${slot}`), slot };
+      const a = hash(`wander|${slot}|a`) * Math.PI * 2;
+      return { spot: [Math.cos(a) * 0.9, Math.sin(a) * 0.9], face: angleTo([Math.cos(a), Math.sin(a)], [0, 0]), slot };
     }
     return creature.goal;
+  }
+
+  /** Which way it faces with nothing to look at: toward the thing it was last at, or out the card's front. */
+  function restingFace() {
+    const last = things.find((th) => th.t.id === world?.at);
+    return last ? angleTo([creature.pos[0], creature.pos[2]], [last.pos[0], last.pos[2]]) : Math.PI;
   }
 
   /** How high it has to float here to pass over what stands below it. */
@@ -1735,10 +1761,10 @@ export function createWalk(host, { asset, onSelect, onLens = null, models: model
     const now = performance.now();
     const goal = decide(now);
     if (goal !== creature.goal) creature.goal = goal;
-    if (goal.orbit && creature.arrived) {
-      // once there, it goes slowly round what it came to
-      const { c, r } = goal.orbit;
-      const a = Math.atan2(creature.pos[2] - c[1], creature.pos[0] - c[0]) + dt * 0.3;
+    if (goal.orbit) {
+      // it goes slowly round what it came to, as far round as the time since its moment began (it catches up, walking)
+      const { c, r, from, since } = goal.orbit;
+      const a = from + (Math.max(0, Date.now() - since) / 1000) * 0.3;
       goal.spot = [c[0] + Math.cos(a) * r, c[1] + Math.sin(a) * r];
       goal.face = angleTo(goal.spot, c);
     }
@@ -1751,7 +1777,10 @@ export function createWalk(host, { asset, onSelect, onLens = null, models: model
       creature.pos[0] = gx;
       creature.pos[2] = gz;
     } else if (d > 0.002) {
-      const speed = (wandering ? 0.5 : 1.3) * clamp(d / 0.5, 0.2, 1);
+      // where a moment put it, it goes with purpose (across its town in a few seconds, not half a minute); idly
+      // wandering, it ambles. Walking round something it keeps up with its own pace round it.
+      const pace = !wandering ? 1.3 : goal.about != null ? clamp(d / 2, 0.5, 2) : 0.5;
+      const speed = Math.max(pace * clamp(d / 0.5, 0.2, 1), goal.orbit ? 0.4 : 0);
       const k = Math.min(1, (speed * dt) / d);
       creature.pos[0] += (gx - x) * k;
       creature.pos[2] += (gz - z) * k;
@@ -1759,17 +1788,18 @@ export function createWalk(host, { asset, onSelect, onLens = null, models: model
     const left = Math.hypot(gx - creature.pos[0], gz - creature.pos[2]);
     if (left < 0.03 && !creature.arrived) {
       creature.arrived = now;
-      creature.next = now + 6000 + Math.random() * 7000; // it stays a while with what it visits
       if (said && !said.until && said.n === goal.about) speak(now);
+      if (goal.about != null) onArrive?.(goal.about);
     }
     // float: just off the ground, higher over whatever it passes, resting on the card at night, lower when it sits
     const hover = goal.sit && creature.arrived ? (body() ? 0.02 : 0.3) : body() ? 0.1 : 0.55;
     const ahead = d > 0.01 ? [creature.pos[0] + ((gx - x) / d) * 0.3, creature.pos[2] + ((gz - z) / d) * 0.3] : [creature.pos[0], creature.pos[2]];
     const want = goal.settle ? 0.26 : Math.max(clearance(creature.pos[0], creature.pos[2]), clearance(...ahead)) + hover;
     creature.pos[1] = reduced ? want : lerp(creature.pos[1], want, 1 - Math.exp(-dt * 3));
-    // facing: where it is going while it goes; once there, what it came to look at (or you)
+    // facing: where it is going while it goes; once there, what it came to look at. With nothing to look at (sitting
+    // on its card, or asleep), toward where it last was: the same for everyone watching, whoever and wherever they are.
     const going = Math.hypot(creature.pos[0] - before[0], creature.pos[2] - before[2]);
-    const aim = going > 0.0004 ? angleTo([before[0], before[2]], [creature.pos[0], creature.pos[2]]) : goal.face ?? facing();
+    const aim = going > 0.0004 ? angleTo([before[0], before[2]], [creature.pos[0], creature.pos[2]]) : goal.face ?? restingFace();
     creature.heading = reduced ? aim : turn(creature.heading, aim, 1 - Math.exp(-dt * 3));
     const moved = Math.hypot(...sub(before, creature.pos));
     // how fast it goes along the ground, eased, for its step
@@ -2342,10 +2372,12 @@ export function createWalk(host, { asset, onSelect, onLens = null, models: model
       if (selected) selected = things.find((th) => th.t.id === selected.t.id) || null;
     }
     if (first) {
-      // it starts where it was last (beside that thing, or at its card)
-      const at = things.find((th) => th.t.id === world.at);
-      const start = at ? beside(at, [0, 0]).spot : [0.25, 0.62];
+      // it starts where it is now, as everyone else watching sees it (a newcomer doesn't watch it walk there)
+      const goal = things.length ? decide(performance.now()) : null;
+      creature.goal = goal;
+      const start = goal?.spot || [0.25, 0.62];
       creature.pos = [start[0], 0.6, start[1]];
+      creature.heading = goal?.face ?? restingFace();
       const xs = world.things.map((t) => Math.abs(t.x - world.card.x));
       const zs = world.things.map((t) => Math.abs(t.y - world.card.y));
       cam.dist = clamp(6 + Math.max(0, ...xs, ...zs) * PITCH * 2.2, 8, 22);
@@ -2447,6 +2479,8 @@ export function createWalk(host, { asset, onSelect, onLens = null, models: model
       dirty = true;
       schedule();
     },
+    /** The moment its body is at now, where that moment put it (null while it is still on its way, or has none). */
+    arrived: () => (creature.goal?.about != null && creature.arrived ? creature.goal.about : null),
     /** What it is doing now, its body, its name: it goes where that takes it. */
     setLook(next) {
       if (next.bodyLive == null) creature.born = [];
