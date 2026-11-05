@@ -106,6 +106,17 @@ nav a.lype:hover{color:var(--fg);border-color:var(--violet);background:rgba(155,
 nav a.lype::after{content:none}
 nav a.lype .lv{width:6px;height:6px;border-radius:50%;background:var(--violet);box-shadow:0 0 8px var(--violet);flex:none;animation:lypepulse 2.4s ease-in-out infinite}
 @keyframes lypepulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.6)}}
+/* Fourfold — the same pill as Lype, in plain light, its mark the four houses' colours */
+nav a.fourfold{display:inline-flex;align-items:center;gap:8px;color:var(--fg);
+  border:1px solid rgba(231,236,244,.22);border-radius:999px;padding:5px 12px;
+  background:rgba(231,236,244,.05);letter-spacing:.14em;
+  transition:color .2s,border-color .2s,background .2s,box-shadow .2s}
+nav a.fourfold:hover{border-color:rgba(231,236,244,.5);background:rgba(231,236,244,.1);box-shadow:0 0 20px -6px rgba(231,236,244,.45)}
+nav a.fourfold::after{content:none}
+nav a.fourfold .ff{width:9px;height:9px;border-radius:2px;flex:none;background:conic-gradient(#5fd6b0 0 25%,#ff8a5c 0 50%,#c99bff 0 75%,#7fb8ff 0)}
+nav a.fourfold:hover .ff{animation:ffturn 1.6s linear infinite}
+@keyframes ffturn{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){nav a.fourfold:hover .ff{animation:none}}
 .cmd-hint{appearance:none;font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:var(--muted);
   background:transparent;border:1px solid var(--line-2);border-radius:4px;padding:5px 9px;cursor:pointer;transition:.2s}
 .cmd-hint:hover{color:var(--fg);border-color:var(--muted)}
@@ -629,7 +640,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
 @media (max-width:860px){ .p-body{grid-template-columns:1fr;gap:32px} }
 @media (max-width:820px){
   .metrics{grid-template-columns:repeat(2,1fr)}
-  nav a:not(.lype){display:none}
+  nav a:not(.lype):not(.fourfold){display:none}
   .cmd-hint{display:none}
   .win{transform:none}
   .win-body{grid-template-columns:1fr}
@@ -672,6 +683,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
       <a href="#systems">Flagship</a>
       <a href="#tools">Tools</a>
       <a href="#contact">Contact</a>
+      <a class="fourfold" href="fourfold/" title="Four language models play a game of territory and talk"><span class="ff" aria-hidden="true"></span>Fourfold</a>
       <a class="lype" href="https://nirry.net/lype/#/place?lens=follow"><span class="lv" aria-hidden="true"></span>Lype</a>
     </nav>
     <button class="cmd-hint" id="cmdHint" type="button" aria-label="Open command palette">⌘K</button>
@@ -2021,6 +2033,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:0 0 60px}
     ["Pentest Suite","go","jump","#pentest"],
     ["AI Research","go","jump","#research"],
     ["Neuron steering","go","jump","#neuron-steering"],
+    ["Fourfold: four models at one table","open","open","fourfold/"],
     ["Lype","go","jump","#lype"],
     ["Lype: watch its life","open","open","lype/"],
     ["Lype: walk around its world","open","open","lype/#/place?walk&lens=follow"],

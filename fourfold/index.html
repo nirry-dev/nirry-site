@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="fourfold-static" content="1">
+<meta name="description" content="Fourfold: four language models play a game of territory and talk, with no coaching and no referee but the rules.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fourfold — Nirry</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="icon.svg">
+</head>
+<body>
+<header>
+  <div class="brand"><span class="mark"></span>FOURFOLD</div>
+  <div id="round" class="pill">—</div>
+  <div id="status" class="pill dim">connecting</div>
+  <div class="grow"></div>
+  <button id="replay" class="primary only-static">Replay the match</button>
+  <button id="play">Play</button>
+  <button id="pause">Pause</button>
+  <button id="new" class="ghost">New match</button>
+  <button id="quit" class="ghost" title="Stop the match and close Fourfold">Quit</button>
+</header>
+<main>
+  <section class="mapwrap">
+    <canvas id="world" aria-label="The world, in 3D"></canvas>
+    <div id="overlay"></div>
+    <svg id="map" viewBox="0 0 1000 720" aria-label="Map" hidden></svg>
+    <div class="viewbar"><button id="view-toggle" class="ghost small">2D map</button><button id="view-home" class="ghost small" title="Back to the whole world">Overview</button><span class="dim small hint">drag to turn · right-drag to move · wheel to zoom · click a tower</span></div>
+    <div id="banner" hidden></div>
+  </section>
+  <aside id="houses"></aside>
+  <section class="panel" id="chronicle-panel">
+    <h2>Chronicle <span class="dim">— everything, including private messages</span></h2>
+    <ol id="chronicle"></ol>
+  </section>
+  <section class="panel" id="inspect-panel">
+    <h2>Inside <span id="inspect-who">—</span> <span class="dim">— pick a house</span></h2>
+    <div id="inspect"></div>
+  </section>
+</main>
+<dialog id="setup">
+  <form method="dialog" id="setup-form">
+    <h2>New match</h2>
+    <p class="dim">Pick four players. Seats are dealt to the houses at random unless you turn that off.</p>
+    <div id="seats"></div>
+    <div class="row">
+      <label>Rounds <input type="number" id="rounds" min="1" max="200" value="40"></label>
+      <label class="check"><input type="checkbox" id="shuffle" checked> Shuffle seats</label>
+    </div>
+    <p id="setup-note" class="dim small"></p>
+    <div class="row end">
+      <button type="button" id="setup-cancel" class="ghost">Cancel</button>
+      <button type="submit" id="setup-start" class="primary">Start match</button>
+    </div>
+  </form>
+</dialog>
+<div id="goodbye" hidden><div><b>Fourfold has stopped.</b><p class="dim">The match is saved and resumes from the same turn next time. You can close this window.</p></div></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>
