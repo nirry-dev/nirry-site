@@ -86,14 +86,17 @@ const segDist = (px, pz, a, b) => {
 
 // ---------- shaders ----------
 const VS = `
-attribute vec3 aPos; attribute vec3 aNorm; attribute vec3 aColor;
-uniform mat4 uVP, uModel, uLightVP; uniform float uTime, uWave;
-varying vec3 vN, vC, vW; varying vec4 vL;
+attribute vec3 aPos; attribute vec3 aNorm; attribute vec3 aColor; attribute vec4 aEmit;
+uniform mat4 uVP, uModel, uLightVP; uniform float uTime, uWave; uniform vec4 uPulse;
+varying vec3 vN, vC, vW, vEmit; varying vec4 vL;
 void main() {
   vec3 p = aPos;
   if (uWave > 0.0) p.z += sin(uTime * 7.0 - p.x * 9.0) * 0.6 * p.x;
   vec4 w = uModel * vec4(p, 1.0);
   vW = w.xyz; vN = mat3(uModel) * aNorm; vC = aColor; vL = uLightVP * w;
+  // aEmit.a is the owning house's seat (0-3), or -1: its land breathes while that house is thinking
+  vec4 seat = vec4(equal(vec4(aEmit.a), vec4(0.0, 1.0, 2.0, 3.0)));
+  vEmit = aEmit.rgb * (1.0 + dot(uPulse, seat));
   gl_Position = uVP * w;
 }`;
 const FS = `
@@ -101,7 +104,7 @@ precision highp float;
 uniform vec3 uTint, uSun, uSunColor, uSky, uGround, uFog, uEye;
 uniform float uGlow, uAlpha, uWater, uTime, uFogNear, uFogFar, uShadowOn;
 uniform sampler2D uShadow;
-varying vec3 vN, vC, vW; varying vec4 vL;
+varying vec3 vN, vC, vW, vEmit; varying vec4 vL;
 float unpack(vec4 c) { return dot(c, vec4(1.0, 1.0 / 255.0, 1.0 / 65025.0, 1.0 / 16581375.0)); }
 float sunlit() {
   vec3 p = vL.xyz / vL.w * 0.5 + 0.5;
@@ -128,6 +131,7 @@ void main() {
   vec3 amb = mix(uGround, uSky, n.y * 0.5 + 0.5);
   vec3 lit = uWater > 0.5 ? base * (amb * 0.6 + uSunColor * 0.5) : base * (amb + uSunColor * ndl * (0.35 + 0.65 * sh));
   lit = mix(lit, base * 1.6 + 0.15, uGlow);
+  lit += vEmit;
   float f = clamp((distance(vW, uEye) - uFogNear) / (uFogFar - uFogNear), 0.0, 1.0);
   gl_FragColor = vec4(mix(lit, uFog, f * 0.85), a);
 }`;
@@ -158,7 +162,7 @@ function program(gl, vs, fs) {
     const name = gl.getActiveUniform(p, i).name;
     u[name] = gl.getUniformLocation(p, name);
   }
-  return { p, u, aPos: gl.getAttribLocation(p, 'aPos'), aNorm: gl.getAttribLocation(p, 'aNorm'), aColor: gl.getAttribLocation(p, 'aColor') };
+  return { p, u, aPos: gl.getAttribLocation(p, 'aPos'), aNorm: gl.getAttribLocation(p, 'aNorm'), aColor: gl.getAttribLocation(p, 'aColor'), aEmit: gl.getAttribLocation(p, 'aEmit') };
 }
 
 // ---------- shapes: interleaved position, normal, colour ----------
@@ -268,7 +272,8 @@ export async function createWorld(canvas, overlay, map, { onPick } = {}) {
     const border = smooth(0.035, 0.0, toBorder) * smooth(0.5, 0.8, w);
     const bump = BIOME[T[t1].region].bump * (wave(x * 1.3, z * 1.3) + 1) * w;
     const h = -0.24 + w * 0.34 + bump - border * 0.02;
-    return { t: t1, w, border, h };
+    const front = smooth(0.11, 0.0, toBorder) * smooth(0.5, 0.8, w); // a wider band, for the glow along frontiers
+    return { t: t1, t2, w, border, front, h };
   }
   const groundAt = (x, z) => Math.max(sample(x, z).h, 0);
 
@@ -303,12 +308,14 @@ export async function createWorld(canvas, overlay, map, { onPick } = {}) {
       idx.set([a, a + nx, a + 1, a + 1, a + nx, a + nx + 1], q);
       q += 6;
     }
-  const terrain = { buf: gl.createBuffer(), colorBuf: gl.createBuffer(), index: gl.createBuffer(), count: idx.length, stride: 24 };
+  const terrain = { buf: gl.createBuffer(), colorBuf: gl.createBuffer(), emitBuf: gl.createBuffer(), index: gl.createBuffer(), count: idx.length, stride: 24 };
   gl.bindBuffer(gl.ARRAY_BUFFER, terrain.buf);
   gl.bufferData(gl.ARRAY_BUFFER, geo, gl.STATIC_DRAW);
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, terrain.index);
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, idx, gl.STATIC_DRAW);
   const colors = new Float32Array(nx * nz * 3);
+  const emits = new Float32Array(nx * nz * 4);
+  const seatIndex = Object.fromEntries(map.seats.map((x, i) => [x.id, i]));
   const biomeRGB = Object.fromEntries(Object.entries(BIOME).map(([k, b]) => [k, hex(b.ground)]));
   function paintGround(owners) {
     for (let k = 0; k < info.length; k++) {
@@ -318,12 +325,22 @@ export async function createWorld(canvas, overlay, map, { onPick } = {}) {
       else {
         c = biomeRGB[T[s.t].region];
         const o = owners[s.t];
-        c = mix3(c, hex(o ? seatColor[o] : NEUTRAL), o ? 0.34 : 0.12);
+        c = mix3(c, hex(o ? seatColor[o] : NEUTRAL), o ? 0.5 : 0.12);
         c = mix3(c, SAND, smooth(0.04, 0.0, s.h) * 0.8);
         c = c.map((v) => v * (1 + s.jit) * (1 - s.border * 0.45));
       }
       colors.set(c, k * 3);
+      // Held land glows in its owner's colour, brightest along a frontier with someone else's.
+      const o = s.h >= 0.005 ? owners[s.t] : null;
+      if (o) {
+        const front = owners[s.t2] !== o ? s.front * s.front : 0;
+        const oc = mix3(hex(seatColor[o]), [1, 1, 1], front * 0.35);
+        const k2 = 0.11 + front * 0.55;
+        emits.set([oc[0] * k2, oc[1] * k2, oc[2] * k2, seatIndex[o]], k * 4);
+      } else emits.set([0, 0, 0, -1], k * 4);
     }
+    gl.bindBuffer(gl.ARRAY_BUFFER, terrain.emitBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, emits, gl.DYNAMIC_DRAW);
     gl.bindBuffer(gl.ARRAY_BUFFER, terrain.colorBuf);
     gl.bufferData(gl.ARRAY_BUFFER, colors, gl.DYNAMIC_DRAW);
   }
@@ -648,6 +665,16 @@ export async function createWorld(canvas, overlay, map, { onPick } = {}) {
         gl.vertexAttribPointer(p.aColor, 3, gl.FLOAT, false, 12, 0);
       } else gl.vertexAttribPointer(p.aColor, 3, gl.FLOAT, false, m.stride, 24);
     }
+    if (p.aEmit >= 0) {
+      if (m.emitBuf) {
+        gl.enableVertexAttribArray(p.aEmit);
+        gl.bindBuffer(gl.ARRAY_BUFFER, m.emitBuf);
+        gl.vertexAttribPointer(p.aEmit, 4, gl.FLOAT, false, 16, 0);
+      } else {
+        gl.disableVertexAttribArray(p.aEmit);
+        gl.vertexAttrib4f(p.aEmit, 0, 0, 0, -1);
+      }
+    }
   }
   function draw(p, m, model, { tint = [1, 1, 1], glow = 0, alpha = 1, waterOn = 0, waveOn = 0 } = {}) {
     if (!m) return;
@@ -792,6 +819,7 @@ export async function createWorld(canvas, overlay, map, { onPick } = {}) {
     gl.useProgram(depth.p);
     gl.disableVertexAttribArray(1);
     gl.disableVertexAttribArray(2);
+    gl.disableVertexAttribArray(3); // the ground's glow stream: the depth pass reads only positions
     gl.uniformMatrix4fv(depth.u.uLightVP, false, lightVP);
     gl.uniform1f(depth.u.uTime, time);
     for (const [m, mm, o] of things) if (m && m !== terrain && m !== road && m !== seabed) draw(depth, m, mm, o);
@@ -815,6 +843,10 @@ export async function createWorld(canvas, overlay, map, { onPick } = {}) {
     gl.uniform1f(u.uFogFar, cam.dist * 3.2);
     gl.uniform1f(u.uTime, time);
     gl.uniform1f(u.uShadowOn, 1);
+    const pulse = [0, 0, 0, 0];
+    const ai = map.seats.findIndex((x) => x.id === active);
+    if (ai >= 0) pulse[ai] = 0.9 + 0.9 * Math.sin(time * 2.4);
+    gl.uniform4fv(u.uPulse, pulse);
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, shadowTex);
     gl.uniform1i(u.uShadow, 0);
