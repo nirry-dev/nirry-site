@@ -157,7 +157,25 @@ function line(e) {
     case 'battle':
       return `${r}${H(e.house)} → ${tn(e.to)} (${e.defender ? H(e.defender) : 'neutral'}) from ${tn(e.from)} with ${e.sent} vs ${e.defended}: ${e.won ? `<b>taken</b>, ${e.survivors} hold it` : `repelled, ${e.survivors} left`}`;
     case 'say':
-      return `${r}${H(e.house)}${e.to ? ` <span class="priv">→ ${hname(e.to)} · private</span>` : ' <span class="dim">to all</span>'}: <span class="say">“${esc(e.text)}”</span>`;
+      return `${r}${e.mid ? `<span class="mid">${e.mid}</span>` : ''}${H(e.house)}${toWhom(e)}: <span class="say">“${esc(e.text)}”</span>`;
+    case 'forward': {
+      const o = e.original;
+      return `${r}${H(e.house)} <span class="tag fwd">forwarded ${e.mid}</span>${toWhom(e)} — from ${H(o.house)}${o.to ? ` to ${o.to.map(H).join(', ')}` : ' to all'}: <span class="say">“${esc(o.text)}”</span>`;
+    }
+    case 'propose':
+      return `${r}${H(e.house)} <span class="tag deal">proposes ${e.pact}</span> to ${e.to.map(H).join(', ')}: <span class="say">“${esc(e.terms)}”</span>`;
+    case 'accept':
+      return `${r}${H(e.house)} accepts ${e.pact}${e.active ? ' — <b>in force</b>' : ''}`;
+    case 'reject':
+      return `${r}${H(e.house)} rejects ${e.pact}`;
+    case 'renounce':
+      return `${r}${H(e.house)} <span class="tag">withdraws from ${e.pact}</span>`;
+    case 'betrayal':
+      return `${r}<span class="tag bad">broke ${e.pact}</span> ${H(e.house)} attacked partner ${H(e.victim)} at ${tn(e.at)}`;
+    case 'give':
+      return `${r}${H(e.house)} <span class="tag gift">gave ${e.n} reinforcements</span> to ${H(e.to[0])} <span class="priv">private</span>`;
+    case 'cede':
+      return `${r}${H(e.house)} <span class="tag gift">handed ${tn(e.territory)}</span> (${e.troops} troops) to ${H(e.recipient)}`;
     case 'eliminated':
       return `${r}<b>${H(e.house)} is out</b> — destroyed by ${H(e.by)}`;
     case 'desert':
@@ -173,6 +191,11 @@ function line(e) {
   }
 }
 
+function toWhom(e) {
+  const to = e.to == null ? null : [].concat(e.to);
+  return to ? ` <span class="priv">→ ${to.map(hname).join(', ')} · private</span>` : ' <span class="dim">to all</span>';
+}
+
 function addEvents(events) {
   const ol = $('#chronicle');
   for (const e of events) {
@@ -180,10 +203,61 @@ function addEvents(events) {
     if (!html) continue;
     const li = document.createElement('li');
     li.innerHTML = html;
+    // Clicking an entry opens that house's turn: what it wrote, and what it was thinking when it did.
+    if (e.house && e.round) {
+      li.className = 'jump';
+      li.title = 'See what it was thinking that turn';
+      li.onclick = () => openTurn(e.house, e.round);
+    }
     ol.prepend(li);
     if (e.type === 'battle' && events.length < 40 && flat) arrow(e);
   }
   while (ol.children.length > 600) ol.lastChild.remove();
+  renderDiplomacy();
+}
+
+function openTurn(house, round) {
+  picked = house;
+  const mine = turns.filter((t) => t.house === house);
+  const i = mine.findIndex((t) => t.round === round);
+  pickedIndex = i >= 0 ? i : -1;
+  renderHouses();
+  renderInspect();
+  $('#inspect-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ---- diplomacy: agreements and their fate, gifts, cessions, forwards, private talk ----
+let allEvents = [];
+function renderDiplomacy() {
+  const box = $('#diplomacy');
+  if (!box || !snap || !map) return;
+  const ev = allEvents;
+  const H = (id) => `<b style="color:${houseColor(id)}">${hname(id)}</b>`;
+  const pacts = {};
+  for (const e of ev) {
+    if (e.type === 'propose') pacts[e.pact] = { id: e.pact, by: e.house, parties: e.parties, terms: e.terms, round: e.round, status: 'proposed', log: [] };
+    const p = pacts[e.pact];
+    if (!p) continue;
+    if (e.type === 'accept' && e.active) Object.assign(p, { status: 'active', since: e.round });
+    if (e.type === 'reject') Object.assign(p, { status: 'rejected', endedBy: e.house, endedRound: e.round });
+    if (e.type === 'renounce') Object.assign(p, { status: 'renounced', endedBy: e.house, endedRound: e.round });
+    if (e.type === 'betrayal') Object.assign(p, { status: 'broken', endedBy: e.house, endedRound: e.round });
+  }
+  const list = Object.values(pacts).reverse();
+  const count = (t) => ev.filter((e) => e.type === t).length;
+  const says = ev.filter((e) => e.type === 'say');
+  const priv = says.filter((e) => e.to != null).length;
+  const group = says.filter((e) => Array.isArray(e.to) && e.to.length > 1).length;
+  const stat = (k, v) => `<div class="stat"><b>${v}</b><span>${k}</span></div>`;
+  const statuses = list.reduce((a, p) => ((a[p.status] = (a[p.status] || 0) + 1), a), {});
+  box.innerHTML = `<div class="stats">${stat('messages', says.length)}${stat('private', priv)}${stat('group', group)}${stat('forwarded', count('forward'))}${stat('agreements', list.length)}${stat('in force', statuses.active || 0)}${stat('broken by attack', statuses.broken || 0)}${stat('gifts', count('give'))}${stat('territories handed over', count('cede'))}</div>
+    ${list.length ? '' : '<p class="dim">No agreements yet.</p>'}
+    <ul class="pacts">${list
+      .map(
+        (p) => `<li class="pact ${p.status}" data-house="${p.by}" data-round="${p.round}"><span class="pid">${p.id}</span> <span class="st">${p.status === 'active' ? 'in force' : p.status}</span> ${p.parties.map(H).join(' · ')} <span class="r">R${p.round}${p.endedRound ? `–R${p.endedRound}${p.endedBy ? ` by ${hname(p.endedBy)}` : ''}` : ''}</span><div class="terms">“${esc(p.terms)}”</div></li>`,
+      )
+      .join('')}</ul>`;
+  box.querySelectorAll('.pact').forEach((li) => (li.onclick = () => openTurn(li.dataset.house, Number(li.dataset.round))));
 }
 
 function renderInspect() {
@@ -239,6 +313,7 @@ function handle(msg) {
     if (first) startWorld();
     else world?.sync(snap);
     $('#chronicle').innerHTML = '';
+    allEvents = msg.events.slice();
     addEvents(msg.events);
     renderAll();
     if (!snap) openSetup(false);
@@ -259,6 +334,7 @@ function handle(msg) {
     world?.play(msg.events);
     world?.sync(snap);
     turns.push(msg.record);
+    allEvents.push(...msg.events);
     if (turns.length > 400) turns.shift();
     addEvents(msg.events);
     renderAll();
@@ -297,6 +373,7 @@ async function replay() {
   $('#replay').textContent = 'Stop';
   world.reset(record.initial);
   $('#chronicle').innerHTML = '';
+  allEvents = [];
   let turn = [];
   for (const e of record.events) {
     if (!replaying) break;
@@ -304,6 +381,7 @@ async function replay() {
     if (e.type !== 'endturn' && e.type !== 'over') continue;
     $('#round').textContent = `round ${e.round}/${record.snapshot.rounds}`;
     world.play(turn);
+    allEvents.push(...turn);
     addEvents(turn);
     turn = [];
     while (replaying && world.busy()) await new Promise((r) => setTimeout(r, 150));
@@ -313,6 +391,7 @@ async function replay() {
   else {
     world.reset(record.snapshot.territories);
     $('#chronicle').innerHTML = '';
+    allEvents = record.events.slice();
     addEvents(record.events);
   }
   $('#round').textContent = `round ${record.snapshot.round}/${record.snapshot.rounds}`;

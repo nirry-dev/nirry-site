@@ -89,3 +89,30 @@ body.static .only-static { display: inline-block; }
 body.static #play, body.static #pause, body.static #new, body.static #quit { display: none; }
 .intro { max-width: 1600px; margin: 12px auto 0; padding: 0 16px; color: var(--dim); font-size: 13px; }
 .intro b { color: var(--text); }
+
+#chronicle li.jump { cursor: pointer; }
+#chronicle li.jump:hover { background: #161b26; }
+#chronicle .mid { font: 10px var(--mono); color: var(--dim); margin-right: 5px; }
+.tag { font: 11px var(--mono); padding: 0 5px; border-radius: 4px; background: #1e2433; color: #b9c2d6; }
+.tag.deal { background: #1d2c3f; color: #8fc2ff; }
+.tag.fwd { background: #2a2540; color: #c3b3ff; }
+.tag.gift { background: #2e2a1a; color: #e9cf7a; }
+.tag.bad { background: #3a1d1d; color: #ff8b80; }
+#diplomacy-panel { grid-column: 1 / -1; }
+#diplomacy .stats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+#diplomacy .stat { background: #0d1017; border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; display: flex; gap: 6px; align-items: baseline; }
+#diplomacy .stat b { font: 700 15px var(--mono); }
+#diplomacy .stat span { font-size: 12px; color: var(--dim); }
+.pacts { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 8px; max-height: 340px; overflow: auto; }
+.pact { background: #0d1017; border: 1px solid var(--line); border-left: 3px solid #4a5265; border-radius: 6px; padding: 6px 10px; font-size: 13px; cursor: pointer; }
+.pact:hover { border-color: #3a4459; }
+.pact.active { border-left-color: #5fd6b0; }
+.pact.broken { border-left-color: #ff6b5e; }
+.pact.rejected, .pact.renounced { opacity: .7; }
+.pact .pid { font: 11px var(--mono); color: var(--dim); }
+.pact .st { font: 11px var(--mono); text-transform: uppercase; letter-spacing: .06em; }
+.pact.active .st { color: #5fd6b0; }
+.pact.broken .st { color: #ff8b80; }
+.pact .r { font: 11px var(--mono); color: var(--dim); float: right; }
+.pact .terms { color: #c9d0de; font-style: italic; margin-top: 2px; }
+.bubble.deal { background: #e4eefb; }

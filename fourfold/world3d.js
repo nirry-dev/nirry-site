@@ -560,14 +560,14 @@ export async function createWorld(canvas, overlay, map, { onPick } = {}) {
 
   // ----- events, played one after another -----
   function play(events) {
-    for (const e of events) if (['battle', 'place', 'move', 'say', 'eliminated'].includes(e.type)) queue.push(e);
+    for (const e of events) if (['battle', 'place', 'move', 'say', 'eliminated', 'forward', 'propose', 'give', 'cede', 'betrayal'].includes(e.type)) queue.push(e);
     if (queue.length > 60) {
       queue.length = 0; // far behind (a tab left in the background): catch up at once
       if (pending) shown = JSON.parse(JSON.stringify(pending.territories));
       refresh();
     }
   }
-  const DUR = { battle: 1500, place: 450, move: 900, say: 350, eliminated: 1600 };
+  const DUR = { battle: 1500, place: 450, move: 900, say: 350, eliminated: 1600, forward: 350, propose: 450, give: 900, cede: 900, betrayal: 700 };
   function step(now) {
     if (playing && now - playing.t0 >= DUR[playing.e.type]) {
       finish(playing.e);
@@ -603,6 +603,18 @@ export async function createWorld(canvas, overlay, map, { onPick } = {}) {
       effects.push({ kind: 'march', a, b, color: hex(seatColor[e.house]), t0: now, dur: 850 });
     } else if (e.type === 'say') {
       speak(e);
+    } else if (e.type === 'forward') {
+      speak(e, `forwarded ${e.mid} · from ${houses[e.original.house]?.house || e.original.house}`, e.original.text);
+    } else if (e.type === 'propose') {
+      speak(e, `proposes ${e.pact}`, e.terms);
+    } else if (e.type === 'give') {
+      const a = strongest(e.house);
+      const b = strongest([].concat(e.to)[0]);
+      if (a && b) for (let i = 0; i < Math.min(8, e.n + 2); i++) effects.push({ kind: 'shot', a, b, color: hex('#f2c94c'), t0: now + i * 70, dur: 800, lift: 0.6 });
+    } else if (e.type === 'cede') {
+      effects.push({ kind: 'rise', at: site[e.territory], color: hex(seatColor[e.recipient]), t0: now, dur: 800 });
+    } else if (e.type === 'betrayal') {
+      effects.push({ kind: 'burst', at: site[e.at], color: hex('#ff3b30'), t0: now, dur: 900 });
     } else if (e.type === 'eliminated') {
       for (const id of ids) if (shown[id].owner === e.house) shown[id].owner = null;
     }
@@ -616,22 +628,26 @@ export async function createWorld(canvas, overlay, map, { onPick } = {}) {
     else if (e.type === 'move') {
       T2[e.from].troops -= e.n;
       T2[e.to].troops += e.n;
-    }
+    } else if (e.type === 'cede') T2[e.territory].owner = e.recipient;
     refresh();
   }
-  function speak(e) {
+  function strongest(house) {
+    const mine = ids.filter((id) => shown[id]?.owner === house).sort((a, b) => shown[b].troops - shown[a].troops);
+    return mine[0] ? site[mine[0]] : null;
+  }
+  function speak(e, what = null, body = e.text) {
     // Over the speaker's strongest territory.
-    const mine = ids.filter((id) => shown[id]?.owner === e.house).sort((a, b) => shown[b].troops - shown[a].troops);
-    const where = mine[0];
-    if (!where) return;
+    const at = strongest(e.house);
+    if (!at) return;
+    const to = e.to == null ? null : [].concat(e.to);
     const el = document.createElement('div');
-    el.className = `bubble${e.to ? ' private' : ''}`;
+    el.className = `bubble${to ? ' private' : ''}${e.type === 'propose' ? ' deal' : ''}`;
     el.style.setProperty('--c', seatColor[e.house]);
     const who = houses[e.house]?.house || e.house;
-    el.innerHTML = `<i>${who}${e.to ? ` → ${houses[e.to]?.house || e.to} · private` : ''}</i>${String(e.text).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c])}`;
+    el.innerHTML = `<i>${who}${what ? ` ${what}` : ''}${to ? ` → ${to.map((x) => houses[x]?.house || x).join(', ')} · private` : ''}</i>${String(body).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c])}`;
     overlay.appendChild(el);
     bubbles.forEach((b) => b.house === e.house && (b.lift += 1));
-    bubbles.push({ el, at: site[where], t0: performance.now(), house: e.house, lift: 0 });
+    bubbles.push({ el, at, t0: performance.now(), house: e.house, lift: 0 });
   }
 
   // ----- shadows -----
