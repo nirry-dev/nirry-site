@@ -27,7 +27,7 @@ function setView(toFlat) {
   flat = toFlat || !world;
   $('#world').hidden = flat;
   $('#overlay').hidden = flat;
-  $('#map').hidden = !flat;
+  $('#map').toggleAttribute('hidden', !flat); // an <svg> has no .hidden property: set the attribute itself
   $('#view-home').hidden = flat;
   $('#view-toggle').textContent = flat ? '3D world' : '2D map';
   $('#view-toggle').disabled = !world;
