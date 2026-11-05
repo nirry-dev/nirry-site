@@ -1,9 +1,9 @@
 // The viewer: what it is doing right now, its whole journey, who it has become, and the letter box.
-import { createAtlas } from './atlas.js?v=20261105220202';
-import { verifyChain } from './lib/seal.js?v=20261105220202';
-import { cleanSvg } from './lib/svgclean.js?v=20261105220202';
-import { createPresence, moodColor } from './presence.js?v=20261105220202';
-import { createWalk } from './world.js?v=20261105220202';
+import { createAtlas } from './atlas.js?v=20261105220753';
+import { verifyChain } from './lib/seal.js?v=20261105220753';
+import { cleanSvg } from './lib/svgclean.js?v=20261105220753';
+import { createPresence, moodColor } from './presence.js?v=20261105220753';
+import { createWalk } from './world.js?v=20261105220753';
 
 // ---------- tiny DOM helpers ----------
 
@@ -3309,7 +3309,7 @@ function lettersFeed() {
       : null;
 
   const letters = app.letters;
-  return [keeperCard(), forYouCard(), youCard, letterKeyCard(), palsCard(), letters.length ? letters.map(letterView) : h('p', { class: 'empty' }, 'Nobody has written to it yet. You could be the first.')];
+  return [keeperCard(), letterKeyCard(), forYouCard(), youCard, palsCard(), letters.length ? letters.map(letterView) : h('p', { class: 'empty' }, 'Nobody has written to it yet. You could be the first.')];
 }
 
 /**
@@ -3346,7 +3346,7 @@ function letterKeyCard() {
   });
   return h(
     'details',
-    { class: 'card letter-key', open: null },
+    { class: 'card letter-key', open: true },
     h('summary', {}, h('span', { class: 'label' }, 'Your letter key'), h('span', { class: 'meta' }, wrote ? ' · to write as you from another browser' : ' · wrote from another browser?')),
     wrote
       ? [
