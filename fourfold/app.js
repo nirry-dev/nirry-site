@@ -282,7 +282,7 @@ function renderInspect() {
 function renderHeader() {
   $('#round').textContent = `round ${snap.round}/${snap.rounds}`;
   const s = $('#status');
-  s.textContent = snap.status === 'over' ? 'over' : snap.paused ? 'paused' : snap.running ? `${hname(snap.current)} to move` : 'stopped';
+  s.textContent = snap.status === 'over' ? 'over' : snap.paused ? 'paused' : snap.waiting ? snap.waiting : snap.running ? `${hname(snap.current)} to move` : 'stopped';
   const b = $('#banner');
   b.hidden = snap.status !== 'over';
   if (snap.status === 'over') b.innerHTML = `<span style="color:${houseColor(snap.winner)}">${hname(snap.winner)}</span> wins — ${esc(snap.houses[snap.winner].label)}`;
