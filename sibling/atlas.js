@@ -2,7 +2,7 @@
 // the beliefs it wrote itself; then three shelves of memory; then the dust of what it forgot; and on the rim, the
 // people who wrote to it. Letters fall inward, nights rewrite it, and threads show which letter changed what.
 // Nothing here is invented: every node and thread comes from its records (/api/atlas).
-import { moodRGB } from './presence.js?v=20261106040034';
+import { moodRGB } from './presence.js?v=20261106195901';
 
 const TAU = Math.PI * 2;
 const RAD = Math.PI / 180;
