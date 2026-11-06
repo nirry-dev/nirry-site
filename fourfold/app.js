@@ -1,5 +1,6 @@
 // The spectator's view: the world (3D, or a flat map), the four minds as they think, and everything they said.
 import { createWorld } from './world3d.js';
+import { openResults, openSetup, openSwap } from './setup.js';
 const $ = (s) => document.querySelector(s);
 const NS = 'http://www.w3.org/2000/svg';
 const el = (tag, attrs = {}, parent) => {
@@ -129,8 +130,10 @@ function renderHouses() {
     card.className = `house${active ? ' active' : ''}${h.alive ? '' : ' out'}${picked === seat.id ? ' picked' : ''}`;
     card.style.setProperty('--c', seat.color);
     card.innerHTML = `<div class="top"><span class="name">${h.house}</span><span class="stats">${h.alive ? `${st.territories} lands · ${st.troops} troops` : 'OUT'}${snap.winner === seat.id ? ' · WINNER' : ''}</span></div>
-      <div class="model">${esc(h.label)}${active ? ' — thinking…' : ''}</div>
+      <div class="model">${esc(h.label)}${active ? ' — thinking…' : ''}${!STATIC && h.alive && snap.status === 'running' ? `<button class="swap ghost small" title="Put a different model behind this house">⇄</button>` : ''}</div>
       <div class="live" id="live-${seat.id}"></div>`;
+    const sw = card.querySelector('.swap');
+    if (sw) sw.onclick = (e) => (e.stopPropagation(), openSwap(seat.id));
     card.onclick = () => {
       picked = seat.id;
       pickedIndex = -1;
@@ -176,6 +179,8 @@ function line(e) {
       return `${r}${H(e.house)} <span class="tag gift">gave ${e.n} reinforcements</span> to ${H(e.to[0])} <span class="priv">private</span>`;
     case 'cede':
       return `${r}${H(e.house)} <span class="tag gift">handed ${tn(e.territory)}</span> (${e.troops} troops) to ${H(e.recipient)}`;
+    case 'swap':
+      return `${r}<span class="tag">seat change</span> ${H(e.house)} is now played by <b>${esc(e.label)}</b> (was ${esc(e.from)})`;
     case 'eliminated':
       return `${r}<b>${H(e.house)} is out</b> — destroyed by ${H(e.by)}`;
     case 'desert':
@@ -282,6 +287,9 @@ function renderInspect() {
 function renderHeader() {
   $('#round').textContent = `round ${snap.round}/${snap.rounds}`;
   const s = $('#status');
+  const x = snap.meta?.experiment ? `experiment · match ${snap.meta.index + 1} · ` : '';
+  const rules = (snap.features || []).filter((f) => f !== 'diplomacy').join(' · ');
+  $('#round').textContent = `${x}round ${snap.round}/${snap.rounds}${rules ? ` · ${rules}` : ''}`;
   s.textContent = snap.status === 'over' ? 'over' : snap.paused ? 'paused' : snap.waiting ? snap.waiting : snap.running ? `${hname(snap.current)} to move` : 'stopped';
   const b = $('#banner');
   b.hidden = snap.status !== 'over';
@@ -316,7 +324,7 @@ function handle(msg) {
     allEvents = msg.events.slice();
     addEvents(msg.events);
     renderAll();
-    if (!snap) openSetup(false);
+    if (!snap && !STATIC) openSetup({ cancellable: false, running: () => false });
   } else if (msg.type === 'quit') {
     es.close();
     $('#goodbye').hidden = false;
@@ -336,6 +344,11 @@ function handle(msg) {
     turns.push(msg.record);
     allEvents.push(...msg.events);
     if (turns.length > 400) turns.shift();
+    addEvents(msg.events);
+    renderAll();
+  } else if (msg.type === 'events') {
+    world?.play(msg.events);
+    allEvents.push(...msg.events);
     addEvents(msg.events);
     renderAll();
   } else if (msg.type === 'error') {
@@ -405,47 +418,9 @@ const post = (p, data) =>
     .then((j) => (j.error && alert(j.error), j));
 $('#play').onclick = () => post('/api/play');
 $('#pause').onclick = () => post('/api/pause');
-$('#new').onclick = () => openSetup(true);
+$('#new').onclick = () => openSetup({ cancellable: true, running: () => snap && snap.status === 'running' });
+$('#experiments').onclick = () => openResults();
 $('#view-toggle').onclick = () => setView(!flat);
 $('#replay').onclick = () => (replaying ? (replaying = false) : replay());
 $('#view-home').onclick = () => world?.overview();
 $('#quit').onclick = () => confirm('Stop Fourfold? The match is saved and picks up from this turn next time.') && post('/api/quit');
-
-// ---- setting up a match -----------------------------------------------------
-const OPT = (backend, model) => `${backend}|${model}`;
-async function openSetup(cancellable) {
-  const dlg = $('#setup');
-  $('#setup-cancel').hidden = !cancellable;
-  $('#seats').innerHTML = '<p class="dim">Looking for models…</p>';
-  dlg.showModal();
-  const s = await fetch('/api/setup').then((r) => r.json());
-  const local = s.local.models.map((m) => `<option value="${esc(OPT('openai', m))}">${esc(m)}</option>`).join('');
-  const claude = s.claude.models.map((m) => `<option value="${esc(OPT('anthropic', m))}">${esc(m)}</option>`).join('');
-  const options = `${local ? `<optgroup label="On this machine">${local}</optgroup>` : ''}<optgroup label="Claude (API)">${claude}</optgroup><optgroup label="Testing"><option value="mock|mock">test bot (no model)</option></optgroup>`;
-  $('#seats').innerHTML = [0, 1, 2, 3].map((i) => `<label class="seat"><span>player ${i + 1}</span><select id="seat-${i}">${options}</select></label>`).join('');
-  s.current.forEach((c, i) => {
-    const sel = $(`#seat-${i}`);
-    const v = c.backend === 'mock' ? 'mock|mock' : OPT(c.backend, c.model);
-    if ([...sel.options].some((o) => o.value === v)) sel.value = v;
-  });
-  $('#rounds').value = s.rounds;
-  $('#shuffle').checked = s.shuffleSeats;
-  const notes = [];
-  if (!s.local.ok) notes.push(`Local models unavailable: ${s.local.reason}.`);
-  if (!s.claude.sdk || !s.claude.key) notes.push(`Claude seats need ${[!s.claude.sdk && 'the SDK (npm install @anthropic-ai/sdk)', !s.claude.key && 'ANTHROPIC_API_KEY'].filter(Boolean).join(' and ')}; without them a Claude seat just loses its turns.`);
-  notes.push('Local models share one graphics card and are swapped in every turn.');
-  $('#setup-note').textContent = notes.join(' ');
-}
-$('#setup-cancel').onclick = () => $('#setup').close();
-$('#setup-form').onsubmit = async (e) => {
-  e.preventDefault();
-  if (snap && snap.status === 'running' && !confirm('Abandon the match in progress? It stays saved on disk.')) return;
-  const players = [0, 1, 2, 3].map((i) => {
-    const [backend, ...rest] = $(`#seat-${i}`).value.split('|');
-    return { backend, model: rest.join('|') };
-  });
-  $('#setup-start').disabled = true;
-  const r = await post('/api/new', { players, rounds: $('#rounds').value, shuffleSeats: $('#shuffle').checked });
-  $('#setup-start').disabled = false;
-  if (r.ok) $('#setup').close();
-};

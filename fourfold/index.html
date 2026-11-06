@@ -11,6 +11,7 @@
 </head>
 <body>
 <header>
+  <a class="home-link" href="https://nirry.net/" aria-label="Nirry, home"><span class="home-mark" aria-hidden="true">◢</span>Nirry</a><span class="home-sep" aria-hidden="true">/</span>
   <div class="brand"><span class="mark"></span>FOURFOLD</div>
   <div id="round" class="pill">—</div>
   <div id="status" class="pill dim">connecting</div>
@@ -19,6 +20,7 @@
   <button id="play">Play</button>
   <button id="pause">Pause</button>
   <button id="new" class="ghost">New match</button>
+  <button id="experiments" class="ghost" title="Experiment runs and how the entrants compare">Experiments</button>
   <button id="quit" class="ghost" title="Stop the match and close Fourfold">Quit</button>
 </header>
 <main>
@@ -45,19 +47,57 @@
 </main>
 <dialog id="setup">
   <form method="dialog" id="setup-form">
-    <h2>New match</h2>
-    <p class="dim">Pick four players. Seats are dealt to the houses at random unless you turn that off.</p>
+    <h2>New <span class="only-single">match</span><span class="only-exp" hidden>experiment</span></h2>
+    <div class="row modes">
+      <label class="check"><input type="radio" name="mode" id="mode-single" checked> One match</label>
+      <label class="check"><input type="radio" name="mode" id="mode-exp"> Experiment</label>
+    </div>
+    <p class="dim small only-single">Pick four players. Seats are dealt to the houses at random unless you turn that off.</p>
+    <p class="dim small only-exp" hidden>Pick four entrants, such as one model with thinking on and the same model with it off. They play a series of matches that rotates them through the houses, and the results compare them.</p>
     <div id="seats"></div>
+    <h3>Rules</h3>
+    <div id="rules" class="rules"></div>
     <div class="row">
       <label>Rounds <input type="number" id="rounds" min="1" max="200" value="40"></label>
-      <label class="check"><input type="checkbox" id="shuffle" checked> Shuffle seats</label>
+      <label class="check only-single"><input type="checkbox" id="shuffle" checked> Shuffle seats</label>
+      <label class="only-single">Dice seed <input type="number" id="seed" min="0" placeholder="random"></label>
+      <label class="only-exp" hidden>Sets <input type="number" id="exp-sets" min="1" max="10" value="1"></label>
+      <label class="only-exp grow" hidden>Name <input id="exp-name" placeholder="e.g. thinking on vs off"></label>
     </div>
+    <p id="exp-plan" class="dim small only-exp" hidden></p>
+    <details class="providers">
+      <summary>Where models come from</summary>
+      <ul id="providers"></ul>
+      <div class="row">
+        <select id="prov-preset"></select>
+        <input id="prov-name" placeholder="name">
+        <input id="prov-url" placeholder="https://…/v1" class="grow">
+        <input id="prov-key" type="password" placeholder="API key" autocomplete="off">
+        <button type="button" id="prov-add" class="ghost">Add</button>
+      </div>
+      <p class="dim small">Any OpenAI-compatible service works. Keys are kept in a file on this machine (data/keys), never in the config or the published copy.</p>
+    </details>
     <p id="setup-note" class="dim small"></p>
     <div class="row end">
       <button type="button" id="setup-cancel" class="ghost">Cancel</button>
       <button type="submit" id="setup-start" class="primary">Start match</button>
     </div>
   </form>
+</dialog>
+<dialog id="swap">
+  <form method="dialog" id="swap-form">
+    <h2 id="swap-title">Change who plays</h2>
+    <p class="dim small">The new model plays from this house's next turn and inherits its land, notebook and agreements. It is told it took over, and the other houses are told the house is now played by someone new.</p>
+    <div id="swap-seat"></div>
+    <div class="row end">
+      <button type="button" id="swap-cancel" class="ghost">Cancel</button>
+      <button type="submit" class="primary">Swap</button>
+    </div>
+  </form>
+</dialog>
+<dialog id="results">
+  <div class="results-head"><h2>Experiments</h2><button type="button" id="results-close" class="ghost">Close</button></div>
+  <div id="results-body"></div>
 </dialog>
 <div id="goodbye" hidden><div><b>Fourfold has stopped.</b><p class="dim">The match is saved and resumes from the same turn next time. You can close this window.</p></div></div>
 <script type="module" src="app.js"></script>
