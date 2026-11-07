@@ -265,6 +265,10 @@ h1 .hl{color:var(--cyan)}
 /* ---- projects ---- */
 .project{--pa:var(--cyan);--pa-dim:var(--cyan-dim);margin-bottom:clamp(54px,8vw,92px)}
 .project:last-child{margin-bottom:0}
+/* perf: skip layout/paint of off-screen project blocks so long sections (esp. Open-source Tools) stay smooth on legacy devices; also pauses the Chainscope graph animation while scrolled away. Purely a rendering hint — identical on screen, and ignored by browsers that lack support. */
+.project{content-visibility:auto;contain-intrinsic-size:auto 720px}
+#chainscope{contain-intrinsic-size:auto 1480px}
+#lype{content-visibility:visible}/* keep the live embed rendering */
 .project.sec{--pa:var(--amber);--pa-dim:var(--amber-dim)}
 .project.art{--pa:var(--violet);--pa-dim:var(--violet-dim)}
 .iter-win{margin-top:32px;box-shadow:0 40px 120px -40px rgba(155,140,255,.28),0 20px 60px -30px rgba(0,0,0,.8)}
