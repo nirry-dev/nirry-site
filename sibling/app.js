@@ -1,9 +1,9 @@
 // The viewer: what it is doing right now, its whole journey, who it has become, and the letter box.
-import { createAtlas } from './atlas.js?v=20261115012847';
-import { verifyChain } from './lib/seal.js?v=20261115012847';
-import { cleanSvg } from './lib/svgclean.js?v=20261115012847';
-import { createPresence, moodColor } from './presence.js?v=20261115012847';
-import { createWalk } from './world.js?v=20261115012847';
+import { createAtlas } from './atlas.js?v=20261115041317';
+import { verifyChain } from './lib/seal.js?v=20261115041317';
+import { cleanSvg } from './lib/svgclean.js?v=20261115041317';
+import { createPresence, moodColor } from './presence.js?v=20261115041317';
+import { createWalk } from './world.js?v=20261115041317';
 
 // ---------- tiny DOM helpers ----------
 
