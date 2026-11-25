@@ -1,9 +1,9 @@
 // The viewer: what it is doing right now, its whole journey, who it has become, and the letter box.
-import { createAtlas } from './atlas.js?v=20261125183641';
-import { verifyChain } from './lib/seal.js?v=20261125183641';
-import { cleanSvg } from './lib/svgclean.js?v=20261125183641';
-import { createPresence, moodColor } from './presence.js?v=20261125183641';
-import { createWalk } from './world.js?v=20261125183641';
+import { createAtlas } from './atlas.js?v=20261125202724';
+import { verifyChain } from './lib/seal.js?v=20261125202724';
+import { cleanSvg } from './lib/svgclean.js?v=20261125202724';
+import { createPresence, moodColor } from './presence.js?v=20261125202724';
+import { createWalk } from './world.js?v=20261125202724';
 
 // ---------- tiny DOM helpers ----------
 
@@ -750,6 +750,7 @@ function lookBlock(look, { asked = true } = {}) {
     h('span', { class: 'label' }, !asked ? 'It looked' : look.answers ? 'It looked: this is what it asked for' : 'It looked: not quite what it asked for'),
     h('p', { class: 'voice' }, look.verdict),
     look.see ? h('p', { class: 'meta', style: 'margin:6px 0 0' }, `What it saw: ${look.see}`) : null,
+    look.moves ? h('p', { class: 'meta', style: 'margin:4px 0 0' }, `How it moved: ${look.moves}`) : null,
   );
 }
 
