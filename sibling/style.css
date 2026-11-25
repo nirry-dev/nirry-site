@@ -1650,6 +1650,13 @@ main {
   opacity: 0.5;
   cursor: default;
 }
+/* a plain button on the paper (leave the photo or GIF out): ink on paper, not the dark page's button */
+.compose .btn {
+  justify-self: start;
+  background: transparent;
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--ink) 35%, transparent);
+}
 .compose .hint {
   margin: 0;
   font-size: 13px;
@@ -2416,6 +2423,13 @@ a.btn {
 .compose input[type='file'] {
   color: var(--ink-2);
   font: 13px var(--sans);
+}
+.return-gif {
+  margin: 0;
+}
+.return-gif figcaption {
+  margin: -4px 0 8px;
+  font-size: 12px;
 }
 .return-preview,
 .paper .return-photo {
