@@ -1,9 +1,9 @@
 // The viewer: what it is doing right now, its whole journey, who it has become, and the letter box.
-import { createAtlas } from './atlas.js?v=20261125163739';
-import { verifyChain } from './lib/seal.js?v=20261125163739';
-import { cleanSvg } from './lib/svgclean.js?v=20261125163739';
-import { createPresence, moodColor } from './presence.js?v=20261125163739';
-import { createWalk } from './world.js?v=20261125163739';
+import { createAtlas } from './atlas.js?v=20261125183635';
+import { verifyChain } from './lib/seal.js?v=20261125183635';
+import { cleanSvg } from './lib/svgclean.js?v=20261125183635';
+import { createPresence, moodColor } from './presence.js?v=20261125183635';
+import { createWalk } from './world.js?v=20261125183635';
 
 // ---------- tiny DOM helpers ----------
 
@@ -691,7 +691,7 @@ function letterView(l) {
         : null,
       l.errand ? h('div', { class: 'from' }, `brought back for its errand “${l.errand.text}”`) : null,
       l.errand?.photo ? h('img', { class: 'return-photo', src: asset(l.errand.photo), alt: `The photo ${l.from} brought back`, loading: 'lazy' }) : null,
-      l.photo ? h('img', { class: 'return-photo', src: asset(l.photo), alt: `The photo ${l.from} sent with this letter`, loading: 'lazy' }) : null,
+      l.photo && l.moving ? gifPicture(l) : l.photo ? h('img', { class: 'return-photo', src: asset(l.photo), alt: `The photo ${l.from} sent with this letter`, loading: 'lazy' }) : null,
       l.text ? h('p', { class: 'body' }, l.text) : null,
       'readCycle' in l || l.readAt !== undefined ? h('div', { class: 'status-line' }, letterLine(l)) : null,
     ),
@@ -718,6 +718,25 @@ function letterView(l) {
           l.influenced.map((i, k) => [k ? ' · ' : '', h('b', {}, `v${i.version}, ${INFLUENCE[i.what] || i.what}:`), ` “${i.text}”`]),
         )
       : null,
+  );
+}
+
+/**
+ * A GIF sent with a letter: it plays, unless whoever is looking asked their device for less motion (then its still
+ * stands in for it), and says where it came from when it came from GIPHY.
+ */
+function gifPicture(l) {
+  const alt = `The GIF ${l.from} sent with this letter`;
+  return h(
+    'figure',
+    { class: 'return-gif' },
+    h(
+      'picture',
+      {},
+      l.still ? h('source', { srcset: asset(l.still), media: '(prefers-reduced-motion: reduce)' }) : null,
+      h('img', { class: 'return-photo', src: asset(l.photo), alt, loading: 'lazy' }),
+    ),
+    l.moving.via?.url ? h('figcaption', { class: 'meta' }, 'GIF via ', h('a', { href: l.moving.via.url, target: '_blank', rel: 'noopener noreferrer nofollow' }, l.moving.via.name || 'GIPHY')) : null,
   );
 }
 
@@ -3131,31 +3150,61 @@ async function renderLetters(current) {
   const msg = h('div', { class: 'form-msg', role: 'status' });
   const away = Boolean(SNAPSHOT); // its page is live, but it can't be reached just now: letters wait at its relay
   const send = h('button', { class: 'send', type: 'submit' }, 'Leave it');
-  // One photo, if they like, to show it what the words are about. A letter left at the door while it is away is words only.
+  // One photo, if they like, to show it what the words are about, or one GIF (a file, or a link to one on GIPHY). A
+  // letter left at the door while it is away is words only.
   const photos = s.letterPhotos && !away;
+  const gifs = photos ? s.letterGifs : null;
   const file = h('input', { type: 'file', accept: 'image/*' });
   const preview = h('img', { class: 'return-preview', alt: 'Your photo', hidden: true });
   const unpick = h('button', { class: 'btn', type: 'button', hidden: true }, 'Leave the photo out');
-  let photo = null;
+  const giphy = gifs?.giphy ? h('input', { type: 'url', name: 'giphy', inputmode: 'url', autocomplete: 'off', spellcheck: 'false', placeholder: 'https://giphy.com/gifs/…' }) : null;
+  let photo = null; // { kind: 'photo' | 'gif', data: a data: URL }
+  let picking = 0; // which choice is the latest: one that finishes after another was made is let go
   const clearPhoto = () => {
+    picking++;
     photo = null;
     file.value = '';
     preview.hidden = unpick.hidden = true;
+    preview.removeAttribute('src');
   };
   unpick.addEventListener('click', clearPhoto);
   file.addEventListener('change', async () => {
+    const mine = ++picking;
     photo = null;
     preview.hidden = unpick.hidden = true;
-    if (!file.files[0]) return;
-    msg.textContent = 'Making it small…';
+    const chosen = file.files[0];
+    if (!chosen) return;
+    if (giphy) giphy.value = ''; // one picture to a letter
     try {
-      photo = await photoForErrand(file.files[0]);
-      preview.src = photo;
+      let picked;
+      if (gifs && chosen.type === 'image/gif') {
+        // a GIF goes as it is, so it still moves (its hidden details are taken out where it arrives)
+        if (chosen.size > gifs.maxMb * 1024 * 1024) throw new Error(`That GIF is larger than ${gifs.maxMb} MB. Try a smaller one${gifs.giphy ? ', or a link to it on GIPHY' : ''}.`);
+        picked = { kind: 'gif', data: await readAsDataUrl(chosen) };
+      } else {
+        msg.textContent = 'Making it small…';
+        picked = { kind: 'photo', data: await photoForErrand(chosen) };
+      }
+      if (mine !== picking) return; // something else was chosen meanwhile
+      photo = picked;
+      unpick.textContent = photo.kind === 'gif' ? 'Leave the GIF out' : 'Leave the photo out';
+      preview.alt = photo.kind === 'gif' ? 'Your GIF' : 'Your photo';
+      preview.src = photo.data;
       preview.hidden = unpick.hidden = false;
       msg.textContent = '';
     } catch (err) {
+      if (mine !== picking) return;
+      clearPhoto();
       msg.textContent = err.message;
     }
+  });
+  giphy?.addEventListener('input', () => {
+    if (!giphy.value.trim()) return;
+    // one picture to a letter: a link put in lets go of a file (even one still being made small)
+    if (photo || file.value) {
+      clearPhoto();
+      msg.textContent = '';
+    } else picking++;
   });
   const backBlock = back
     ? h(
@@ -3174,11 +3223,16 @@ async function renderLetters(current) {
     h('label', {}, h('span', { class: 'label' }, 'Sign as'), name),
     s.questions.length ? h('div', { class: 'q-field', hidden: back ? true : null }, h('span', { class: 'label' }, s.questions.length === 1 ? 'This is just a letter, or an answer to its question' : 'This is just a letter, or an answer to one of its questions'), question) : null,
     h('label', {}, h('span', { class: 'label' }, 'Your letter'), text),
-    photos ? h('label', {}, h('span', { class: 'label' }, 'A photo, if you like'), file) : null,
+    photos ? h('label', {}, h('span', { class: 'label' }, gifs ? 'A photo or a GIF, if you like' : 'A photo, if you like'), file) : null,
     photos ? preview : null,
     photos ? unpick : null,
+    giphy ? h('label', {}, h('span', { class: 'label' }, 'Or a link to a GIF on GIPHY'), giphy) : null,
     photos
-      ? h('p', { class: 'hint' }, 'A photo shows it what your words are about. Its keeper looks at it before it, or anyone, sees it. Leave out people and faces, and anything that shows who you are or where you live. It is made small and stripped of its location and camera details before it leaves this page.')
+      ? h(
+          'p',
+          { class: 'hint' },
+          `A photo shows it what your words are about. Its keeper looks at it before it, or anyone, sees it. Leave out people and faces, and anything that shows who you are or where you live. It is made small and stripped of its location and camera details before it leaves this page.${gifs ? ` A GIF (up to ${gifs.maxMb} MB) goes as it is, so it still moves; its hidden details are taken out when it arrives.${gifs.giphy ? ` From a GIPHY link, ${s.name || 'it'} fetches the GIF from GIPHY itself (your browser never asks GIPHY for anything) and credits it.` : ''}` : ''}`,
+        )
       : null,
     away ? h('p', { class: 'away-note' }, `${s.name || 'It'} is offline right now. Your letter waits for it at the door and reaches it as soon as it is back; then it reads it in its own time.`) : null,
     send,
@@ -3202,12 +3256,16 @@ async function renderLetters(current) {
           visitor,
           question: back ? null : question.querySelector('input:checked')?.value || null,
           ...(back ? { inReplyTo: back.id } : {}),
-          ...(photos && photo ? { photo: photo.replace(/^data:image\/jpeg;base64,/, '') } : {}),
+          ...(photos && photo?.kind === 'photo' ? { photo: photo.data.replace(/^data:image\/jpeg;base64,/, '') } : {}),
+          ...(gifs && photo?.kind === 'gif' ? { gif: photo.data.replace(/^data:[^,]*,/, '') } : {}),
+          ...(giphy && !photo && giphy.value.trim() ? { giphy: giphy.value.trim() } : {}),
         }),
       };
+      const gave = photo?.kind || (giphy?.value.trim() ? 'gif' : null);
       const sent = away ? await toMailbox(letter) : await api('/api/letters', letter);
       text.value = '';
       clearPhoto();
+      if (giphy) giphy.value = '';
       // written back: the form is for a new letter again
       if (back) {
         back = null;
@@ -3222,7 +3280,9 @@ async function renderLetters(current) {
       msg.textContent = sent.waiting
         ? `Your letter is waiting at the door${sent.ahead ? ` with ${sent.ahead} other letter${sent.ahead === 1 ? '' : 's'}` : ''}. ${s.name || 'It'} gets it as soon as it is back.`
         : sent.status === 'held' && sent.statusReason === 'a photo waits for its keeper'
-          ? 'Left on its desk with your photo. Its keeper looks at the photo first; then it looks too, and reads your letter in its own time.'
+          ? gave === 'gif'
+            ? 'Left on its desk with your GIF. Its keeper looks at the GIF first; then it looks too, and reads your letter in its own time.'
+            : 'Left on its desk with your photo. Its keeper looks at the photo first; then it looks too, and reads your letter in its own time.'
           : sent.status === 'held'
           ? `Held for its keeper: ${sent.statusReason}. It won't read it unless they let it through.`
           : sent.status === 'pending'
@@ -3231,7 +3291,9 @@ async function renderLetters(current) {
       invalidate('letters', 'you');
       render();
     } catch (err) {
-      msg.textContent = err.message;
+      // no answer in time (as when a GIF is slow to come from GIPHY): it may still have arrived
+      msg.textContent =
+        err.status === 504 ? `${s.name || 'It'} took too long to answer, but your letter may still have reached it. Look for it under your letters in a minute before sending it again.` : err.message;
     } finally {
       send.disabled = false;
     }
@@ -3275,7 +3337,7 @@ function keeperCard() {
         'div',
         { class: 'held' },
         h('div', { class: 'meta' }, `From ${l.from} · ${dayTime(l.at)} · ${l.heldReply ? 'its reply was held' : l.status}${l.heldReply ? ` (${l.heldReply.reason})` : l.statusReason ? ` · ${l.statusReason}` : ''}`),
-        l.errand ? h('p', { class: 'meta' }, `A photo for its errand “${l.errand.text}”`) : l.heldPhoto ? h('p', { class: 'meta' }, 'A letter with a photo') : null,
+        l.errand ? h('p', { class: 'meta' }, `A photo for its errand “${l.errand.text}”`) : l.heldPhoto ? h('p', { class: 'meta' }, l.gif ? 'A letter with a GIF' : 'A letter with a photo') : null,
         l.heldPhoto ? h('img', { class: 'return-photo', src: `${l.heldPhoto}?key=${encodeURIComponent(app.admin)}`, alt: 'The photo waiting for you' }) : null,
         l.text ? h('p', { class: 'body' }, l.text) : null,
         l.heldReply ? h('p', { class: 'voice' }, `It wrote back: ${l.heldReply.text}`) : null,
@@ -3552,6 +3614,16 @@ async function renderPal(current) {
 }
 
 // ---------- errands ----------
+
+/** A file as a data: URL. */
+function readAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = () => reject(new Error('That file could not be read.'));
+    r.readAsDataURL(file);
+  });
+}
 
 /** A photo from a phone, made small and re-encoded in the browser: no location, camera or time travels with it. */
 async function photoForErrand(file) {
